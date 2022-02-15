@@ -1,71 +1,35 @@
 import React from 'react';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
+import WebSidebar from './WebSidebar';
 
 const WebTemplateBlock = styled.div`
-    background: gray;
+    // background: gray;
+    height: 100%;
     display: grid;
-    grid-template-columns: 100px auto;
-    gap: 20px;
-    padding: 10px;
+    grid-template-columns: 1fr 1fr//150px auto;
+    padding: 0 10px 0 10px;
 `
-const WebSideBlock = styled.div`
-    width: 100px; //512px;
-    height: auto; // 내용에 맞는 크기
-    min-height:600px; // 최소 크기
-
-    position: relative; 
-    background: white;
-    // padding: 5px;
-    border: solid black; // dbg
-`
-
 const WebContentBlock = styled.div`
-    width: auto; //512px;
+    width: 512px;
     height: auto; // 내용에 맞는 크기
     min-height:600px; // 최소 크기
 
     position: relative; 
     background: white;
     // padding: 5px;
-    border: solid black; // dbg
+    border: solid gray 1px; // dbg
 `
-
-// dbg: 카테고리 배열
-var TestCategory = [];
-// dbg: url 배열
-var TestContent = [];
-
-// dbg: 카테고리, url 내용 채우기
-for(var i=1;i<=10;i++){
-    TestContent.push(`content${i}`);
-    TestCategory.push(`category${i}`);
-}
 
 function Webpage() {
     return (
         <>
         <WebHeader />
-        <WebTemplateBlock>
-        <WebSideBlock>
-            {
-            TestCategory.map((el)=>{
-                return(
-                <div>{el}</div>
-                );
-            })
-            }
-        </WebSideBlock>
-        <WebContentBlock>
-            {
-                TestContent.map((el)=>{
-                    return(
-                        <div>{el}</div>
-                    )
-                })
-            }
-        </WebContentBlock>
-        </WebTemplateBlock>
+        <WebSidebar />
+        {/* <WebTemplateBlock>
+            <WebSidebar />
+            <WebContentBlock />
+        </WebTemplateBlock> */}
         </>
     );
 }
