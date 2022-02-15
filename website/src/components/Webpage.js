@@ -1,5 +1,6 @@
 import React from 'react';
 import styled from 'styled-components';
+import WebHeader from './WebHeader';
 
 const WebTemplateBlock = styled.div`
     background: gray;
@@ -8,18 +9,6 @@ const WebTemplateBlock = styled.div`
     gap: 20px;
     padding: 10px;
 `
-
-const WebHeadBlock = styled.div`
-    // width: 100%; // chk: 패이지 넘어감
-    height: 50px;
-
-    position: relative; 
-    background: white;
-    // padding: 5px;
-    margin: 10px;
-    border: solid black; // dbg
-`
-
 const WebSideBlock = styled.div`
     width: 100px; //512px;
     height: auto; // 내용에 맞는 크기
@@ -56,9 +45,7 @@ for(var i=1;i<=10;i++){
 function Webpage() {
     return (
         <>
-        <WebHeadBlock>
-            <h>Webtorage</h>
-        </WebHeadBlock>
+        <WebHeader />
         <WebTemplateBlock>
         <WebSideBlock>
             {
