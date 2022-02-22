@@ -1,10 +1,11 @@
 import React from 'react';
-import Boxes from './Boxes';
+import Webpage from './components/Webpage';
+
 
 function App() {
   return (
     <div>
-      <Boxes />
+      <Webpage />
     </div>
   );
 }
