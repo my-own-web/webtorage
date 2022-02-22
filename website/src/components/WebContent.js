@@ -1,5 +1,6 @@
 import React from 'react'
 import styled from 'styled-components'
+import { useTestContent } from './InfoContext';
 
 const WebContentBlock = styled.div`
     width: 100%; // 512px;
@@ -15,12 +16,9 @@ const WebContentBlock = styled.div`
     border: solid gray 1px; // dbg
 `
 
-let TestContent = [];
-for (var i = 1; i <= 40; i++) {
-    TestContent.push(`content${i}`);
-}
-
 function WebContent() {
+    const TestContent = useTestContent();
+
     return(
     <WebContentBlock>
         {

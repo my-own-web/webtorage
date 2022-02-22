@@ -1,31 +1,32 @@
 import React from "react";
 import styled from "styled-components";
+import { useCategoryList } from "./InfoContext";
 
 const ListBlock = styled.div`
-width: 170px; 
-height: 67vh;
+    width: 170px; 
+    height: 63vh;
 
-margin: 10px 0 10px 0;
+    // margin-top: 5px;
 
-display: flex;
+    display: flex;
     flex-direction: column;
     flex-basis:100%;
     gap: 3px;
-overflow-y: auto;
-overflow-x: clip;
+    overflow-y: auto;
+
+    .category{
+        width: 150px;
+        overflow-x: clip;
+    }
 `
-// dbg: 카테고리 배열
-var TestCategory = [];
-// dbg: 내용 채우기
-for (var i = 1; i <= 20; i++) {
-    TestCategory.push(`category${i}`);
-}
 
 function CategoryList() {
+    const categoryList = useCategoryList();
+
     return (
         <ListBlock>
             {
-                TestCategory.map((el) => {
+                categoryList.map((el) => {
                     return (
                         <div className="category">{el}</div>
                     );

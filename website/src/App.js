@@ -1,10 +1,13 @@
 import logo from './logo.svg';
 import './App.css';
 import Webpage from './components/Webpage';
+import { InfoProvider } from './components/InfoContext';
 
 function App() {
   return (
-    <Webpage />
+    <InfoProvider >
+      <Webpage />
+    </InfoProvider>
   );
 }
 
