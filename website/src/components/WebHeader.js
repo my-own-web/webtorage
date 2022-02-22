@@ -2,12 +2,15 @@ import React from 'react';
 import styled from 'styled-components';
 
 const WebHeadBlock = styled.div`
-    // width: 100%; // chk: 패이지 넘어감
+    width: 100%; // chk: 패이지 넘어감
     height: 50px;
 
-    position: relative; 
+    position: sticky; 
+    top: 0px;
+    z-index:1;
+
     background: white;
-    margin: 10px;
+    padding: 5px;
     // border: solid black 1px; // dbg
 
     display: flex;
