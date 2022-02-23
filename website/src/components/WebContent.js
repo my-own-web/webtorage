@@ -3,7 +3,7 @@ import styled from 'styled-components'
 import { useTestContent } from './InfoContext';
 
 const WebContentBlock = styled.div`
-    width: 100%; // 512px;
+    // width: auto; //100%; // 512px;
     // height: auto; // 내용에 맞는 크기
     // min-height:600px; // 최소 크기
 

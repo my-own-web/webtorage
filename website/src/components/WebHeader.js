@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 
 const WebHeadBlock = styled.div`
-    width: 100%; // chk: 패이지 넘어감
+    // width: 100%; // chk: 패이지 넘어감
     height: 50px;
 
     position: sticky; 
