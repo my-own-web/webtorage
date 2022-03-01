@@ -1,59 +1,39 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import CategoryList from './CategoryList';
+import CategorySearch from './CategorySearch';
 
 const WebSideBlock = styled.div`
-    //width: 150px; 
-    min-height:100%; // 최소 높이
-
-    position: relative; 
+    position: sticky; //위치 고정
+    top: 70px;
+    left: 10px;
+    width: 170px; 
+    max-height: 70vh;
     background: white;
-    margin: 0px 10px 10px 10px;
-    padding: 10px 20px 15px 20px;
-    // border-right: solid gray 1px;
+    padding: 10px 0px 20px 20px;
     border-radius: 5px; // 모서리 둥굴게
     box-shadow: 0 0 3px 0 rgba(0,0,0,100); // 박스 감싸는 그림자
-
     text-align: left;
     display: flex;
     flex-direction: column;
-    //flex-basis:100%;
-    flex-basis: 150px;
-    
-    gap: 3px;
-
+    flex-basis:100%;
+    gap: 5px;
     h2 {
         font-size: 15px;
         margin: 0 0 0 0;
-        // margin: 5px 0px 5px 0px;
-        // text-align: center;        
     }
-
     hr{
-        margin: 5px 0 0 0;
-        // margin: 0px 5px 5px 5px;
-        //width: 100%;
-        width: 150px;
+        margin: 0 20px 0 0;
     }
 `
-// dbg: 카테고리 배열
-var TestCategory = [];
-// dbg: 내용 채우기
-for (var i = 1; i <= 20; i++) {
-  TestCategory.push(`category${i}`);
-}
 
 function WebSidebar() {
   return (
     <WebSideBlock>
       <h2>Category</h2>
+      <CategorySearch />
       <hr />
-      {
-        TestCategory.map((el) => {
-          return (
-            <div className="category">{el}</div>
-          );
-        })
-      }
+      <CategoryList />
     </WebSideBlock>
   );
 }

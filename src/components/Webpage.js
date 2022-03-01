@@ -3,8 +3,9 @@ import styled from 'styled-components';
 import WebHeader from './WebHeader';
 import WebSidebar from './WebSidebar';
 import Boxes from './Boxes';
+//import WebContent from './WebContent';
 
-const WebTemplateBlock = styled.div`
+/*const WebTemplateBlock = styled.div`
     //background: gray;
     height: 100%;
     //display: grid;
@@ -12,16 +13,7 @@ const WebTemplateBlock = styled.div`
     //grid-template-columns: 1fr 1fr//150px auto;
     padding: 0 10px 0 10px;
 `
-const WebContentBlock = styled.div`
-    width: 512px;
-    height: auto; // 내용에 맞는 크기
-    min-height:600px; // 최소 크기
 
-    position: relative; 
-    background: white;
-    // padding: 5px;
-    border: solid gray 1px; // dbg
-`
 
 function Webpage() {
   return (
@@ -32,9 +24,29 @@ function Webpage() {
         <Boxes />
       </WebTemplateBlock>
       {/* <WebTemplateBlock>
-            <WebSidebar />
-            <WebContentBlock />
-        </WebTemplateBlock> */}
+        <WebSidebar />
+        <WebContentBlock />
+      </WebTemplateBlock> *///}
+/*</>
+  );
+}*/
+
+const WebTemplateBlock = styled.div`
+    // background: gray;
+    // min-height: 100%;
+    display: grid;
+    grid-template-columns: 200px auto;
+    gap: 20px;
+`
+
+function Webpage() {
+  return (
+    <>
+      <WebHeader />
+      <WebTemplateBlock>
+        <WebSidebar className="sidebar" />
+        <Boxes className="content" />
+      </WebTemplateBlock>
     </>
   );
 }

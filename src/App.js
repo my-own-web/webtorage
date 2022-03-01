@@ -1,12 +1,12 @@
 import React from 'react';
 import Webpage from './components/Webpage';
-
+import { InfoProvider } from './components/InfoContext';
 
 function App() {
   return (
-    <div>
+    <InfoProvider >
       <Webpage />
-    </div>
+    </InfoProvider>
   );
 }
 

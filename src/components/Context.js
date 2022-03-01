@@ -38,6 +38,15 @@ const metaData = [
     description: "팀원들과 함께 아름다운 디자인을 만들어 보세요. Canva가 제공하는 드래그 앤 드롭 기능 및 레이아웃을 사용하여 명함, 로고, 프레젠테이션 등을 디자인하고, 공유하고, 인쇄하세요.",
     memo: "포스터 디자인 검색할 때 유용",
     category: "페이지"
+  },
+  {
+    date: 202203031103,
+    title: "Stack Overflow - Where Developers Learn, Share, &amp; Build Careers",
+    site_name: "Stack Overflow",
+    url: "https://stackoverflow.com",
+    image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
+    description: "Stack Overflow | The World’s Largest Online Community for Developers",
+    category: "질문사이트"
   }
 ]
 

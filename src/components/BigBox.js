@@ -7,8 +7,8 @@ const BoxBlock = styled.div`
   background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
-  margin: 5px;
-  width: 240px;
+  margin: 7px 9px;
+  width: 296px;
   height: 200px;
 `;
 //박스 하나의 전체 디자인
@@ -36,11 +36,16 @@ const Url = styled.div`
   font-size: 13px;
   color: black;
   text-align: center;
+  a {
+    color: blue;
+  }
 `;
 
 const Image = styled.div`
-  margin: 5px 0px;
-  text-align: center;
+  margin: 5px 40px;
+  width: 200px;
+  height: 120px;
+  border: 1px solid black;
 `;
 
 const Description = styled.div`
@@ -58,18 +63,18 @@ const Memo = styled.div`
   color:black;
 `;
 
-function Box({ site_name, title, url, image, description, memo }) {
+function BigBox({ site_name, title, url, image, description, memo }) {
 
   return (
     <BoxBlock>
       {site_name ? <Sitename>{`[${site_name}]`}</Sitename> : ''}
       {site_name ? <Title2>{title}</Title2> : <Title1>{`[${title}]`}</Title1>}
       <Url>URL: <a href={url}>{`"${url}"`}</a></Url>
-      <Image><img src={image} width="180" height="100"></img></Image>
+      <Image><img src={image} width="200" height="120"></img></Image>
       <Description memo={memo}>{description}</Description>
       {memo ? <Memo>{`메모: ${memo}`}</Memo> : ''}
-    </BoxBlock>
+    </BoxBlock >
   );
 }
 
-export default Box;
+export default BigBox;
