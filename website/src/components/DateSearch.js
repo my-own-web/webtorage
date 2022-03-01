@@ -5,17 +5,18 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const DatePickerTemplate = styled.div`
     .example-custom-input{
-        height: 45px;
-        width: 130px;
+        height: 30px;
+        width: 170px;
         cursor: pointer;
+        text-align: center;
     }
 
     .some-custom-class{
-        z-index: 1000 !important; // content component에 가려짐
+        z-index: 1000 !important;
     }
 
     .react-datepicker__input-container {
-        width: 163px;
+        width: 200px;
     }
 
     .react-datepicker__close-icon::after{
@@ -56,6 +57,25 @@ const DatePickerTemplate = styled.div`
         right: 1.5em;
       }
 `
+
+/* get raw input value on change
+() => {
+  const [startDate, setStartDate] = useState(null);
+  const handleChangeRaw = (value) => {
+    if (value === "tomorrow") {
+      setStartDate(addDays(new Date(), 1));
+    }
+  };
+  return (
+    <DatePicker
+      selected={startDate}
+      onChange={(date) => setStartDate(date)}
+      placeholderText='Enter "tomorrow"'
+      onChangeRaw={(event) => handleChangeRaw(event.target.value)}
+    />
+  );
+};
+*/
 const DatePickerComponent = () => {
     const [dateRange, setDateRange] = useState([null, null]);
     const [startDate, endDate] = dateRange;
@@ -84,7 +104,7 @@ const DatePickerComponent = () => {
                 {
                     name: "offset",
                     options: {
-                        offset: [0, 0],
+                        offset: [-15, 0],
                     },
                 },
                 {

@@ -12,6 +12,7 @@ const WebSideTemplate = styled.div`
     width: auto;
     max-height: 80vh;
 
+    // 사이드바 여러개 있을 때
     display: flex;
     flex-direction: column;
     gap: 10px;
@@ -46,10 +47,6 @@ const WebSideBlock = styled.div`
 function WebSidebar() {
     return (
         <WebSideTemplate>
-            <WebSideBlock>
-                <h2>Date</h2>
-                <DateSearch />
-            </WebSideBlock>
             <WebSideBlock>
                 <h2>Category</h2>
                 <CategorySearch />

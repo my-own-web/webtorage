@@ -2,7 +2,7 @@ import React from 'react';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
 import WebSidebar from './WebSidebar';
-import WebContent from './WebContent';
+import WebBody from './WebBody';
 
 const WebTemplateBlock = styled.div`
     // background: gray;
@@ -17,8 +17,8 @@ function Webpage() {
         <>
         <WebHeader/>
         <WebTemplateBlock>
-            <WebSidebar className="sidebar"/>
-            <WebContent className="content" />
+            <WebSidebar />
+            <WebBody />
         </WebTemplateBlock>
         </>
     );
