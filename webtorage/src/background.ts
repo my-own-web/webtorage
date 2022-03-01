@@ -1,5 +1,8 @@
 // This file is ran as a background script
 import {MessageType} from './types';
+//import {TodoAPI} from './utils/axios';
+import axios from 'axios';
+
 console.log("Hello from background script!")
 
 let category = '';
@@ -8,6 +11,22 @@ let title = '';
 let description = '';
 let image = '';
 
+const DBconn =async (params: MessageType) => {
+    if(params.type === "DBINFO"){
+        try{
+            const res = await axios.post('http://localhost:3001/tabinfo', params);
+            if(res.data){
+                console.log("DB 저장 성공!");
+            }
+            else{
+                console.log("DB 저장 실패..");
+            }
+        }
+        catch(err){
+            console.error(err);
+        }
+    }
+}
 
 chrome.runtime.onMessage.addListener((message: MessageType) =>{
     //두 가지 응답을 받음. 처음엔 팝업창에서 버튼 눌리면 카테고리 저장,
@@ -69,6 +88,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             console.log("completed?: ",category, data_url, title, description, image);
 
             //message.url, title, description을 저장하는 코드 혹은 함수
+            DBconn({type: 'DBINFO', category: category, data_url:data_url ,title: title, description:description, image:image})
             break;
         
         default:

@@ -15,4 +15,13 @@ interface TabResponse {
     image: string;
 }
 
-export type MessageType = SaveResponse | TabRequest | TabResponse;
+interface DBinfo{
+    type: "DBINFO";
+    category : string;
+    data_url: string;
+    title: string;
+    description: string;
+    image: string;
+}
+
+export type MessageType = SaveResponse | TabRequest | TabResponse | DBinfo;
