@@ -2,12 +2,23 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CategoryList from './CategoryList';
 import CategorySearch from './CategorySearch';
+import DateSearch from './DateSearch';
 
-const WebSideBlock = styled.div`
+const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
     top: 70px;
     left: 10px;
 
+    width: auto;
+    max-height: 80vh;
+
+    // 사이드바 여러개 있을 때
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+`
+
+const WebSideBlock = styled.div`
     width: 170px; 
     max-height: 70vh;
 
@@ -35,12 +46,14 @@ const WebSideBlock = styled.div`
 
 function WebSidebar() {
     return (
-        <WebSideBlock>
-            <h2>Category</h2>
-            <CategorySearch />
-            <hr />
-            <CategoryList />
-        </WebSideBlock>
+        <WebSideTemplate>
+            <WebSideBlock>
+                <h2>Category</h2>
+                <CategorySearch />
+                <hr />
+                <CategoryList />
+            </WebSideBlock>
+        </WebSideTemplate>
     );
 }
 

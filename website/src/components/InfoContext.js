@@ -15,10 +15,13 @@ for (var i = 1; i <= 40; i++) {
 const CategoryListContext = createContext(null);
 const TestContentContext = createContext(null);
 const SearchCategoryListContext = createContext(null);
+const CurrentCategoryContext = createContext(null);
+const SetCurrentCategoryContext = createContext(null);
 
 export function InfoProvider({ children }) {
     const [categoryList, setCategoryList] = useState(initialCategory);
     const [contentList, setContentList] = useState(initialContent);
+    const [currentCategory, setCurrentCategory] = useState('none');
 
     const searchCategoryList = (value) =>{
         //검색 기능
@@ -30,14 +33,17 @@ export function InfoProvider({ children }) {
         });
         setCategoryList(newList);
         // console.log(newList);
-        //---
     }
 
     return (
         <CategoryListContext.Provider value={categoryList}>
             <TestContentContext.Provider value={contentList}>
                 <SearchCategoryListContext.Provider value={searchCategoryList}>
-                    {children}
+                    <CurrentCategoryContext.Provider value={currentCategory}>
+                        <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
+                            {children}
+                        </SetCurrentCategoryContext.Provider>
+                    </CurrentCategoryContext.Provider>
                 </SearchCategoryListContext.Provider>
             </TestContentContext.Provider>
         </CategoryListContext.Provider>
@@ -66,4 +72,20 @@ export function useSearchCategoryList() {
         throw new Error('SetCategoryListContext Error');
     }
     return searchList;
+}
+
+export function useCurrentCategory(){
+    const current = useContext(CurrentCategoryContext);
+    if (!current) {
+        throw new Error('CurrentCategoryContext Error');
+    }
+    return current;
+}
+
+export function useSetCurrentCategory(){
+    const set = useContext(SetCurrentCategoryContext);
+    if (!set) {
+        throw new Error('SetCurrentCategoryContext Error');
+    }
+    return set;
 }
