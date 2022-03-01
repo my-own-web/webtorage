@@ -24,7 +24,9 @@ initialContent 배열은 디버깅용
 카테고리 검색용 입력창  
 검색 함수는 InfoContext.js에 있음
 
-
+**DateSearch.js**  
+날짜 검색 버튼, 달력 팝업  
+`react-datepicker` 사용
 
 
 ## 주석
