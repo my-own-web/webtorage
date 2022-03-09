@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useCategoryList, useSetCurrentCategory } from "./InfoContext";
+import { useCategoryList,useSetCurrentCategory } from "./InfoContext";
 
 const ListBlock = styled.div`
     width: 170px; 
@@ -26,15 +26,17 @@ const ListBlock = styled.div`
     }
 `
 
-function CategoryItem({id, text, number}){
+function CategoryItem({id, name, size}){
     const setCurrent = useSetCurrentCategory();
 
     const onClick = (e) => {
-        setCurrent(text);
+        setCurrent(name);
     }
 
     return(
-        <div className='category' onClick={onClick}>{text}</div>
+        <div className='category' onClick={onClick}>
+            {name}
+        </div>
     );
 }
 
@@ -46,8 +48,8 @@ function CategoryList() {
             {
                 categoryList.map((el) => {
                     return (
-                        <CategoryItem text={el}/>
-                        // chk: id, number 전달 필요
+                        <CategoryItem name={el.name}/>
+                        // el: 객체 {id, name, size}
                     );
                 })
             }
