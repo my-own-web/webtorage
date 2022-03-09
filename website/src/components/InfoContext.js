@@ -16,7 +16,7 @@ export function InfoProvider({ children }) {
 
     async function getCategory() {
         try {
-            const { data } = await TodoApi.get('/');
+            const { data } = await TodoApi.get('/category');
             // data: {id, name, size} 객체 배열
             setAllCategoryList(data);
             setCategoryList(data);
