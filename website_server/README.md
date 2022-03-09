@@ -5,6 +5,8 @@
 `express`
 `cors`
 `body-parser`
+`mysql2`
+`dotenv`
 
 ## 기타
 

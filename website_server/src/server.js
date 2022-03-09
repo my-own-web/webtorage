@@ -14,38 +14,53 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
-// // DB(MYSQL) 연동
-// const mysql = require('mysql2/promise');
-// const dotenv = require('dotenv').config(); // 민감한 정보 숨기기 위해 사용 
+// DB(MYSQL) 연동
+const mysql = require('mysql2/promise');
+const dotenv = require('dotenv').config(); // 민감한 정보 숨기기 위해 사용 
 
-// const options = {
-//   host: process.env.MYSQL_HOST,
-//   user: process.env.MYSQL_USER,
-//   password: process.env.MYSQL_PASSWORD,
-//   database: process.env.MYSQL_DATABASE,
-//   connectionLimit: // 동시에 처리되는 createPool 최대 개수
-// }
-// // database는 table 아님 
+const options = {
+    host: process.env.MYSQL_HOST,
+    user: process.env.MYSQL_USER,
+    password: process.env.MYSQL_PASSWORD,
+    database: process.env.MYSQL_DATABASE,
+    connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
+}
 
-// let globalPool;
-// function DB_Connection() {
-//   if (globalPool) return globalPool;
-//   globalPool = mysql.createPool(options);
-//   return globalPool;
-// }
+let globalPool;
+function DB_Connection() {
+    if (globalPool) return globalPool;
+    globalPool = mysql.createPool(options);
+    return globalPool;
+}
 
 // 디버그용 category 리스트
-var initialCategory = ['suchalongnamedcategorylonglonglonglonglong'];
+let initialCategory = ['suchalongnamedcategorylonglonglonglonglong'];
 // dbg: 내용 채우기
 for (var i = 1; i <= 40; i++) {
     initialCategory.push(`category${i}`);
 }
 
 app.get('/api', async (req, res) => {
-    res.send(initialCategory);
-    console.log('sent');
-})
+    // res.send(initialCategory); // dbg용
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+
+    let query;
+    try{
+        query = 'SELECT * FROM category';
+        const [cats] = await conn.query(query);
+        console.log(cats); // dbg
+        // cats: 객체 배열 {id, name, size}
+        res.send(cats);
+    } catch(error){
+        console.log('query:', error);
+    } finally{
+        conn.release();
+    }
+
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
-})
+});

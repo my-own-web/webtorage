@@ -17,9 +17,9 @@ export function InfoProvider({ children }) {
     async function getCategory() {
         try {
             const { data } = await TodoApi.get('/');
+            // data: {id, name, size} 객체 배열
             setAllCategoryList(data);
             setCategoryList(data);
-            console.log(data); // dbg
         } catch (error) {
             console.log(error);
         }
@@ -36,7 +36,7 @@ export function InfoProvider({ children }) {
 
         // allCategoryList 배열에서 value 문자열을 포함하는 원소들만 모아서 newList 배열 생성
         const newList = allCategoryList.filter((cat) => {
-            if (cat.toLowerCase().includes(value)) {
+            if (cat.name.toLowerCase().includes(value)) {
                 // 원소 cat을 소문자로 바꿈 -> value 문자열을 포함하면 newList 배열에 추가.
                 return cat;
             }

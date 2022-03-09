@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useCategoryList, useSetCurrentCategory } from "./InfoContext";
+import { useCategoryList,useSetCurrentCategory } from "./InfoContext";
 
 const ListBlock = styled.div`
     width: 170px; 
@@ -46,8 +46,8 @@ function CategoryList() {
             {
                 categoryList.map((el) => {
                     return (
-                        <CategoryItem text={el}/>
-                        // chk: id, number 전달 필요
+                        <CategoryItem text={el.name}/>
+                        // el: 객체 {id, name, size}
                     );
                 })
             }
