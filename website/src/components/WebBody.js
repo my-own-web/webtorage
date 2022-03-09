@@ -1,6 +1,6 @@
 import react from "react";
 import styled from "styled-components";
-import WebContent from "./WebContent";
+import Boxes from "./content/Boxes";
 import WebSubHeader from "./WebSubHeader";
 
 const WebBodyTemplate = styled.div`
@@ -14,7 +14,7 @@ function WebBody(){
     return(
         <WebBodyTemplate>
             <WebSubHeader />
-            <WebContent />
+            <Boxes />
         </WebBodyTemplate>
     );
 }
