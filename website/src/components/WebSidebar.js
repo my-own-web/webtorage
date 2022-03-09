@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CategoryList from './CategoryList';
 import CategorySearch from './CategorySearch';
-import DateSearch from './DateSearch';
 
 const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
@@ -23,6 +22,7 @@ const WebSideBlock = styled.div`
     max-height: 70vh;
 
     background: white;
+    margin-top: 5px;
     padding: 10px 0px 20px 20px;
     border-radius: 5px; // 모서리 둥굴게
     box-shadow: 0 0 3px 0 rgba(0,0,0,100); // 박스 감싸는 그림자

@@ -26,15 +26,17 @@ const ListBlock = styled.div`
     }
 `
 
-function CategoryItem({id, text, number}){
+function CategoryItem({id, name, size}){
     const setCurrent = useSetCurrentCategory();
 
     const onClick = (e) => {
-        setCurrent(text);
+        setCurrent(name);
     }
 
     return(
-        <div className='category' onClick={onClick}>{text}</div>
+        <div className='category' onClick={onClick}>
+            {name}
+        </div>
     );
 }
 
@@ -46,7 +48,7 @@ function CategoryList() {
             {
                 categoryList.map((el) => {
                     return (
-                        <CategoryItem text={el.name}/>
+                        <CategoryItem name={el.name}/>
                         // el: 객체 {id, name, size}
                     );
                 })

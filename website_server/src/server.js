@@ -34,10 +34,10 @@ function DB_Connection() {
 }
 
 // 디버그용 category 리스트
-let initialCategory = ['suchalongnamedcategorylonglonglonglonglong'];
+let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
 // dbg: 내용 채우기
-for (var i = 1; i <= 40; i++) {
-    initialCategory.push(`category${i}`);
+for (var i = 2; i <= 5; i++) {
+    initialCategory.push({id: i, name: `category${i}`, size: 0});
 }
 
 app.get('/api', async (req, res) => {
