@@ -5,10 +5,11 @@ import BigBox from './BigBox';
 import SmallBox from './SmallBox';
 
 const WebContentBlock = styled.div`
-  background: pink;
+  // background: pink; // dbg: 하얀색으로 변경?
+  min-height: 100vh; // 70vh; // dbg: 
   display: block;
   padding: 5px;
-  border: solid gray 1px;
+  // border: solid gray 1px; // dbg
 `
 
 const BoxesBlock = styled.div`
