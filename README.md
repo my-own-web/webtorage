@@ -16,6 +16,11 @@
   
   확장자에서 저장 -> DB -> 사이트에서 시각화
   
+  > **database table**
+  > * category: id, name, size
+  > * tabinfo: id, category, title, data_url, image, description, date
+  
+  
 ## 3. 깃 사용 규칙
   - 중앙 리포는 백업 용도, 마지막에 확인한 후 merge
   - 로컬 리포로 각자 fork
