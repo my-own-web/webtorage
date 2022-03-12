@@ -17,14 +17,21 @@ const WebSubHeaderBlock = styled.div`
     padding: 0px 5px 0px 5px;
     align-items: center;
 `
-
-export default function WebSubHeader(){
+const SizeButton = styled.button`
+  height: 25px;
+  background: #E5B2FF;
+  border: solid purple 1px;
+  border-radius: 7px;
+  font-size: 12px;
+`
+export default function WebSubHeader({boxSize, onClick}){
     const currentCategory = useCurrentCategory();
-
+    
     return(
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
             <DateSearch />
+            <SizeButton onClick={onClick}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
         </WebSubHeaderBlock>
     );
 }

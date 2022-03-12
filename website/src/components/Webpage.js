@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
 import WebSidebar from './WebSidebar';
@@ -22,13 +22,18 @@ const WebBodyTemplate = styled.div`
 `
 
 function Webpage() {
+    const [boxSize, setBoxSize] = useState(1);
+    const onClick = () => {
+        setBoxSize(1 - boxSize);
+    }
+
     return (
         <>
             <WebHeader />
             <WebTemplateBlock>
                 <WebSidebar />
-                <WebBodyTemplate>
-                    <WebSubHeader />
+                <WebBodyTemplate boxSize={boxSize}>
+                    <WebSubHeader onClick={onClick} />
                     <Boxes />
                 </WebBodyTemplate>
             </WebTemplateBlock>
