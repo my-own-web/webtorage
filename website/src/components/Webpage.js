@@ -23,8 +23,10 @@ const WebBodyTemplate = styled.div`
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
-    const onClick = () => {
+
+    function onClick() {
         setBoxSize(1 - boxSize);
+        console.log('changesize!'); //dbg
     }
 
     return (
@@ -32,9 +34,9 @@ function Webpage() {
             <WebHeader />
             <WebTemplateBlock>
                 <WebSidebar />
-                <WebBodyTemplate boxSize={boxSize}>
-                    <WebSubHeader onClick={onClick} />
-                    <Boxes />
+                <WebBodyTemplate>
+                    <WebSubHeader boxSize={boxSize} onClick={onClick} />
+                    <Boxes boxSize={boxSize} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
         </>

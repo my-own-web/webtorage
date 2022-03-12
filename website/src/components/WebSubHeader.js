@@ -23,15 +23,20 @@ const SizeButton = styled.button`
   border: solid purple 1px;
   border-radius: 7px;
   font-size: 12px;
+  cursor: pointer;
 `
 export default function WebSubHeader({boxSize, onClick}){
     const currentCategory = useCurrentCategory();
     
+    console.log('subheader boxSize', boxSize); // dbg
+
     return(
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
             <DateSearch />
-            <SizeButton onClick={onClick}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
+            <SizeButton onClick={() => {
+                onClick();
+            }}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
         </WebSubHeaderBlock>
     );
 }
