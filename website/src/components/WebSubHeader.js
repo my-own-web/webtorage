@@ -5,9 +5,9 @@ import DateSearch from "./DateSearch";
 
 const WebSubHeaderBlock = styled.div`
     background: white;
-    height: 75px;
+    height: 70px;
     position: sticky;
-    top: 60px;
+    top: 60px; //chk
     z-index: 1;
     border-bottom: solid 1px;
 
@@ -23,8 +23,7 @@ export default function WebSubHeader(){
 
     return(
         <WebSubHeaderBlock>
-            <h2>           {currentCategory}
-            </h2>
+            <h2>{currentCategory}</h2>
             <DateSearch />
         </WebSubHeaderBlock>
     );

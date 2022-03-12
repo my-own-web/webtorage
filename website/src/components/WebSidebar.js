@@ -5,7 +5,7 @@ import CategorySearch from './CategorySearch';
 
 const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
-    top: 70px;
+    top: 60px; // fix: 작/크게보기 하면 사이드바 위로 왔다갔다 하는 문제
     left: 10px;
 
     width: auto;
