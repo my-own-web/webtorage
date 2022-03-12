@@ -28,9 +28,8 @@ const WebSideBlock = styled.div`
     box-shadow: 0 0 3px 0 rgba(0,0,0,100); // 박스 감싸는 그림자
 
     text-align: left;
-    display: flex;
+    display: flex; // flex container for category lists
     flex-direction: column;
-    flex-basis:100%;
     gap: 5px;
 
     h2 {
