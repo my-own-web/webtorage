@@ -9,7 +9,7 @@ const WebSideTemplate = styled.div`
     left: 10px;
 
     width: auto;
-    max-height: 80vh;
+    max-height: 70vh; // 위치 고정에 필요
 
     // 사이드바 여러개 있을 때
     display: flex;
@@ -19,7 +19,7 @@ const WebSideTemplate = styled.div`
 
 const WebSideBlock = styled.div`
     width: 170px; 
-    max-height: 70vh;
+    max-height: 70vh; // 스크롤 생성에 필요
 
     background: white;
     margin-top: 5px;
