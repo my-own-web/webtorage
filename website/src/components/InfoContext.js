@@ -1,6 +1,13 @@
 import React, { useContext, useState, createContext, useEffect } from 'react';
 import { TodoApi } from '../utils/axios';
 
+// dbg: 디버그용 category 리스트
+let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0 }];
+// dbg: 내용 채우기
+for (var i = 2; i <= 40; i++) {
+    initialCategory.push({ id: i, name: `category${i}`, size: 0 });
+}
+
 const CategoryListContext = createContext(null);
 const SearchCategoryListContext = createContext(null);
 const CurrentCategoryContext = createContext(null);
@@ -22,10 +29,16 @@ export function InfoProvider({ children }) {
             setCategoryList(data);
         } catch (error) {
             console.log(error);
+
+            // dbg: 서버 안 켰을 때 디버그용
+            if (process.env.NODE_ENV === "development") {
+                setAllCategoryList(initialCategory);
+                setCategoryList(initialCategory);
+            }
         }
     }
 
-    useEffect(()=>{
+    useEffect(() => {
         getCategory();
     }, []);
 
@@ -43,8 +56,6 @@ export function InfoProvider({ children }) {
         });
         setCategoryList(newList); // useState 훅으로 현재 보이는 카테고리 배열 변경
         // 주의! 원래 카테고리 배열과 보이는 카테고리 배열은 따로 분리해 놓기.
-
-        // console.log(newList);
     }
 
     return (
