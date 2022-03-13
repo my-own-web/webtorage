@@ -1,11 +1,5 @@
 import React, { useReducer, useContext, useState, createContext } from 'react';
-
-// 디버그용 category 리스트
-var initialCategory = ['suchalongnamedcategorylonglonglonglonglong'];
-// dbg: 내용 채우기
-for (var i = 1; i <= 40; i++) {
-  initialCategory.push(`category${i}`);
-}
+import { TodoApi } from '../utils/axios';
 
 const initialContent = [
   { //나중에는 id 대신 date랑 category로 정렬해서 사용?
@@ -59,6 +53,8 @@ const initialContent = [
   }
 ];
 
+const [content, dispatch] = useReducer(contentReducer, initialContent);
+
 function contentReducer(content, action) {
   switch (action.type) {
     case "MEMO":
@@ -73,37 +69,65 @@ function contentReducer(content, action) {
 }
 
 const CategoryListContext = createContext(null);
+const SearchCategoryListContext = createContext(null);
+const CurrentCategoryContext = createContext(null);
+const SetCurrentCategoryContext = createContext(null);
 const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
-const SearchCategoryListContext = createContext(null);
 
 export function InfoProvider({ children }) {
-  const [categoryList, setCategoryList] = useState(initialCategory);
-  //const [contentList, setContentList] = useState(initialContent);
-  const [content, dispatch] = useReducer(contentReducer, initialContent);
+  const [currentCategory, setCurrentCategory] = useState('none');
+
+  // 전체 카테고리 리스트
+  const [allCategoryList, setAllCategoryList] = useState([]);
+  // 검색된 카테고리 리스트
+  const [categoryList, setCategoryList] = useState([]);
+
+  async function getCategory() {
+    try {
+      const { data } = await TodoApi.get('/');
+      // data: {id, name, size} 객체 배열
+      setAllCategoryList(data);
+      setCategoryList(data);
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  useEffect(() => {
+    getCategory();
+  }, []);
 
   const searchCategoryList = (value) => {
     //검색 기능
-    console.log(value);
-    const newList = initialCategory.filter((cat) => {
-      if (cat.toLowerCase().includes(value)) {
+    // console.log(value);
+
+    // allCategoryList 배열에서 value 문자열을 포함하는 원소들만 모아서 newList 배열 생성
+    const newList = allCategoryList.filter((cat) => {
+      if (cat.name.toLowerCase().includes(value)) {
+        // 원소 cat을 소문자로 바꿈 -> value 문자열을 포함하면 newList 배열에 추가.
         return cat;
       }
     });
-    setCategoryList(newList);
+    setCategoryList(newList); // useState 훅으로 현재 보이는 카테고리 배열 변경
+    // 주의! 원래 카테고리 배열과 보이는 카테고리 배열은 따로 분리해 놓기.
+
     // console.log(newList);
-    //---
   }
 
   return (
     <CategoryListContext.Provider value={categoryList}>
-      <ContentListContext.Provider value={content}>
-        <ContentDispatchContext.Provider value={dispatch}>
-          <SearchCategoryListContext.Provider value={searchCategoryList}>
-            {children}
-          </SearchCategoryListContext.Provider>
-        </ContentDispatchContext.Provider>
-      </ContentListContext.Provider>
+      <SearchCategoryListContext.Provider value={searchCategoryList}>
+        <CurrentCategoryContext.Provider value={currentCategory}>
+          <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
+            <ContentListContext.Provider value={content}>
+              <ContentDispatchContext.Provider value={dispatch}>
+                {children}
+              </ContentDispatchContext.Provider>
+            </ContentListContext.Provider>
+          </SetCurrentCategoryContext.Provider>
+        </CurrentCategoryContext.Provider>
+      </SearchCategoryListContext.Provider>
     </CategoryListContext.Provider>
   );
 }
@@ -138,4 +162,20 @@ export function useSearchCategoryList() {
     throw new Error('SetCategoryListContext Error');
   }
   return searchList;
+}
+
+export function useCurrentCategory() {
+  const current = useContext(CurrentCategoryContext);
+  if (!current) {
+    throw new Error('CurrentCategoryContext Error');
+  }
+  return current;
+}
+
+export function useSetCurrentCategory() {
+  const set = useContext(SetCurrentCategoryContext);
+  if (!set) {
+    throw new Error('SetCurrentCategoryContext Error');
+  }
+  return set;
 }

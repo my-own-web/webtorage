@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MdEdit } from 'react-icons/md';
-import { useContentDispatch } from "./InfoContext";
+import { useContentDispatch } from "../InfoContext";
 
 const BoxBlock = styled.div`
   padding: 10px 12px;
@@ -9,33 +9,32 @@ const BoxBlock = styled.div`
   background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
-  margin: 7px 9px;
-  width: 296px;
-  height: 200px;
+  margin: 5px 5px;;
+  width: 167px;
+  height: 150px;
 `;
 //박스 하나의 전체 디자인
 
 const Sitename = styled.div`
   color: black;
-  font-size: 13px;
+  font-size: 12px;
   padding: 3px 0px;
-`
+`;
 
 const Title1 = styled.div`
-  font-size: 13px;
+  font-size: 12px;
   color: black;
   padding: 3px 0px;
 `; //site_name이 없는 경우
 
 const Title2 = styled.div`
-  font-size: 11px;
+  font-size: 10px;
   color: black;
-  padding: 4px 0px;
-`
-//site_name이 있는 경우
+  padding: 3px 0px;
+`;  //site_name이 있는 경우
 
 const Url = styled.div`
-  font-size: 13px;
+  font-size: 12px;
   color: black;
   text-align: center;
   a {
@@ -44,20 +43,18 @@ const Url = styled.div`
 `;
 
 const Image = styled.div`
-  margin: 5px 40px;
-  width: 200px;
-  height: 120px;
+  margin: 3px 2px;
+  width: 150px;
+  height: 100px;
   border: 1px solid black;
 `;
 
 const Description = styled.div`
-  font-size: 10px;
+  font-size: 9px;
   color: black;
   padding-bottom: 3px;
-  //${props => props.memo ? 'border-bottom: 1px dashed black;' : ''}
   border-bottom: 1px dashed black;
   /*아래 밑줄: div 태그로 인해 box padding 부분 제외한 전체에 밑줄 그려짐*/
-  /*memo가 있는 경우 밑줄을 긋고 없는 경우 밑줄을 긋지 않음*/
 `;
 
 const Memo = styled.div`
@@ -68,7 +65,7 @@ const Memo = styled.div`
 `;
 
 const WriteMemo = styled.input`
-  width: 200px;
+  width: 110px;
   padding-top: 3px;
   font-size: 10px;
 `
@@ -79,10 +76,10 @@ const ChangeButton = styled.button`
   background: #E5B2FF;
   border: solid purple 1px;
   border-radius: 5px;
-  font-size: 11px;
+  font-size: 10px;
 `
 
-function BigBox({ site_name, title, url, image, description, memo, date, category }) {
+function SmallBox({ site_name, title, url, image, description, memo, date, category }) {
   const dispatch = useContentDispatch();
   const [editMemo, setEditMemo] = useState(false);
   const [changeMemo, setChangeMemo] = useState(memo);
@@ -116,11 +113,11 @@ function BigBox({ site_name, title, url, image, description, memo, date, categor
       {site_name ? <Title2>{title}</Title2> : <div><Title1>{`[${title}]`}</Title1>
         <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div>}
       <Url>URL: <a href={url}>{`"${url}"`}</a></Url>
-      <Image><img src={image} width="200" height="120"></img></Image>
-      <Description>{description}</Description>
+      <Image><img src={image} width="150" height="100"></img></Image>
+      <Description memo={memo}>{description}</Description>
       <Memo>{'메모: '}{editMemo ? <div><WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} /><MdEdit onClick={onClickMemo} /></div> : <div>{changeMemo}<MdEdit onClick={onClickMemo} /></div>}</Memo>
-    </BoxBlock >
+    </BoxBlock>
   );
 }
 
-export default BigBox;
+export default SmallBox;

@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useContent } from "./InfoContext";
+import { useContent } from "../InfoContext";
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
 
@@ -28,16 +28,15 @@ const SizeButton = styled.button`
   border: solid purple 1px;
   border-radius: 7px;
   font-size: 12px;
-`
+`;
 
+function Boxes() {
 
-function Boxes() { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
-  //const datas = metaData;
   const datas = useContent();
 
   datas.sort(function (a, b) {
     return b.date - a.date;
-  });
+  }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
   const [boxSize, setBoxSize] = useState(1);
 
