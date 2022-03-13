@@ -54,17 +54,10 @@ const initialContent = [
 ];
 
 // 디버그용 category 리스트
-<<<<<<< HEAD
 let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0 }];
 // dbg: 내용 채우기
 for (var i = 2; i <= 5; i++) {
   initialCategory.push({ id: i, name: `category${i}`, size: 0 });
-=======
-let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
-// dbg: 내용 채우기
-for (var i = 2; i <= 5; i++) {
-    initialCategory.push({id: i, name: `category${i}`, size: 0});
->>>>>>> 3ea8b636f887f18b71699a6d5997985955693e30
 }
 
 const CategoryListContext = createContext(null);
@@ -90,17 +83,16 @@ export function InfoProvider({ children }) {
   }
 
   const [content, dispatch] = useReducer(contentReducer, initialContent);
-  
+
   const [currentCategory, setCurrentCategory] = useState('none');
 
   // 전체 카테고리 리스트
   const [allCategoryList, setAllCategoryList] = useState([]);
   // 검색된 카테고리 리스트
   const [categoryList, setCategoryList] = useState([]);
-  
+
   async function getCategory() {
     try {
-<<<<<<< HEAD
       const { data } = await TodoApi.get('/category');
       // data: {id, name, size} 객체 배열
       setAllCategoryList(data);
@@ -133,57 +125,6 @@ export function InfoProvider({ children }) {
     });
     setCategoryList(newList); // useState 훅으로 현재 보이는 카테고리 배열 변경
     // 주의! 원래 카테고리 배열과 보이는 카테고리 배열은 따로 분리해 놓기.
-=======
-       const { data } = await TodoApi.get('/category');
-       // data: {id, name, size} 객체 배열
-       setAllCategoryList(data);
-       setCategoryList(data);
-     } catch (error) {
-       console.log(error);
-
-       // dbg: 서버 안 켰을 때 디버그용
-       if (process.env.NODE_ENV === "development") {
-         setAllCategoryList(initialCategory);
-         setCategoryList(initialCategory);
-       }
-     }
-   }
-
-   useEffect(() => {
-     getCategory();
-   }, []);
-
-   const searchCategoryList = (value) => {
-      //검색 기능
-      // console.log(value);
-
-      // allCategoryList 배열에서 value 문자열을 포함하는 원소들만 모아서 newList 배열 생성
-     const newList = allCategoryList.filter((cat) => {
-       if (cat.name.toLowerCase().includes(value)) {
-          // 원소 cat을 소문자로 바꿈 -> value 문자열을 포함하면 newList 배열에 추가.
-         return cat;
-       }
-     });
-     setCategoryList(newList); // useState 훅으로 현재 보이는 카테고리 배열 변경
-      // 주의! 원래 카테고리 배열과 보이는 카테고리 배열은 따로 분리해 놓기.
-   }
-
-   return (
-      <CategoryListContext.Provider value={categoryList}>
-        <SearchCategoryListContext.Provider value={searchCategoryList}>
-          <CurrentCategoryContext.Provider value={currentCategory}>
-            <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
-              <ContentListContext.Provider value={content}>
-                <ContentDispatchContext.Provider value={dispatch}>
-                  {children}
-                </ContentDispatchContext.Provider>
-              </ContentListContext.Provider>
-            </SetCurrentCategoryContext.Provider>
-          </CurrentCategoryContext.Provider>
-        </SearchCategoryListContext.Provider>
-      </CategoryListContext.Provider>
-    );
->>>>>>> 3ea8b636f887f18b71699a6d5997985955693e30
   }
 
   return (
