@@ -61,7 +61,6 @@ const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
 
 export function InfoProvider({ children }) {
-  const [content, dispatch] = useReducer(contentReducer, initialContent);
 
   function contentReducer(content, action) {
     switch (action.type) {
@@ -75,6 +74,8 @@ export function InfoProvider({ children }) {
         throw new Error(`Unhandled action type: ${action.type}`);
     }
   }
+
+  const [content, dispatch] = useReducer(contentReducer, initialContent);
 
   const [currentCategory, setCurrentCategory] = useState('none');
 

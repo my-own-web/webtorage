@@ -69,6 +69,8 @@ function Boxes() {
                 image={data.image}
                 description={data.description}
                 memo={data.memo}
+                date={data.date}
+                category={data.category}
               />))}
         </BoxesBlock>
       </WebContentBlock>
