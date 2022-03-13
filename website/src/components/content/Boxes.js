@@ -55,6 +55,8 @@ function Boxes({boxSize}) { //더 늦게 저장한 순(date가 늦은 순)으로
                 image={data.image}
                 description={data.description}
                 memo={data.memo}
+                date={data.date}
+                category={data.category}
               />))}
         </BoxesBlock>
       </WebContentBlock>
