@@ -36,8 +36,8 @@ app.post('/tabinfo', async(req,res) =>{
   const conn = await pool.getConnection();
 
   try{
-    const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE category='${body.category}'`);
-    if(true){
+    const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}'`);
+    if(exist[0].num<1){//if(exist[0].num<1){ 이걸로 check
       await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description)
        VALUES ('${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}')`);
       res.send(true);
@@ -52,9 +52,23 @@ app.post('/tabinfo', async(req,res) =>{
   }
 });
 
-app.get("/tabinfo", (req, res)=>{
-  res.send("hi");
+app.get('/tabinfo', async(req, res)=>{
+  const pool = DB_connection();
+  const conn = await pool.getConnection();
+  try{
+    const [rows] = await conn.query("SELECT `category` FROM `tabinfo`")
+    console.log(rows);
+    res.send(rows);
+  }catch(err){
+    console.error(err);
+  }finally{
+    conn.release();
+  }
 });
+
+//app.get("/tabinfo", (req, res)=>{
+//  res.send("hi");
+//});
 
 app.listen(port,(req, res) =>{
   console.log(`server has started on port ${port}`);

@@ -15,8 +15,9 @@ const DBconn =async (params: MessageType) => {
     if(params.type === "DBINFO"){
         try{
             const res = await axios.post('http://localhost:3001/tabinfo', params);
+            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data});
             if(res.data){
-                console.log("DB 저장 성공!");
+                console.log("DB 저장 성공!");//여기를 chrome.runtime.sendmessage(type을 하나 더 만들어서)로 팝업창에 메시지 띄우기
             }
             else{
                 console.log("DB 저장 실패..");
@@ -52,34 +53,9 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
                     chrome.tabs.sendMessage(tabs[0].id, tabmessage);
                 }
             });
-
-            //요청 날린거 받아서 수행
-            // 두 번째 안.
-            /*
-            chrome.runtime.onMessage.addListener((message: MessageType) => {
-                switch (message.type) {
-                    case "RES_TAB":
-                        if(message.taburl) {
-                        tab_url = message.taburl;
-                        }
-                        if(message.title){
-                            title = message.title;
-                        }
-                        if(message.description){
-                            description = message.description;
-                        }
-                        console.log(category, tab_url, title, description);
-                        //message.url, title, description을 저장하는 코드 혹은 함수
-                        break;
-                    default:
-                        break;
-                    
-                }
-            });
-            */
             break;
 
-        case "RES_TAB": //첫 번째 안.
+        case "RES_TAB": 
             data_url = message.data_url;
             title = message.title;
             description = message.description;

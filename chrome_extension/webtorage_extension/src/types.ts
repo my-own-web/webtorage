@@ -24,4 +24,9 @@ interface DBinfo{
     image: string;
 }
 
-export type MessageType = SaveResponse | TabRequest | TabResponse | DBinfo;
+interface CheckUrl{
+    type: "CHECKURL";
+    flag: boolean;
+}
+
+export type MessageType = SaveResponse | TabRequest | TabResponse | DBinfo | CheckUrl;

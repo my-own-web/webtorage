@@ -27,7 +27,7 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
             let data_url = "";
             let description = "";
             let image = "";
-            //console.log(body[0])
+            console.log(body[0])
             for(const prop in body){
                 console.log(prop);
                 if(isNaN(Number(prop))){
