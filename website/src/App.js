@@ -1,5 +1,4 @@
-import logo from './logo.svg';
-import './App.css';
+import React from 'react';
 import Webpage from './components/Webpage';
 import { InfoProvider } from './components/InfoContext';
 

@@ -33,14 +33,14 @@ function DB_Connection() {
     return globalPool;
 }
 
-// 디버그용 category 리스트
-let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
-// dbg: 내용 채우기
-for (var i = 2; i <= 5; i++) {
-    initialCategory.push({id: i, name: `category${i}`, size: 0});
-}
+// // 디버그용 category 리스트
+// let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
+// // dbg: 내용 채우기
+// for (var i = 2; i <= 5; i++) {
+//     initialCategory.push({id: i, name: `category${i}`, size: 0});
+// }
 
-app.get('/api', async (req, res) => {
+app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용
 
     const pool = DB_Connection();
