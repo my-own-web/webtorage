@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import metaData from './Context';
+import { useContent } from "../InfoContext";
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
 
@@ -15,6 +15,7 @@ const BoxesBlock = styled.div`
   //width: 840px;
   //background: #DEF2F4;
   //height: 100%;
+  background: pink;
   display: flex;
   flex-wrap: wrap; /*item이 container의 너비를 초과하면 줄바꿈함*/
   padding: 10px;
@@ -27,13 +28,15 @@ const SizeButton = styled.button`
   border: solid purple 1px;
   border-radius: 7px;
   font-size: 12px;
-`
+`;
 
-function Boxes() { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
-  const datas = metaData; //일단 박스 하나만 있다고 가정함: map 함수 작동 안함
+function Boxes() {
+
+  const datas = useContent();
+
   datas.sort(function (a, b) {
     return b.date - a.date;
-  });
+  }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
   const [boxSize, setBoxSize] = useState(1);
 
@@ -55,6 +58,8 @@ function Boxes() { //더 늦게 저장한 순(date가 늦은 순)으로 정렬�
               image={data.image}
               description={data.description}
               memo={data.memo}
+              date={data.date}
+              category={data.category}
             />)) : datas.map(data => (
               <SmallBox
                 key={data.date}

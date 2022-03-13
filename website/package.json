@@ -1,11 +1,28 @@
 {
+<<<<<<< HEAD
+  "name": "tab",
+=======
   "name": "website",
+>>>>>>> upstream/main
   "version": "0.1.0",
   "private": true,
   "dependencies": {
     "@testing-library/jest-dom": "^5.16.2",
     "@testing-library/react": "^12.1.2",
     "@testing-library/user-event": "^13.5.0",
+<<<<<<< HEAD
+    "global": "^4.4.0",
+    "react-icons": "^4.3.1",
+    "react-router-dom": "^6.2.1",
+    "react-scripts": "^5.0.0",
+    "styled-components": "^5.3.3",
+    "web-vitals": "^2.1.4"
+  },
+  "peerDependencies": {
+    "react": "^17.0.2",
+    "react-dom": "^17.0.2"
+  },
+=======
     "axios": "^0.26.0",
     "react": "^17.0.2",
     "react-datepicker": "^4.7.0",
@@ -14,6 +31,7 @@
     "styled-components": "^5.3.3",
     "web-vitals": "^2.1.4"
   },
+>>>>>>> upstream/main
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
@@ -37,5 +55,11 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
+<<<<<<< HEAD
+  },
+  "devDependencies": {
+    "cross-env": "^7.0.3"
+=======
+>>>>>>> upstream/main
   }
 }
