@@ -5,10 +5,17 @@ import "react-datepicker/dist/react-datepicker.css";
 
 const DatePickerTemplate = styled.div`
     .example-custom-input{
-        height: 30px;
-        width: 170px;
-        cursor: pointer;
-        text-align: center;
+      height: 25px;
+      width: 170px;
+      cursor: pointer;
+      text-align: center;
+      background: #E5B2FF;
+      border: solid purple 1px;
+      border-radius: 7px;
+      font-size: 12px;
+      &:hover{
+        background: #dd9ffc;
+      }
     }
 
     .some-custom-class{
@@ -16,7 +23,7 @@ const DatePickerTemplate = styled.div`
     }
 
     .react-datepicker__input-container {
-        width: 200px;
+        width: 200px; // reset 버튼 포함
     }
 
     .react-datepicker__close-icon::after{
@@ -77,57 +84,56 @@ const DatePickerTemplate = styled.div`
 };
 */
 const DatePickerComponent = () => {
-    const [dateRange, setDateRange] = useState([null, null]);
-    const [startDate, endDate] = dateRange;
+  const [dateRange, setDateRange] = useState([null, null]);
+  const [startDate, endDate] = dateRange;
 
-    const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
-        <button
-            className="example-custom-input" onClick={onClick} ref={ref}>
-            {value ? value : 'Search Date'}
-        </button>
-    ));
+  const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
+    <button
+      className="example-custom-input" onClick={onClick} ref={ref}>
+      {value ? value : 'Search Date'}
+    </button>
+  ));
 
-
-    return (
-        <DatePicker
-            selectsRange={true}
-            startDate={startDate}
-            endDate={endDate}
-            onChange={(update) => {
-                setDateRange(update);
-            }}
-            isClearable={true}
-            customInput={<ExampleCustomInput />}
-            popperClassName="some-custom-class"
-            popperPlacement="top-end"
-            popperModifiers={[
-                {
-                    name: "offset",
-                    options: {
-                        offset: [-15, 0],
-                    },
-                },
-                {
-                    name: "preventOverflow",
-                    options: {
-                        rootBoundary: "viewport",
-                        tether: false,
-                        altAxis: true,
-                    },
-                },
-            ]}
-        />
-    );
+  return (
+    <DatePicker
+      selectsRange={true}
+      startDate={startDate}
+      endDate={endDate}
+      onChange={(update) => {
+        setDateRange(update);
+      }}
+      isClearable={true}
+      customInput={<ExampleCustomInput />}
+      popperClassName="some-custom-class"
+      popperPlacement="top-end"
+      popperModifiers={[
+        {
+          name: "offset",
+          options: {
+            offset: [-15, 0],
+          },
+        },
+        {
+          name: "preventOverflow",
+          options: {
+            rootBoundary: "viewport",
+            tether: false,
+            altAxis: true,
+          },
+        },
+      ]}
+    />
+  );
 }
 
-function DateSearch() {
-    return (
-        // <input type='week' style={{width: '150px', fontSize: '10px'}}/>
-        <DatePickerTemplate>
-            <DatePickerComponent />
-        </DatePickerTemplate>
-        // <DatePickerComponent />
-    );
+function DateButton() {
+  return (
+    // <input type='week' style={{width: '150px', fontSize: '10px'}}/>
+    <DatePickerTemplate>
+      <DatePickerComponent />
+    </DatePickerTemplate>
+    // <DatePickerComponent />
+  );
 }
 
-export default DateSearch;
+export default DateButton;
