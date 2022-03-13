@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useState, createContext } from 'react';
+import React, { useReducer, useContext, useState, createContext, useEffect } from 'react';
 import { TodoApi } from '../utils/axios';
 
 const initialContent = [
@@ -53,21 +53,6 @@ const initialContent = [
   }
 ];
 
-const [content, dispatch] = useReducer(contentReducer, initialContent);
-
-function contentReducer(content, action) {
-  switch (action.type) {
-    case "MEMO":
-      return;
-    case "CATEGORY":
-      return;
-    case "REMOVE":
-      return content.filter(list => list.date !== action.date);
-    default:
-      throw new Error(`Unhandled action type: ${action.type}`);
-  }
-}
-
 const CategoryListContext = createContext(null);
 const SearchCategoryListContext = createContext(null);
 const CurrentCategoryContext = createContext(null);
@@ -76,6 +61,21 @@ const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
 
 export function InfoProvider({ children }) {
+  const [content, dispatch] = useReducer(contentReducer, initialContent);
+
+  function contentReducer(content, action) {
+    switch (action.type) {
+      case "MEMO":
+        return;
+      case "CATEGORY":
+        return;
+      case "REMOVE":
+        return content.filter(list => list.date !== action.date);
+      default:
+        throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+
   const [currentCategory, setCurrentCategory] = useState('none');
 
   // 전체 카테고리 리스트
