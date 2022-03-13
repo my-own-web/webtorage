@@ -1,5 +1,7 @@
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
+import { MdEdit } from 'react-icons/md';
+import { useContentDispatch } from "./InfoContext";
 
 const BoxBlock = styled.div`
   padding: 10px 12px;
@@ -52,27 +54,71 @@ const Description = styled.div`
   font-size: 10px;
   color: black;
   padding-bottom: 3px;
-  ${props => props.memo ? 'border-bottom: 1px dashed black;' : ''}
+  //${props => props.memo ? 'border-bottom: 1px dashed black;' : ''}
+  border-bottom: 1px dashed black;
   /*아래 밑줄: div 태그로 인해 box padding 부분 제외한 전체에 밑줄 그려짐*/
   /*memo가 있는 경우 밑줄을 긋고 없는 경우 밑줄을 긋지 않음*/
 `;
 
 const Memo = styled.div`
+  //display: flex; //메모 글자와 input 칸을 한줄에 놓기 위해서
   padding-top: 3px;
   font-size: 10px;
   color:black;
 `;
 
-function BigBox({ site_name, title, url, image, description, memo }) {
+const WriteMemo = styled.input`
+  width: 200px;
+  padding-top: 3px;
+  font-size: 10px;
+`
+
+const ChangeButton = styled.button`
+  height: 20px;
+  margin: 3px;
+  background: #E5B2FF;
+  border: solid purple 1px;
+  border-radius: 5px;
+  font-size: 11px;
+`
+
+function BigBox({ site_name, title, url, image, description, memo, date, category }) {
+  const dispatch = useContentDispatch();
+  const [editMemo, setEditMemo] = useState(false);
+  const [changeMemo, setChangeMemo] = useState(memo);
+  const [editCategory, setEditCategory] = useState(false);
+  const [changeCategory, setChangeCategory] = useState(category);
+
+  const onRemove = () => { dispatch({ type: 'REMOVE', date }) };
+
+  const onEditMemo = (e) => {
+    setChangeMemo(e.target.value);
+  };
+  const onEditCategory = (e) => {
+    setChangeCategory(e.target.value);
+  }
+
+  const onClickMemo = () => {
+    setEditMemo(!editMemo);
+  }
+  const onClickCategory = () => {
+    setEditCategory(!editCategory);
+  }
+
+  const onCategory = (editCategory) => {
+    return editCategory ? <input autoFocus value={changeCategory} onChange={onEditCategory} /> : ''
+  }
 
   return (
     <BoxBlock>
-      {site_name ? <Sitename>{`[${site_name}]`}</Sitename> : ''}
-      {site_name ? <Title2>{title}</Title2> : <Title1>{`[${title}]`}</Title1>}
+      {site_name ? <div><Sitename>{`[${site_name}]`}</Sitename>
+        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div> : ''}
+      {site_name ? <Title2>{title}</Title2> : <div><Title1>{`[${title}]`}</Title1>
+        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div>}
       <Url>URL: <a href={url}>{`"${url}"`}</a></Url>
       <Image><img src={image} width="200" height="120"></img></Image>
-      <Description memo={memo}>{description}</Description>
-      {memo ? <Memo>{`메모: ${memo}`}</Memo> : ''}
+      <Description>{description}</Description>
+      <Memo>{'메모: '}{editMemo ? <div><WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} /><MdEdit onClick={onClickMemo} /></div> : <div>{changeMemo}<MdEdit onClick={onClickMemo} /></div>}</Memo>
     </BoxBlock >
   );
 }

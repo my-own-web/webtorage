@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import metaData from './Context';
+import { useContent } from "./InfoContext";
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
 
@@ -32,7 +32,9 @@ const SizeButton = styled.button`
 
 
 function Boxes() { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
-  const datas = metaData; //일단 박스 하나만 있다고 가정함: map 함수 작동 안함
+  //const datas = metaData;
+  const datas = useContent();
+
   datas.sort(function (a, b) {
     return b.date - a.date;
   });
@@ -57,6 +59,8 @@ function Boxes() { //더 늦게 저장한 순(date가 늦은 순)으로 정렬�
               image={data.image}
               description={data.description}
               memo={data.memo}
+              date={data.date}
+              category={data.category}
             />)) : datas.map(data => (
               <SmallBox
                 key={data.date}
