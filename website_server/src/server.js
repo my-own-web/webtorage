@@ -40,7 +40,7 @@ for (var i = 2; i <= 5; i++) {
     initialCategory.push({id: i, name: `category${i}`, size: 0});
 }
 
-app.get('/api', async (req, res) => {
+app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용
 
     const pool = DB_Connection();
