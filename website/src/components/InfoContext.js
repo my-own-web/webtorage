@@ -1,4 +1,4 @@
-import React, { useReducer, useContext, useState, createContext } from 'react';
+import React, { useReducer, useContext, useState, createContext, useEffect } from 'react';
 import { TodoApi } from '../utils/axios';
 
 const initialContent = [
@@ -53,27 +53,6 @@ const initialContent = [
   }
 ];
 
-const [content, dispatch] = useReducer(contentReducer, initialContent);
-
-function contentReducer(content, action) {
-  switch (action.type) {
-    case "MEMO":
-      return;
-    case "CATEGORY":
-      return;
-    case "REMOVE":
-      return content.filter(list => list.date !== action.date);
-    default:
-      throw new Error(`Unhandled action type: ${action.type}`);
-  }
-
-// dbg: 디버그용 category 리스트
-let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0 }];
-// dbg: 내용 채우기
-for (var i = 2; i <= 40; i++) {
-    initialCategory.push({ id: i, name: `category${i}`, size: 0 });
-}
-
 const CategoryListContext = createContext(null);
 const SearchCategoryListContext = createContext(null);
 const CurrentCategoryContext = createContext(null);
@@ -82,6 +61,38 @@ const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
 
 export function InfoProvider({ children }) {
+
+  const [content, dispatch] = useReducer(contentReducer, initialContent);
+
+  function contentReducer(content, action) {
+    switch (action.type) {
+      case "MEMO":
+        return;
+      case "CATEGORY":
+        return;
+      case "REMOVE":
+        return content.filter(list => list.date !== action.date);
+      default:
+        throw new Error(`Unhandled action type: ${action.type}`);
+    }
+  }
+
+  const [currentCategory, setCurrentCategory] = useState('none');
+
+  // 전체 카테고리 리스트
+  const [allCategoryList, setAllCategoryList] = useState([]);
+  // 검색된 카테고리 리스트
+  const [categoryList, setCategoryList] = useState([]);
+
+  async function getCategory() {
+    try {
+      const { data } = await TodoApi.get('/');
+      // data: {id, name, size} 객체 배열
+      setAllCategoryList(data);
+      setCategoryList(data);
+    } catch (error) {
+      console.log(error);
+
     const [currentCategory, setCurrentCategory] = useState('none');
 
     // 전체 카테고리 리스트

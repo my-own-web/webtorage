@@ -10,7 +10,7 @@ const BoxBlock = styled.div`
   border-radius: 5px;
   border: 2px solid #DBDCF5;
   margin: 7px 9px;
-  width: 296px;
+  width: 290px;
   height: 200px;
 `;
 //박스 하나의 전체 디자인
