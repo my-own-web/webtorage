@@ -66,10 +66,6 @@ app.get('/tabinfo', async(req, res)=>{
   }
 });
 
-//app.get("/tabinfo", (req, res)=>{
-//  res.send("hi");
-//});
-
 app.listen(port,(req, res) =>{
   console.log(`server has started on port ${port}`);
 });

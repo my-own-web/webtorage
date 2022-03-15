@@ -3,11 +3,11 @@ interface SaveResponse {//popup에서 저장 버튼을 누르는 것을 보내�
     category : string;
 }
 
-interface TabRequest {
+interface TabRequest {//background에서 content로 tab저장을 가져와줘
     type: "REQ_TAB";
 }
 
-interface TabResponse {
+interface TabResponse {//REQ_TAB메시지를 받은 content에서 tab정보를 받고 그 정보를 받았다고 background에 보내는 것
     type: "RES_TAB";
     data_url: string;
     title: string;
@@ -15,7 +15,7 @@ interface TabResponse {
     image: string;
 }
 
-interface DBinfo{
+interface DBinfo{//DB에 저장해줘
     type: "DBINFO";
     category : string;
     data_url: string;
@@ -24,7 +24,7 @@ interface DBinfo{
     image: string;
 }
 
-interface CheckUrl{
+interface CheckUrl{//이미 존재하는 url인지 판별하고 그 결과를 보내는 신호
     type: "CHECKURL";
     flag: boolean;
 }
