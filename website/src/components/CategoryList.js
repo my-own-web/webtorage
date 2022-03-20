@@ -16,11 +16,20 @@ const ListBlock = styled.div`
         width: 150px;
         overflow-x: clip;
         cursor: pointer;
-        &:hover {
-            color: #ff6b6b;
-            // background: grey;
-            font-weight: bold;
-        }
+    }
+
+    .category[name]:hover::before{
+        color: #ff6b6b;
+        font-weight: bold;
+
+        content:attr(name); 
+        position: absolute; 
+        height: 10px;
+        line-height:10px; 
+        padding: 5px; 
+        background: white;
+        font-size: 15px; 
+        border: 1px solid;
     }
 `
 
@@ -32,7 +41,7 @@ function CategoryItem({id, name, size}){
     }
 
     return(
-        <div className='category' onClick={onClick}>
+        <div className='category' name={name} onClick={onClick}>
             {name.length > 15 ? name.substr(0, 15)+'...' : name}
         </div>
     );

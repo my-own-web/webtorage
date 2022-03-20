@@ -15,6 +15,8 @@ const WebSideTemplate = styled.div`
     display: flex;
     flex-direction: column;
     gap: 10px;
+
+    z-index: 2; // fix: 사이드바 안 요소들이 body에 의해 가려짐
 `
 
 const WebSideBlock = styled.div`
