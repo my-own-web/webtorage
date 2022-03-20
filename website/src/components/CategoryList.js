@@ -9,7 +9,7 @@ const ListBlock = styled.div`
 
     display: flex;
     flex-direction: column;
-        gap: 3px;
+    gap: 3px;
     overflow-y: auto;
 
     .category{
@@ -33,7 +33,7 @@ function CategoryItem({id, name, size}){
 
     return(
         <div className='category' onClick={onClick}>
-            {name}
+            {name.length > 15 ? name.substr(0, 15)+'...' : name}
         </div>
     );
 }
