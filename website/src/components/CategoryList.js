@@ -52,6 +52,8 @@ function CategoryList() {
 
     return (
         <ListBlock>
+            <CategoryItem name="ALL" />
+            <CategoryItem name="DEFAULT" />
             {
                 categoryList.map((el) => {
                     return (

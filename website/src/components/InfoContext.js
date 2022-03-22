@@ -84,7 +84,7 @@ export function InfoProvider({ children }) {
 
   const [content, dispatch] = useReducer(contentReducer, initialContent);
 
-  const [currentCategory, setCurrentCategory] = useState('none');
+  const [currentCategory, setCurrentCategory] = useState('ALL');
 
   // 전체 카테고리 리스트
   const [allCategoryList, setAllCategoryList] = useState([]);
