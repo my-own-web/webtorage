@@ -50,6 +50,15 @@ const initialContent = [
     image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
     description: "Stack Overflow | The World’s Largest Online Community for Developers",
     category: "질문사이트"
+  },
+  {
+    date: 202203031103,
+    title: "default test",
+    site_name: "default test",
+    url: "https://test.com",
+    image: "",
+    description: "Stack Overflow | The World’s Largest Online Community for Developers",
+    category: "DEFAULT"
   }
 ];
 
