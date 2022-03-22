@@ -38,11 +38,12 @@ app.post('/api/tabinfo', async(req,res) =>{
     const pool = DB_Connection();
     const conn = await pool.getConnection();
   
-    try{
-      const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}'`);
+    try{//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+
+      const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
       if(exist[0].num<1){//if(exist[0].num<1){ 이걸로 check
-        await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description)
-         VALUES ('${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}')`);
+        await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo) 
+        VALUES ('${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}')`);
         res.send(true);
       }
       else{

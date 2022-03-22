@@ -9,6 +9,7 @@ let data_url = '';
 let title = '';
 let description = '';
 let image = '';
+let memo = '';
 
 const DBconn =async (params: MessageType) => {//tab 정보를 DB에 저장하는 함수
     if(params.type === "DBINFO"){
@@ -36,10 +37,11 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             //category 정보를 저장하는 코드
             //저장하고 다른 탭 정보가 필요하니 content에 쿼리를 날림.
             category = message.category;
+            memo = message.memo;
             console.log(category, message.category);
             const tabmessage = {type: "REQ_TAB"};
             //content로 쿼리를 날리는 함수. REQ_TAB으로
-            chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            chrome.tabs.query({active: true, currentWindow: true}, function(tabs){
                 if(tabs[0].id){
                     console.log("tab id : ", tabs[0].id);
                     chrome.tabs.sendMessage(tabs[0].id, tabmessage);
@@ -53,11 +55,16 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             title = message.title;
             description = message.description;
             image = message.image;
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = ('0' + (today.getMonth() + 1)).slice(-2);
+            let day = ('0' + today.getDate()).slice(-2);
+            const dateString = year + '-' + month + '-' + day;
             //console.log("check : ", message.title, message. description); 디버그용
             console.log("completed?: ",category, data_url, title, description, image);
 
             //message.url, title, description 등 tab정보를 DB로 날리는 곳
-            DBconn({type: 'DBINFO', category: category, data_url:data_url ,title: title, description:description, image:image})
+            DBconn({type: 'DBINFO', category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
             break;
         
         default:
