@@ -30,10 +30,10 @@ const BoxesBlock = styled.div`
 function configDateRange(range) {
   let start = null, end = null;
   if (range[0] != null) {
-    start = range[0].getFullYear() * 100000000 + (range[0].getMonth() + 1) * 1000000 + range[0].getDate() * 10000 + range[0].getHours() * 100 + range[0].getMinutes();
+    start = range[0].getFullYear() * 100000000 + (range[0].getMonth() + 1) * 1000000 + range[0].getDate() * 10000;
   }
   if (range[1] != null) {
-    end = range[1].getFullYear() * 100000000 + (range[1].getMonth() + 1) * 1000000 + range[1].getDate() * 10000 + range[1].getHours() * 100 + range[1].getMinutes();
+    end = range[1].getFullYear() * 100000000 + (range[1].getMonth() + 1) * 1000000 + range[1].getDate() * 10000 + 2359;
   }
   return [start, end];
 }
@@ -48,6 +48,7 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return e.category === currentCategory;
   }).filter((e) => {
     // 날짜 필터
+    // console.log('range', dateRange,'title',e.site_name, 'date', e.date); // dbg
     if (dateRange[0] == null || dateRange[1] == null) return true;
     return dateRange[0] <= e.date && e.date <= dateRange[1];
   });
