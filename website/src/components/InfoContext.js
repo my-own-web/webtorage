@@ -118,7 +118,6 @@ export function InfoProvider({ children }) {
     try {
       const { data } = await TodoApi.get('/content');
       setInitialContent(data);
-      //dispatch({ type: "INIT", data: data });
     } catch (error) {
       console.log(error);
     }
