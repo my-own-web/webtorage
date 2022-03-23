@@ -8,11 +8,16 @@ import {MessageType} from './types';
 const App = () => {
 
   const [category, setCategory] = React.useState("");
+  const [memo, setMemo] = React.useState("");
   const [cglist, setCglist] = React.useState([]);
 
   const onChange = (e : React.ChangeEvent<HTMLInputElement>) =>{
     const value = e.target.value;
     setCategory(value);
+  }
+  const memoChange = (e : React.ChangeEvent<HTMLInputElement>) =>{
+    const value = e.target.value;
+    setMemo(value);
   }
   const fetchcategory = async() =>{//DB에서 현재 저장되어 있는 카테고리 정보를 받는 초기화 함수
     try{
@@ -34,9 +39,11 @@ const App = () => {
 
   const onClick = async() =>{//fetchvalid
     const categoryText = category;
+    const memoText = memo;
     //클릭했을 때, SIGN_SAVE메시지를 background에 보내서 tab 정보를 받아와달라고 요청.
-    chrome.runtime.sendMessage({type: "SIGN_SAVE", category: categoryText});
+    chrome.runtime.sendMessage({type: "SIGN_SAVE", category: categoryText, memo: memoText});
     setCategory("");
+    setMemo("");
     //CHECKURL이라는 message 받는 함수 만들고, true, false받는 함수 만들어서 아래 완료 창 띄우기
     chrome.runtime.onMessage.addListener((message:MessageType) => {
       if(message.type === "CHECKURL"){
@@ -60,12 +67,15 @@ const App = () => {
         <img src={logo} className="App-logo" alt="logo" />
         <div>
         <h1>Webtorage!</h1>
+        <p>category</p>
         <input list = "cglist" name = "cgvalue" placeholder="Click to check your category" onChange={onChange} value = {category} onKeyPress={onInput} width = "60px" autoFocus/>
           <datalist id = "cglist">
             {cglist.map((cg:any) => (
               <option value = {cg.category}></option>
             ))}
           </datalist>
+        <p>Memo!</p>
+        <input name="memo" placeholder="memo" onChange={memoChange} value = {memo} onKeyPress={onInput} />
         </div>
         <Button onClick={onClick}> SAVE </Button>
     </div>
