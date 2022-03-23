@@ -24,7 +24,7 @@ const BoxesBlock = styled.div`
 //여러 박스들이 모여있을 때의 전체 색깔, 위치 등
 //height를 지정하지 않아 item들이 쌓일 때 그것에 맞게 height가 변하도록 함
 
-function Boxes({boxSize}) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
+function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
   const datas = useContent();
   //const datas = metaData; //일단 박스 하나만 있다고 가정함: map 함수 작동 안함
   datas.sort(function (a, b) {

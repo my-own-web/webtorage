@@ -1,6 +1,6 @@
 import React from "react";
 import styled from "styled-components";
-import { useCategoryList,useSetCurrentCategory } from "./InfoContext";
+import { useCategoryList, useSetCurrentCategory } from "./InfoContext";
 
 const ListBlock = styled.div`
     width: 170px; 
@@ -24,14 +24,14 @@ const ListBlock = styled.div`
     }
 `
 
-function CategoryItem({id, name, size}){
+function CategoryItem({ id, name, size }) {
     const setCurrent = useSetCurrentCategory();
 
     const onClick = (e) => {
         setCurrent(name);
     }
 
-    return(
+    return (
         <div className='category' onClick={onClick}>
             {name}
         </div>
@@ -46,7 +46,7 @@ function CategoryList() {
             {
                 categoryList.map((el) => {
                     return (
-                        <CategoryItem name={el.name}/>
+                        <CategoryItem key={el.id} name={el.name} />
                         // el: 객체 {id, name, size}
                     );
                 })

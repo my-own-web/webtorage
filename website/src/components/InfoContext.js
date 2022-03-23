@@ -1,7 +1,7 @@
 import React, { useReducer, useContext, useState, createContext, useEffect } from 'react';
 import { TodoApi } from '../utils/axios';
 
-const initialContent = [
+/*const initialContent = [
   { //나중에는 id 대신 date랑 category로 정렬해서 사용?
     date: 202202162300,
     title: "네이버",
@@ -51,7 +51,7 @@ const initialContent = [
     description: "Stack Overflow | The World’s Largest Online Community for Developers",
     category: "질문사이트"
   }
-];
+];*/
 
 // 디버그용 category 리스트
 let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0 }];
@@ -69,20 +69,26 @@ const ContentDispatchContext = createContext(null);
 
 export function InfoProvider({ children }) {
 
-  function contentReducer(content, action) {
+  async function contentReducer(content, action) {
     switch (action.type) {
+      case "INIT":
+        return action.data;
       case "MEMO":
-        return;
+        await TodoApi.put('/editMemo', [action.date, action.memo]);
+        return content.map(list => list.date === action.date ? { ...list, memo: action.memo } : list);
       case "CATEGORY":
-        return;
+        await TodoApi.put('/editCategory', [action.date, action.category]);
+        return content.map(list => list.date === action.date ? { ...list, category: action.category } : list);;
       case "REMOVE":
+        await TodoApi.put('/remove', action.date);
         return content.filter(list => list.date !== action.date);
       default:
         throw new Error(`Unhandled action type: ${action.type}`);
     }
   }
 
-  const [content, dispatch] = useReducer(contentReducer, initialContent);
+  const [initialContent, setInitialContent] = useState([]); //
+  const [content, dispatch] = useReducer(contentReducer, []);
 
   const [currentCategory, setCurrentCategory] = useState('none');
 
@@ -108,9 +114,26 @@ export function InfoProvider({ children }) {
     }
   }
 
+  async function getContent() {
+    try {
+      const { data } = await TodoApi.get('/content');
+      setInitialContent(data);
+      //dispatch({ type: "INIT", data: data });
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
   useEffect(() => {
     getCategory();
+    getContent();
   }, []);
+
+  /* useEffect(() => {
+     //dispatch({ type: "INIT", data: initialContent });
+   }, [initialContent]);*/
+
+  //console.log(initialContent);
 
   const searchCategoryList = (value) => {
     //검색 기능

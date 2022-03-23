@@ -47,18 +47,93 @@ app.get('/api/category', async (req, res) => {
     const conn = await pool.getConnection();
 
     let query;
-    try{
+    try {
         query = 'SELECT * FROM category';
         const [cats] = await conn.query(query);
         console.log(cats); // dbg
         // cats: 객체 배열 {id, name, size}
         res.send(cats);
-    } catch(error){
+    } catch (error) {
         console.log('query:', error);
-    } finally{
+    } finally {
         conn.release();
     }
 
+});
+
+app.get('/api/content', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+
+    try {
+        const query = 'SELECT * FROM tabinfo';
+        const [rows] = await conn.query(query);
+        console.log(rows); //확인용
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.put('/api/remove', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    const date = req.body.date;
+
+    try {
+        const query = (`DELETE FROM tabinfo WHERE date=${date}`);
+        const [rows] = await conn.query(query);
+        console.log(rows);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.put('/api/editMemo', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    console.log(req.body);
+    const date = req.body.date;
+    const memo = req.body.memo;
+
+    try {
+        const query = (`UPDATE tabinfo SET memo='${memo}' WHERE date=${date}`);
+        const [rows] = await conn.query(query);
+        console.log(rows);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.put('/api/editCategory', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    console.log(req.body);
+    const date = req.body.date;
+    const category = req.body.category;
+
+    try {
+        const query = (`UPDATE tabinfo SET memo='${category}' WHERE date=${date}`);
+        const [rows] = await conn.query(query);
+        console.log(rows);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
 });
 
 app.listen(port, () => {
