@@ -50,6 +50,15 @@ import { TodoApi } from '../utils/axios';
     image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
     description: "Stack Overflow | The World’s Largest Online Community for Developers",
     category: "질문사이트"
+  },
+  {
+    date: 202203221204,
+    title: "default test",
+    site_name: "default test",
+    url: "https://test.com",
+    image: "",
+    description: "Stack Overflow | The World’s Largest Online Community for Developers",
+    category: "DEFAULT"
   }
 ];*/
 
@@ -66,6 +75,8 @@ const CurrentCategoryContext = createContext(null);
 const SetCurrentCategoryContext = createContext(null);
 const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
+const DateRangeContext = createContext(null);
+const SetDateRangeContext = createContext(null);
 
 export function InfoProvider({ children }) {
 
@@ -90,12 +101,14 @@ export function InfoProvider({ children }) {
   const [initialContent, setInitialContent] = useState([]); //
   const [content, dispatch] = useReducer(contentReducer, []);
 
-  const [currentCategory, setCurrentCategory] = useState('none');
+  const [currentCategory, setCurrentCategory] = useState('ALL');
 
   // 전체 카테고리 리스트
   const [allCategoryList, setAllCategoryList] = useState([]);
   // 검색된 카테고리 리스트
   const [categoryList, setCategoryList] = useState([]);
+  // 검색할 기간
+  const [dateRange, setDateRange] = useState([null, null]);
 
   async function getCategory() {
     try {
@@ -156,7 +169,11 @@ export function InfoProvider({ children }) {
           <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
             <ContentListContext.Provider value={content}>
               <ContentDispatchContext.Provider value={dispatch}>
-                {children}
+                <DateRangeContext.Provider value={dateRange}>
+                  <SetDateRangeContext.Provider value={setDateRange}>
+                    {children}
+                  </SetDateRangeContext.Provider>
+                </DateRangeContext.Provider>
               </ContentDispatchContext.Provider>
             </ContentListContext.Provider>
           </SetCurrentCategoryContext.Provider>
@@ -210,6 +227,22 @@ export function useSetCurrentCategory() {
   const set = useContext(SetCurrentCategoryContext);
   if (!set) {
     throw new Error('SetCurrentCategoryContext Error');
+  }
+  return set;
+}
+
+export function useDateRange() {
+  const state = useContext(DateRangeContext);
+  if (!state) {
+    throw new Error('DateRangeContext Error');
+  }
+  return state;
+}
+
+export function useSetDateRange() {
+  const set = useContext(SetDateRangeContext);
+  if (!set) {
+    throw new Error('SetDateRange Error');
   }
   return set;
 }
