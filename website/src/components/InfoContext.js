@@ -3,69 +3,87 @@ import { TodoApi } from '../utils/axios';
 
 const initialContent = [
   { //나중에는 id 대신 date랑 category로 정렬해서 사용?
-    date: 202202162300,
+    id: 1,
+    category: "페이지", //카테고리 지정
     title: "네이버",
-    site_name: '',
-    url: "https://www.naver.com/",
+    data_url: "https://www.naver.com/",
     image: "https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png",
     description: "네이버 메인에서 다양한 정보와 유용한 컨텐츠를 만나 보세요",
-    //memo: "네이버 메인 페이지", //메모 글자수 제한해야 할듯
-    category: "페이지" //카테고리 지정
+    date: 202202162300,
+    memo: "네이버 메인 페이지" //메모 글자수 제한해야 할듯
   },
   {
-    date: 202202212317,
-    title: "Build software better, together",
-    site_name: "Github",
-    url: "https://github.com",
+    id: 2,
+    category: "페이지",
+    title: "Github",
+    data_url: "https://github.com",
     image: "https://github.githubassets.com/images/modules/open_graph/github-logo.png",
     description: "GitHub is where people build software. More than 73 million people use GitHub to discover, fork, and contribute to over 200 million projects.",
-    memo: "코드 및 기록 저장소",
-    category: "페이지"
+    date: 202202212317,
+    memo: "코드 및 기록 저장소"
   },
   {
-    date: 202202220014,
-    title: "Notion - The all-in-one workspace for your notes, tasks, wikis, and databases.",
-    site_name: "Notion",
-    url: "https://www.notion.so",
+    id: 3,
+    category: "페이지",
+    title: "Notion",
+    data_url: "https://www.notion.so",
     image: "https://www.notion.so/images/meta/default.png",
     description: "A new tool that blends your everyday work apps into one. It's the all-in-one workspace for you and your team",
-    memo: "기록 저장소",
-    category: "페이지"
+    date: 202202220014,
+    memo: "기록 저장소"
   },
   {
-    date: 202202220142,
-    title: "공동작업을 통해 무료로 멋진 그래픽 디자인을 만들어 보세요",
-    site_name: "Canva",
-    url: "https://www.canva.com",
+    id: 4,
+    category: "페이지",
+    title: "Canva",
+    data_url: "https://www.canva.com",
     image: "https://static.canva.com/static/images/fb_cover-1.jpg",
     description: "팀원들과 함께 아름다운 디자인을 만들어 보세요. Canva가 제공하는 드래그 앤 드롭 기능 및 레이아웃을 사용하여 명함, 로고, 프레젠테이션 등을 디자인하고, 공유하고, 인쇄하세요.",
-    memo: "포스터 디자인 검색할 때 유용",
-    category: "페이지"
+    date: 202202220142,
+    memo: "포스터 디자인 검색할 때 유용"
   },
   {
-    date: 202203031103,
-    title: "Stack Overflow - Where Developers Learn, Share, Build Careers",
-    site_name: "Stack Overflow",
-    url: "https://stackoverflow.com",
+    id: 5,
+    category: "질문 사이트",
+    title: "Stack Overflow",
+    data_url: "https://stackoverflow.com",
     image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
     description: "Stack Overflow | The World’s Largest Online Community for Developers",
-    category: "질문사이트"
+    date: 202203031103,
+    memo: "memo for stack overflow"
   },
   {
-    date: 202203221204,
+    id: 6,
+    category: "DEFAULT",
     title: "default test",
-    site_name: "default test",
-    url: "https://test.com",
+    data_url: "https://test.com",
     image: "",
-    description: "Stack Overflow | The World’s Largest Online Community for Developers",
-    category: "DEFAULT"
+    description: "description for test",
+    date: 202203221204,
+    memo: ''
   }
 ];
 
 // 디버그용 category 리스트
-let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0 }];
+let initialCategory = [
+  {
+    id: 1,
+    name: 'suchalongnamedcategorylonglonglonglonglong', size: 0
+  },
+  {
+    id: 2,
+    name: "질문 사이트",
+    size: 1
+  },
+  {
+    id: 3,
+    name: "페이지",
+    size: 4
+  }
+
+];
 // dbg: 내용 채우기
-for (var i = 2; i <= 5; i++) {
+for (var i = 5; i <= 10; i++) {
   initialCategory.push({ id: i, name: `category${i}`, size: 0 });
 }
 
@@ -79,21 +97,7 @@ const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
 
 export function InfoProvider({ children }) {
-
-  function contentReducer(content, action) {
-    switch (action.type) {
-      case "MEMO":
-        return;
-      case "CATEGORY":
-        return;
-      case "REMOVE":
-        return content.filter(list => list.date !== action.date);
-      default:
-        throw new Error(`Unhandled action type: ${action.type}`);
-    }
-  }
-
-  const [content, dispatch] = useReducer(contentReducer, initialContent);
+  const [content, setContent] = useState([]);
 
   const [currentCategory, setCurrentCategory] = useState('ALL');
 
@@ -103,6 +107,22 @@ export function InfoProvider({ children }) {
   const [categoryList, setCategoryList] = useState([]);
   // 검색할 기간
   const [dateRange, setDateRange] = useState([null, null]);
+
+  async function postAction(action) {
+    try {
+      // const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
+      const { data } = await TodoApi.post('/tabinfo/website', action);
+      console.log('response', data); // dbg
+      setContent(data);
+    } catch (error) {
+      console.log(error);
+
+       // dbg: 서버 안 켰을 때 디버그용
+       if (process.env.NODE_ENV === "development") {
+        setContent(initialContent);
+      }
+    }
+  }
 
   async function getCategory() {
     try {
@@ -121,7 +141,9 @@ export function InfoProvider({ children }) {
     }
   }
 
+  // 첫 렌더링에서만 실행
   useEffect(() => {
+    postAction({ type: 'FETCH' });
     getCategory();
   }, []);
 
@@ -146,7 +168,7 @@ export function InfoProvider({ children }) {
         <CurrentCategoryContext.Provider value={currentCategory}>
           <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
             <ContentListContext.Provider value={content}>
-              <ContentDispatchContext.Provider value={dispatch}>
+              <ContentDispatchContext.Provider value={postAction}>
                 <DateRangeContext.Provider value={dateRange}>
                   <SetDateRangeContext.Provider value={setDateRange}>
                     {children}

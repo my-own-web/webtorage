@@ -70,12 +70,28 @@ app.get('/api/tabinfo', async(req, res)=>{
     }
 });
   
-// // 디버그용 category 리스트
-// let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
-// // dbg: 내용 채우기
-// for (var i = 2; i <= 5; i++) {
-//     initialCategory.push({id: i, name: `category${i}`, size: 0});
-// }
+app.post('/api/tabinfo/website', async (req, res)=>{
+  const action = req.body;
+
+  const pool = DB_Connection();
+  const conn = await pool.getConnection();
+  let query;
+  try{
+    switch(action.type){
+      case 'FETCH':
+        break;
+    }
+    query = "SELECT * FROM tabinfo";
+    const [rows] = await conn.query(query);
+    res.send(rows);
+  } catch(error){
+    console.log(error);
+  } finally{
+    conn.release();
+  }
+
+
+});
 
 app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용
