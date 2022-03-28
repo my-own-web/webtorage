@@ -72,6 +72,7 @@ app.get('/api/tabinfo', async(req, res)=>{
   
 app.post('/api/tabinfo/website', async (req, res)=>{
   const action = req.body;
+  console.log(action); //dbg
 
   const pool = DB_Connection();
   const conn = await pool.getConnection();
@@ -79,6 +80,10 @@ app.post('/api/tabinfo/website', async (req, res)=>{
   try{
     switch(action.type){
       case 'FETCH':
+        break;
+      case 'EDITMEMO':
+        query = "UPDATE tabinfo SET memo=? WHERE id=?";
+        conn.query(query, [action.value, action.id]);
         break;
     }
     query = "SELECT * FROM tabinfo";

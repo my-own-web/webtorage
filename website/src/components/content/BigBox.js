@@ -96,6 +96,13 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   }
 
   const onClickMemo = () => {
+    if(editMemo){
+      dispatch({
+        type: "EDITMEMO",
+        id,
+        value: changeMemo
+      });
+    }
     setEditMemo(!editMemo);
   }
   const onClickCategory = () => {
