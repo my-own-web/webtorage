@@ -79,14 +79,14 @@ const ChangeButton = styled.button`
   font-size: 11px;
 `
 
-function BigBox({ site_name, title, url, image, description, memo, date, category }) {
+function BigBox({ id, category, title, data_url, image, description, date, memo }) {
   const dispatch = useContentDispatch();
   const [editMemo, setEditMemo] = useState(false);
   const [changeMemo, setChangeMemo] = useState(memo);
   const [editCategory, setEditCategory] = useState(false);
   const [changeCategory, setChangeCategory] = useState(category);
 
-  const onRemove = () => { dispatch({ type: 'REMOVE', date }) };
+  const onRemove = () => { dispatch({ type: 'REMOVE', id }) };
 
   const onEditMemo = (e) => {
     setChangeMemo(e.target.value);
@@ -108,11 +108,9 @@ function BigBox({ site_name, title, url, image, description, memo, date, categor
 
   return (
     <BoxBlock>
-      {site_name ? <div><Sitename>{`[${site_name}]`}</Sitename>
-        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div> : ''}
-      {site_name ? <Title2>{title}</Title2> : <div><Title1>{`[${title}]`}</Title1>
-        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div>}
-      <Url>URL: <a href={url}>{`"${url}"`}</a></Url>
+      <div><Title1>{`[${title}]`}</Title1>
+        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div>
+      <Url>URL: <a href={data_url}>{`"${data_url}"`}</a></Url>
       <Image><img src={image} width="200" height="120"></img></Image>
       <Description>{description}</Description>
       <Memo>{'메모: '}{editMemo ? <div><WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} /><MdEdit onClick={onClickMemo} /></div> : <div>{changeMemo}<MdEdit onClick={onClickMemo} /></div>}</Memo>

@@ -64,26 +64,24 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
         <BoxesBlock>
           {boxSize ? datas.map(data => (
             <BigBox
-              key={data.date}
-              site_name={data.site_name}
+              id={data.id}
+              category={data.category}
               title={data.title}
-              url={data.url}
+              data_url={data.data_url}
               image={data.image}
               description={data.description}
-              memo={data.memo}
               date={data.date}
-              category={data.category}
+              memo={data.memo}
             />)) : datas.map(data => (
               <SmallBox
-                key={data.date}
-                site_name={data.site_name}
-                title={data.title}
-                url={data.url}
-                image={data.image}
-                description={data.description}
-                memo={data.memo}
-                date={data.date}
-                category={data.category}
+              id={data.id}
+              category={data.category}
+              title={data.title}
+              data_url={data.data_url}
+              image={data.image}
+              description={data.description}
+              date={data.date}
+              memo={data.memo}
               />))}
         </BoxesBlock>
       </WebContentBlock>
