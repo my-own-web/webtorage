@@ -86,7 +86,9 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   const [editCategory, setEditCategory] = useState(false);
   const [changeCategory, setChangeCategory] = useState(category);
 
-  const onRemove = () => { dispatch({ type: 'REMOVE', id }) };
+  const onRemove = () => { 
+    dispatch({ type: 'REMOVE', id, category }) 
+  };
 
   const onEditMemo = (e) => {
     setChangeMemo(e.target.value);
@@ -95,16 +97,19 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
     setChangeCategory(e.target.value);
   }
 
+  const onSaveMemo = () =>{
+    dispatch({
+      type: "EDITMEMO",
+      id,
+      value: changeMemo
+    });
+  };
+
   const onClickMemo = () => {
-    if(editMemo){
-      dispatch({
-        type: "EDITMEMO",
-        id,
-        value: changeMemo
-      });
-    }
+    if(editMemo) onSaveMemo();
     setEditMemo(!editMemo);
   }
+
   const onClickCategory = () => {
     setEditCategory(!editCategory);
   }

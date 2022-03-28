@@ -85,6 +85,14 @@ app.post('/api/tabinfo/website', async (req, res)=>{
         query = "UPDATE tabinfo SET memo=? WHERE id=?";
         conn.query(query, [action.value, action.id]);
         break;
+      case "REMOVE":
+        query = "DELETE FROM tabinfo WHERE id=?";
+        conn.query(query, [action.id]);
+        if(action.category != "DEFAULT"){
+          query = 'UPDATE category SET size=size-1 WHERE name=?';
+          conn.query(query, [action.category]);
+        }
+        break;
     }
     query = "SELECT * FROM tabinfo";
     const [rows] = await conn.query(query);
