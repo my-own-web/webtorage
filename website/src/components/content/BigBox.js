@@ -108,12 +108,24 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
 
   return (
     <BoxBlock>
-      <div><Title1>{`[${title}]`}</Title1>
-        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton><ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>{onCategory(editCategory)}</div>
+      <div>
+        <Title1>{`[${title}]`}</Title1>
+        <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton>
+        <ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>
+        {onCategory(editCategory)}
+      </div>
       <Url>URL: <a href={data_url}>{`"${data_url}"`}</a></Url>
       <Image><img src={image} width="200" height="120"></img></Image>
       <Description>{description}</Description>
-      <Memo>{'메모: '}{editMemo ? <div><WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} /><MdEdit onClick={onClickMemo} /></div> : <div>{changeMemo}<MdEdit onClick={onClickMemo} /></div>}</Memo>
+      <Memo>{'메모: '}{editMemo ? 
+        <div>
+          <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
+          <MdEdit onClick={onClickMemo} />
+        </div> : 
+        <div>
+          {changeMemo}<MdEdit onClick={onClickMemo} />
+        </div>}
+      </Memo>
     </BoxBlock >
   );
 }
