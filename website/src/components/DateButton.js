@@ -2,6 +2,7 @@ import react, { useState, forwardRef } from "react";
 import styled from "styled-components";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
+import { useDateRange, useSetDateRange } from "./InfoContext";
 
 const DatePickerTemplate = styled.div`
     .example-custom-input{
@@ -84,8 +85,8 @@ const DatePickerTemplate = styled.div`
 };
 */
 const DatePickerComponent = () => {
-  const [dateRange, setDateRange] = useState([null, null]);
-  const [startDate, endDate] = dateRange;
+  const setDateRange = useSetDateRange();
+  const [startDate, endDate] = useDateRange();
 
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
