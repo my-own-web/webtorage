@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useContent } from "../InfoContext";
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
-import { useCurrentCategory, useDateRange } from '../InfoContext';
+import { useContent, useCurrentCategory, useDateRange } from '../InfoContext';
 
 const WebContentBlock = styled.div`
   // background: pink; // dbg: 하얀색으로 변경?
@@ -58,12 +57,15 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return b.date - a.date;
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
+  console.log(datas); // dbg
+
   return (
     <div>
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
             <BigBox
+              key={data.id}
               id={data.id}
               category={data.category}
               title={data.title}
