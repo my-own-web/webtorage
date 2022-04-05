@@ -70,12 +70,41 @@ app.get('/api/tabinfo', async(req, res)=>{
     }
 });
   
-// // 디버그용 category 리스트
-// let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
-// // dbg: 내용 채우기
-// for (var i = 2; i <= 5; i++) {
-//     initialCategory.push({id: i, name: `category${i}`, size: 0});
-// }
+app.post('/api/tabinfo/website', async (req, res)=>{
+  const action = req.body;
+  console.log(action); //dbg
+
+  const pool = DB_Connection();
+  const conn = await pool.getConnection();
+  let query;
+  try{
+    switch(action.type){
+      case 'FETCH':
+        break;
+      case 'EDITMEMO':
+        query = "UPDATE tabinfo SET memo=? WHERE id=?";
+        conn.query(query, [action.value, action.id]);
+        break;
+      case "REMOVE":
+        query = "DELETE FROM tabinfo WHERE id=?";
+        conn.query(query, [action.id]);
+        if(action.category != "DEFAULT"){
+          query = 'UPDATE category SET size=size-1 WHERE name=?';
+          conn.query(query, [action.category]);
+        }
+        break;
+    }
+    query = "SELECT * FROM tabinfo";
+    const [rows] = await conn.query(query);
+    res.send(rows);
+  } catch(error){
+    console.log(error);
+  } finally{
+    conn.release();
+  }
+
+
+});
 
 app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용

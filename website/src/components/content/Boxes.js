@@ -1,9 +1,8 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-import { useContent } from "../InfoContext";
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
-import { useCurrentCategory, useDateRange } from '../InfoContext';
+import { useContent, useCurrentCategory, useDateRange } from '../InfoContext';
 
 const WebContentBlock = styled.div`
   // background: pink; // dbg: 하얀색으로 변경?
@@ -30,10 +29,10 @@ const BoxesBlock = styled.div`
 function configDateRange(range) {
   let start = null, end = null;
   if (range[0] != null) {
-    start = range[0].getFullYear() * 100000000 + (range[0].getMonth() + 1) * 1000000 + range[0].getDate() * 10000 + range[0].getHours() * 100 + range[0].getMinutes();
+    start = range[0].getFullYear() * 100000000 + (range[0].getMonth() + 1) * 1000000 + range[0].getDate() * 10000;
   }
   if (range[1] != null) {
-    end = range[1].getFullYear() * 100000000 + (range[1].getMonth() + 1) * 1000000 + range[1].getDate() * 10000 + range[1].getHours() * 100 + range[1].getMinutes();
+    end = range[1].getFullYear() * 100000000 + (range[1].getMonth() + 1) * 1000000 + range[1].getDate() * 10000 + 2359;
   }
   return [start, end];
 }
@@ -48,6 +47,7 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return e.category === currentCategory;
   }).filter((e) => {
     // 날짜 필터
+    // console.log('range', dateRange,'title',e.site_name, 'date', e.date); // dbg
     if (dateRange[0] == null || dateRange[1] == null) return true;
     return dateRange[0] <= e.date && e.date <= dateRange[1];
   });
@@ -57,32 +57,33 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return b.date - a.date;
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
+  console.log(datas); // dbg
+
   return (
     <div>
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
             <BigBox
-              key={data.date}
-              site_name={data.site_name}
+              key={data.id}
+              id={data.id}
+              category={data.category}
               title={data.title}
-              url={data.url}
+              data_url={data.data_url}
               image={data.image}
               description={data.description}
-              memo={data.memo}
               date={data.date}
-              category={data.category}
+              memo={data.memo}
             />)) : datas.map(data => (
               <SmallBox
-                key={data.date}
-                site_name={data.site_name}
-                title={data.title}
-                url={data.url}
-                image={data.image}
-                description={data.description}
-                memo={data.memo}
-                date={data.date}
-                category={data.category}
+              id={data.id}
+              category={data.category}
+              title={data.title}
+              data_url={data.data_url}
+              image={data.image}
+              description={data.description}
+              date={data.date}
+              memo={data.memo}
               />))}
         </BoxesBlock>
       </WebContentBlock>
