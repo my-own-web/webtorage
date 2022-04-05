@@ -9,7 +9,7 @@ const initialContent = [
     data_url: "https://www.naver.com/",
     image: "https://s.pstatic.net/static/www/mobile/edit/2016/0705/mobile_212852414260.png",
     description: "네이버 메인에서 다양한 정보와 유용한 컨텐츠를 만나 보세요",
-    date: 202202162300,
+    date: '202202162300',
     memo: "네이버 메인 페이지" //메모 글자수 제한해야 할듯
   },
   {
@@ -19,7 +19,7 @@ const initialContent = [
     data_url: "https://github.com",
     image: "https://github.githubassets.com/images/modules/open_graph/github-logo.png",
     description: "GitHub is where people build software. More than 73 million people use GitHub to discover, fork, and contribute to over 200 million projects.",
-    date: 202202212317,
+    date: '202202212317',
     memo: "코드 및 기록 저장소"
   },
   {
@@ -29,7 +29,7 @@ const initialContent = [
     data_url: "https://www.notion.so",
     image: "https://www.notion.so/images/meta/default.png",
     description: "A new tool that blends your everyday work apps into one. It's the all-in-one workspace for you and your team",
-    date: 202202220014,
+    date: '202202220014',
     memo: "기록 저장소"
   },
   {
@@ -39,7 +39,7 @@ const initialContent = [
     data_url: "https://www.canva.com",
     image: "https://static.canva.com/static/images/fb_cover-1.jpg",
     description: "팀원들과 함께 아름다운 디자인을 만들어 보세요. Canva가 제공하는 드래그 앤 드롭 기능 및 레이아웃을 사용하여 명함, 로고, 프레젠테이션 등을 디자인하고, 공유하고, 인쇄하세요.",
-    date: 202202220142,
+    date: '202202220142',
     memo: "포스터 디자인 검색할 때 유용"
   },
   {
@@ -49,8 +49,8 @@ const initialContent = [
     data_url: "https://stackoverflow.com",
     image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
     description: "Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers",
-    date: 202203031103,
-    memo: "memo for stack overflow"
+    date: '202203031103',
+    memo: "memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow memo for stack overflow"
   },
   {
     id: 6,
@@ -59,7 +59,7 @@ const initialContent = [
     data_url: "https://test.comaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     image: "",
     description: "description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test",
-    date: 202203221204,
+    date: '202203221204',
     memo: ''
   }
 ];
