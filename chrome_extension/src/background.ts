@@ -59,7 +59,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             let year = today.getFullYear();
             let month = ('0' + (today.getMonth() + 1)).slice(-2);
             let day = ('0' + today.getDate()).slice(-2);
-            const dateString = year + '-' + month + '-' + day;
+            const dateString = year + month + day;
             //console.log("check : ", message.title, message. description); 디버그용
             console.log("completed?: ",category, data_url, title, description, image);
 
