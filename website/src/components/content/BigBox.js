@@ -20,6 +20,7 @@ const BoxBlock = styled.div`
   padding: 3px 10px 3px 10px;
 
   h3 {
+    height: 25px;
     color: black;
     margin: 0 0 0 0;
     white-space: nowrap;
@@ -28,6 +29,7 @@ const BoxBlock = styled.div`
   }
 
   a {
+    height: 18px;
     font-size: 13px;
     color: grey;
     white-space: nowrap;
@@ -36,7 +38,7 @@ const BoxBlock = styled.div`
   }
 
   .description {
-    // color: grey;
+    height: 13px;
     font-size: 10px;
     white-space: nowrap; // one line
     overflow: clip;
