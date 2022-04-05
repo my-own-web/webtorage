@@ -33,43 +33,43 @@ function DB_Connection() {
     return globalPool;
 }
 
-app.post('/api/tabinfo', async(req,res) =>{
+app.post('/api/tabinfo', async (req, res) => {
     const body = req.body;
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-  
-    try{//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-      const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
-      if(exist[0].num<1){//if(exist[0].num<1){ 이걸로 check
-        await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo) 
+    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+
+        const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
+        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo) 
         VALUES ('${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}')`);
-        res.send(true);
-      }
-      else{
-        res.send(false);
-      }
-    }catch(err){
-      console.log(err);
-    }finally{
-      conn.release();
+            res.send(true);
+        }
+        else {
+            res.send(false);
+        }
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
     }
 });
-  
-app.get('/api/tabinfo', async(req, res)=>{
+
+app.get('/api/tabinfo', async (req, res) => {
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-    try{
-      const [rows] = await conn.query("SELECT `category` FROM `tabinfo`")
-      console.log(rows);
-      res.send(rows);
-    }catch(err){
-      console.log(err);
-    }finally{
-      conn.release();
+    try {
+        const [rows] = await conn.query("SELECT `category` FROM `tabinfo`")
+        console.log(rows);
+        res.send(rows);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
     }
 });
-  
+
 // // 디버그용 category 리스트
 // let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
 // // dbg: 내용 채우기
@@ -166,6 +166,40 @@ app.put('/api/editCategory', async (req, res) => {
         const [rows] = await conn.query(query);
         console.log(rows);
         res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.get('api/user', async (req, res) => {
+    const pool = DB_connection();
+    const conn = await pool.getConnection();
+    try {
+        const [rows] = await conn.query("SELECT * FROM users");
+        res.send(rows);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
+    }
+});
+
+app.post('/api/user/login', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    console.log(req.body);
+    const Id = req.body.Id;
+    const Password = req.body.Password;
+
+    try {
+        const [rows] = await conn.query(`SELECT COUNT(*) AS num FROM users WHERE Id='${Id}' AND Password='${Password}'`);
+        if (rows[0].num)
+            res.send('OK');
+        else
+            res.send('Invalid User');
     } catch (error) {
         console.log(error);
     } finally {
