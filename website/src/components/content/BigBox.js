@@ -2,59 +2,83 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import { MdEdit } from 'react-icons/md';
 import { useContentDispatch } from "../InfoContext";
+import CategoryDropbox from './CategoryDropbox';
+import { prependOnceListener } from 'process';
 
 const BoxBlock = styled.div`
-  padding: 10px 12px;
-  overflow-y: auto; /*자식요소에서 아래 내용이 넘칠 때 스크롤바 사용*/
-  background: #F2F3F5;
+  // overflow-y: auto; /*자식요소에서 아래 내용이 넘칠 때 스크롤바 사용*/
+  // background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
   margin: 7px 9px;
-  width: 290px;
+
+  width: 280px;
   height: 200px;
+  overflow: clip;
+
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+  padding: 3px 10px 3px 10px;
+
+  h3 {
+    margin: 0 0 0 0;
+    white-space: nowrap;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
+
+  a {
+    font-size: 13px;
+    color: grey;
+    white-space: nowrap;
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
+
+  .description {
+    font-size: 10px;
+    white-space: nowrap; // one line
+    overflow: clip;
+    text-overflow: ellipsis;
+  }
 `;
 //박스 하나의 전체 디자인
 
-const Sitename = styled.div`
-  color: black;
-  font-size: 13px;
-  padding: 3px 0px;
+const Title = styled.h3`
+  // font-size: 13px;
+  // color: black;
+  padding: 3px 10px 0 10px;
+  margin: 0 0 0 0;
 `;
-
-const Title1 = styled.div`
-  font-size: 13px;
-  color: black;
-  padding: 3px 0px;
-`; //site_name이 없는 경우
-
-const Title2 = styled.div`
-  font-size: 11px;
-  color: black;
-  padding: 4px 0px;
-`;  //site_name이 있는 경우
 
 const Url = styled.div`
   font-size: 13px;
   color: black;
-  text-align: center;
+  // text-align: center;
+  padding: 0px 10px 0px 10px;
   a {
-    color: blue;
+    color: grey;
   }
 `;
 
 const Image = styled.div`
-  margin: 5px 40px;
+  // margin: 5px 40px;
+  margin: 5px 0 5px 0;
   width: 200px;
   height: 120px;
-  border: 1px solid black;
+  // border: 1px solid black;
 `;
 
 const Description = styled.div`
   font-size: 10px;
   color: black;
   padding-bottom: 3px;
-  border-bottom: 1px dashed black;
+  // border-bottom: 1px dashed black;
   /*아래 밑줄: div 태그로 인해 box padding 부분 제외한 전체에 밑줄 그려짐*/
+  height: 50px;
+  // overflow-y: auto;
+  overflow-y: clip;
 `;
 
 const Memo = styled.div`
@@ -86,8 +110,8 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   const [editCategory, setEditCategory] = useState(false);
   const [changeCategory, setChangeCategory] = useState(category);
 
-  const onRemove = () => { 
-    dispatch({ type: 'REMOVE', id, category }) 
+  const onRemove = () => {
+    dispatch({ type: 'REMOVE', id, category })
   };
 
   const onEditMemo = (e) => {
@@ -97,7 +121,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
     setChangeCategory(e.target.value);
   }
 
-  const onSaveMemo = () =>{
+  const onSaveMemo = () => {
     dispatch({
       type: "EDITMEMO",
       id,
@@ -106,7 +130,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   };
 
   const onClickMemo = () => {
-    if(editMemo) onSaveMemo();
+    if (editMemo) onSaveMemo();
     setEditMemo(!editMemo);
   }
 
@@ -119,17 +143,23 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   }
 
   return (
-    <BoxBlock>
-      <div>
-        <Title1>{`[${title}]`}</Title1>
+    <BoxBlock image={image}>
+      <h3>{title}</h3>
+      <a href={data_url}>{data_url}</a>
+      <img src={image} width='280px' height='100px'/>
+      <div className='description'>{description}</div>
+      {/* <Title>{title}</Title> */}
+      {/* <div>
+        <Title>{`[${title}]`}</Title>
         <ChangeButton onClick={onRemove}>{"삭제하기"}</ChangeButton>
         <ChangeButton onClick={onClickCategory}>{"카테고리 수정"}</ChangeButton>
         {onCategory(editCategory)}
-      </div>
-      <Url>URL: <a href={data_url}>{`"${data_url}"`}</a></Url>
-      <Image><img src={image} width="200" height="120"></img></Image>
-      <Description>{description}</Description>
-      <Memo>{'메모: '}{editMemo ? 
+      </div> */}
+      {/* <Url><a href={data_url}>{data_url}</a></Url> */}
+      {/* <img src={image} width='280px' height='100px'/> */}
+      {/* <Image><img src={image} ></img></Image> */}
+      {/* <Description>{description}</Description> */}
+      {/* <Memo>메모:{editMemo ? 
         <div>
           <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
           <MdEdit onClick={onClickMemo} />
@@ -137,7 +167,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
         <div>
           {changeMemo}<MdEdit onClick={onClickMemo} />
         </div>}
-      </Memo>
+      </Memo> */}
     </BoxBlock >
   );
 }

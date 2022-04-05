@@ -34,7 +34,7 @@ const initialContent = [
   },
   {
     id: 4,
-    category: "페이지",
+    category: "질문 사이트",
     title: "Canva",
     data_url: "https://www.canva.com",
     image: "https://static.canva.com/static/images/fb_cover-1.jpg",
@@ -48,17 +48,17 @@ const initialContent = [
     title: "Stack Overflow",
     data_url: "https://stackoverflow.com",
     image: "https://cdn.sstatic.net/Sites/stackoverflow/Img/apple-touch-icon@2.png?v=73d79a89bded",
-    description: "Stack Overflow | The World’s Largest Online Community for Developers",
+    description: "Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers Stack Overflow | The World’s Largest Online Community for Developers",
     date: 202203031103,
     memo: "memo for stack overflow"
   },
   {
     id: 6,
     category: "DEFAULT",
-    title: "default test",
-    data_url: "https://test.com",
+    title: "default test default test default testdefault test default test",
+    data_url: "https://test.comaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
     image: "",
-    description: "description for test",
+    description: "description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test description for test",
     date: 202203221204,
     memo: ''
   }
@@ -112,7 +112,6 @@ export function InfoProvider({ children }) {
     try {
       // const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
       const { data } = await TodoApi.post('/tabinfo/website', action);
-      console.log('response', data); // dbg
       setContent(data);
     } catch (error) {
       console.log(error);
