@@ -5,7 +5,7 @@ const port = 3001;
 // cors policy 무시
 const cors = require('cors');
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: true,
     credentials: true // 크로스 도메인 허용
 }));
 
@@ -14,9 +14,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// crypto 사용
+const { pbkdf2, pbkdf2Sync } = require('crypto');
+
 // DB(MYSQL) 연동
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv').config(); // 민감한 정보 숨기기 위해 사용 
+const randomSalt = process.env.SALT;
 
 const options = {
     host: process.env.MYSQL_HOST,
@@ -33,75 +37,75 @@ function DB_Connection() {
     return globalPool;
 }
 
-app.post('/api/tabinfo', async(req,res) =>{
+app.post('/api/tabinfo', async (req, res) => {
     const body = req.body;
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-  
-    try{//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-      const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
-      if(exist[0].num<1){//if(exist[0].num<1){ 이걸로 check
-        await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo) 
+    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+
+        const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
+        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo) 
         VALUES ('${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}')`);
-        res.send(true);
-      }
-      else{
-        res.send(false);
-      }
-    }catch(err){
-      console.log(err);
-    }finally{
-      conn.release();
+            res.send(true);
+        }
+        else {
+            res.send(false);
+        }
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
     }
 });
-  
-app.get('/api/tabinfo', async(req, res)=>{
+
+app.get('/api/tabinfo', async (req, res) => {
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-    try{
-      const [rows] = await conn.query("SELECT `category` FROM `tabinfo`")
-      console.log(rows);
-      res.send(rows);
-    }catch(err){
-      console.log(err);
-    }finally{
-      conn.release();
+    try {
+        const [rows] = await conn.query("SELECT `category` FROM `tabinfo`")
+        console.log(rows);
+        res.send(rows);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
     }
 });
-  
-app.post('/api/tabinfo/website', async (req, res)=>{
-  const action = req.body;
-  console.log(action); //dbg
 
-  const pool = DB_Connection();
-  const conn = await pool.getConnection();
-  let query;
-  try{
-    switch(action.type){
-      case 'FETCH':
-        break;
-      case 'EDITMEMO':
-        query = "UPDATE tabinfo SET memo=? WHERE id=?";
-        conn.query(query, [action.value, action.id]);
-        break;
-      case "REMOVE":
-        query = "DELETE FROM tabinfo WHERE id=?";
-        conn.query(query, [action.id]);
-        if(action.category != "DEFAULT"){
-          query = 'UPDATE category SET size=size-1 WHERE name=?';
-          conn.query(query, [action.category]);
+app.post('/api/tabinfo/website', async (req, res) => {
+    const action = req.body;
+    console.log(action); //dbg
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    let query;
+    try {
+        switch (action.type) {
+            case 'FETCH':
+                break;
+            case 'EDITMEMO':
+                query = "UPDATE tabinfo SET memo=? WHERE id=?";
+                conn.query(query, [action.value, action.id]);
+                break;
+            case "REMOVE":
+                query = "DELETE FROM tabinfo WHERE id=?";
+                conn.query(query, [action.id]);
+                if (action.category != "DEFAULT") {
+                    query = 'UPDATE category SET size=size-1 WHERE name=?';
+                    conn.query(query, [action.category]);
+                }
+                break;
         }
-        break;
+        query = "SELECT * FROM tabinfo";
+        const [rows] = await conn.query(query);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
     }
-    query = "SELECT * FROM tabinfo";
-    const [rows] = await conn.query(query);
-    res.send(rows);
-  } catch(error){
-    console.log(error);
-  } finally{
-    conn.release();
-  }
 
 
 });
@@ -113,19 +117,56 @@ app.get('/api/category', async (req, res) => {
     const conn = await pool.getConnection();
 
     let query;
-    try{
+    try {
         query = 'SELECT * FROM category';
         const [cats] = await conn.query(query);
         console.log(cats); // dbg
         // cats: 객체 배열 {id, name, size}
         res.send(cats);
-    } catch(error){
+    } catch (error) {
         console.log('query:', error);
-    } finally{
+    } finally {
         conn.release();
     }
 
 });
+
+app.get('api/user', async (req, res) => {
+    const pool = DB_connection();
+    const conn = await pool.getConnection();
+    try {
+        const [rows] = await conn.query("SELECT * FROM users");
+        res.send(rows);
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
+    }
+});
+
+app.post('/api/user/login', async (req, res) => {
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    console.log(req.body);
+    const Id = req.body.Id;
+    const Password = req.body.Password;
+    const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
+
+    try {
+        const sql = `SELECT COUNT(*) AS num FROM users WHERE Id=? AND Password=?`;
+        const params = [Id, cryptedPassword];
+        const [rows] = await conn.query(sql, params);
+        if (rows[0].num)
+            res.send('OK');
+        else
+            res.send('Invalid User');
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+}); //현재 hello 안녕 각각 아이디와 비밀번호로 입력되어 있음
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
