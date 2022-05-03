@@ -74,12 +74,41 @@ app.get('/api/tabinfo', async (req, res) => {
     }
 });
 
-// // 디버그용 category 리스트
-// let initialCategory = [{ id: 1, name: 'suchalongnamedcategorylonglonglonglonglong', size: 0}];
-// // dbg: 내용 채우기
-// for (var i = 2; i <= 5; i++) {
-//     initialCategory.push({id: i, name: `category${i}`, size: 0});
-// }
+app.post('/api/tabinfo/website', async (req, res) => {
+    const action = req.body;
+    console.log(action); //dbg
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    let query;
+    try {
+        switch (action.type) {
+            case 'FETCH':
+                break;
+            case 'EDITMEMO':
+                query = "UPDATE tabinfo SET memo=? WHERE id=?";
+                conn.query(query, [action.value, action.id]);
+                break;
+            case "REMOVE":
+                query = "DELETE FROM tabinfo WHERE id=?";
+                conn.query(query, [action.id]);
+                if (action.category != "DEFAULT") {
+                    query = 'UPDATE category SET size=size-1 WHERE name=?';
+                    conn.query(query, [action.category]);
+                }
+                break;
+        }
+        query = "SELECT * FROM tabinfo";
+        const [rows] = await conn.query(query);
+        res.send(rows);
+    } catch (error) {
+        console.log(error);
+    } finally {
+        conn.release();
+    }
+
+
+});
 
 app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용
@@ -100,81 +129,6 @@ app.get('/api/category', async (req, res) => {
         conn.release();
     }
 
-});
-
-app.get('/api/content', async (req, res) => {
-
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-
-    try {
-        const query = 'SELECT * FROM tabinfo';
-        const [rows] = await conn.query(query);
-        console.log(rows); //확인용
-        res.send(rows);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        conn.release();
-    }
-});
-
-app.put('/api/remove', async (req, res) => {
-
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-    const date = req.body.date;
-
-    try {
-        const query = (`DELETE FROM tabinfo WHERE date=${date}`);
-        const [rows] = await conn.query(query);
-        console.log(rows);
-        res.send(rows);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        conn.release();
-    }
-});
-
-app.put('/api/editMemo', async (req, res) => {
-
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-    console.log(req.body);
-    const date = req.body.date;
-    const memo = req.body.memo;
-
-    try {
-        const query = (`UPDATE tabinfo SET memo='${memo}' WHERE date=${date}`);
-        const [rows] = await conn.query(query);
-        console.log(rows);
-        res.send(rows);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        conn.release();
-    }
-});
-
-app.put('/api/editCategory', async (req, res) => {
-
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-    console.log(req.body);
-    const date = req.body.date;
-    const category = req.body.category;
-
-    try {
-        const query = (`UPDATE tabinfo SET memo='${category}' WHERE date=${date}`);
-        const [rows] = await conn.query(query);
-        console.log(rows);
-        res.send(rows);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        conn.release();
-    }
 });
 
 app.get('api/user', async (req, res) => {

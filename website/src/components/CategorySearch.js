@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useSearchCategoryList } from "./InfoContext";
 import { MdClear } from 'react-icons/md';
@@ -11,11 +11,9 @@ const CategorySearchBox = styled.div`
 
     .clear-icon{
         visibility: ${props => props.show? 'visible' : 'hidden'};
-        color: red;
         text: center;
         margin-top: 1px;
         cursor: pointer;
-        // weight: bold;
         font-size: 20px;
     }
 `
@@ -28,7 +26,10 @@ function CategorySearch() {
     const [input, setInput] = useState('');
     const searchList = useSearchCategoryList();
     const [show, setShow] = useState(false); // MdClear icon 보일 여부
-    // input에 focus in(onFocus) 하면 show=true, focus out(onBlur) 하면 show=false
+    // input에 focus in(onFocus) 하면 show=true
+    // focus out(onBlur) 하면, 검색창에 아무것도 없을 때 show=false
+
+    const inputRef = useRef(); // 리셋 버튼 누를 때 검색창에 focus 하기 위함
 
     // 입력값이 변할 때마다 검색함
     const onChange = (e) => {
@@ -40,11 +41,17 @@ function CategorySearch() {
 
     const onClick = () => {
         setInput('');
+        searchList('');
+        setShow(false);
+        inputRef.current.focus();
     }
 
     return (
-        <CategorySearchBox show={show}>
-            <SearchInput placeholder='Search Category' value={input} onChange={onChange} onFocus={()=>{setShow(true)}} onBlur={()=>{setShow(false)}}/>
+        <CategorySearchBox onFocus={()=>{setShow(true)}} onBlur={()=>{
+            if(!input) setShow(false);
+            // 조건 없으면 버튼 먼저 사라져서 리셋 안 됨.
+        }} show={show}>
+            <SearchInput placeholder='Search Category' value={input} onChange={onChange} ref={inputRef}/>
             <MdClear className="clear-icon" onClick={onClick}/>
         </CategorySearchBox>
     );
