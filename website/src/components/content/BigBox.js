@@ -11,7 +11,7 @@ const BoxBlock = styled.div`
   margin: 7px 9px;
 
   width: 280px;
-  height: 250px;
+  height: 260px;
   overflow: clip;
 
   display: flex;
@@ -46,7 +46,7 @@ const BoxBlock = styled.div`
   }
 
   .memo {
-    height: 50px;
+    height: 60px;
     overflow-y: auto;
     font-size: 13px;
   }
@@ -180,7 +180,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
             <div className='category' onClick={onClickCategory} style={{ cursor: 'pointer' }}>{category}</div>}
         </div>
 
-        <div className='date'>{date.substr(0, 8)}</div>
+        <div className='date'>{date.substr(0, 4)}-{date.substr(4,2)}-{date.substr(6,2)} {date.substr(8,2)}:{date.substr(10,2)}</div>
         <MdDelete onClick={onRemove} style={{ cursor: 'pointer', color: 'red' }} />
       </div>
 
