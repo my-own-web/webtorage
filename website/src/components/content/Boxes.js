@@ -52,7 +52,6 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return dateRange[0] <= e.date && e.date <= dateRange[1];
   });
 
-  //const datas = metaData; //일단 박스 하나만 있다고 가정함: map 함수 작동 안함
   datas.sort(function (a, b) {
     return b.date - a.date;
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
@@ -76,14 +75,14 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
               memo={data.memo}
             />)) : datas.map(data => (
               <SmallBox
-              id={data.id}
-              category={data.category}
-              title={data.title}
-              data_url={data.data_url}
-              image={data.image}
-              description={data.description}
-              date={data.date}
-              memo={data.memo}
+                id={data.id}
+                category={data.category}
+                title={data.title}
+                data_url={data.data_url}
+                image={data.image}
+                description={data.description}
+                date={data.date}
+                memo={data.memo}
               />))}
         </BoxesBlock>
       </WebContentBlock>

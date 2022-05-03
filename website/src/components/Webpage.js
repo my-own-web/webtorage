@@ -1,4 +1,5 @@
-import React, {useState} from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
 import WebSidebar from './WebSidebar';
@@ -23,10 +24,18 @@ const WebBodyTemplate = styled.div`
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
+    const [didLogin, setDidLogin] = useState(0);
+    const navigate = useNavigate();
 
     function onClick() {
         setBoxSize(1 - boxSize);
         console.log('changesize!'); //dbg
+    }
+
+    function onLogin() {
+        if (didLogin === 0)
+            navigate('/login');
+        //setDidLogin(1 - didLogin);
     }
 
     return (
@@ -35,7 +44,7 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onClick={onClick} />
+                    <WebSubHeader boxSize={boxSize} onClick={onClick} didLogin={didLogin} onLogin={onLogin} />
                     <Boxes boxSize={boxSize} />
                 </WebBodyTemplate>
             </WebTemplateBlock>

@@ -10,7 +10,7 @@ const BoxBlock = styled.div`
   border-radius: 5px;
   border: 2px solid #DBDCF5;
   margin: 5px 5px;;
-  width: 167px;
+  width: 160px;
   height: 150px;
 `;
 //박스 하나의 전체 디자인
@@ -57,16 +57,28 @@ const Description = styled.div`
   /*아래 밑줄: div 태그로 인해 box padding 부분 제외한 전체에 밑줄 그려짐*/
 `;
 
-const Memo = styled.div`
-  //display: flex; //메모 글자와 input 칸을 한줄에 놓기 위해서
+const MemoBox = styled.div`
+  display: flex;
   padding-top: 3px;
-  font-size: 10px;
+  font-size: 9px;
+  color:black;
+`
+
+const Memo = styled.div`
+  //margin-right: 2px;
+  width: 26px;
+  font-size: 9px;
   color:black;
 `;
 
 const WriteMemo = styled.input`
-  width: 110px;
-  padding-top: 3px;
+  width: 100px;
+  //padding-top: 3px;
+  font-size: 9px;
+`
+
+const WriteCategory = styled.input`
+  width: 145px;
   font-size: 10px;
 `
 
@@ -86,8 +98,8 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
   const [editCategory, setEditCategory] = useState(false);
   const [changeCategory, setChangeCategory] = useState(category);
 
-  const onRemove = () => { 
-    dispatch({ type: 'REMOVE', id, category }) 
+  const onRemove = () => {
+    dispatch({ type: 'REMOVE', id, category })
   };
 
   const onEditMemo = (e) => {
@@ -97,7 +109,7 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
     setChangeCategory(e.target.value);
   }
 
-  const onSaveMemo = () =>{
+  const onSaveMemo = () => {
     dispatch({
       type: "EDITMEMO",
       id,
@@ -106,7 +118,7 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
   };
 
   const onClickMemo = () => {
-    if(editMemo) onSaveMemo();
+    if (editMemo) onSaveMemo();
     setEditMemo(!editMemo);
   }
 
@@ -114,8 +126,16 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
     setEditCategory(!editCategory);
   }
 
+  const onFinishMemo = (e) => {
+    e.preventDefault();
+    dispatch({ type: 'MEMO', date, memo: changeMemo });
+  }
+  const onFinishCategory = (editCategory) => {
+    return editCategory ? dispatch({ type: 'CATEGORY', date, category: changeCategory }) : ''
+  }
+
   const onCategory = (editCategory) => {
-    return editCategory ? <input autoFocus value={changeCategory} onChange={onEditCategory} /> : ''
+    return editCategory ? <WriteCategory autoFocus value={changeCategory} onChange={onEditCategory} /> : ''
   }
 
   return (
@@ -129,11 +149,11 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
       <Url>URL: <a href={data_url}>{`"${data_url}"`}</a></Url>
       <Image><img src={image} width="200" height="120"></img></Image>
       <Description>{description}</Description>
-      <Memo>{'메모: '}{editMemo ? 
+      <Memo>{'메모: '}{editMemo ?
         <div>
           <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
           <MdEdit onClick={onClickMemo} />
-        </div> : 
+        </div> :
         <div>
           {changeMemo}<MdEdit onClick={onClickMemo} />
         </div>}

@@ -98,7 +98,6 @@ const SetDateRangeContext = createContext(null);
 
 export function InfoProvider({ children }) {
   const [content, setContent] = useState([]);
-
   const [currentCategory, setCurrentCategory] = useState('ALL');
 
   // 전체 카테고리 리스트
@@ -116,8 +115,8 @@ export function InfoProvider({ children }) {
     } catch (error) {
       console.log(error);
 
-       // dbg: 서버 안 켰을 때 디버그용
-       if (process.env.NODE_ENV === "development") {
+      // dbg: 서버 안 켰을 때 디버그용
+      if (process.env.NODE_ENV === "development") {
         setContent(initialContent);
       }
     }
