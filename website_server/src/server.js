@@ -5,7 +5,7 @@ const port = 3001;
 // cors policy 무시
 const cors = require('cors');
 app.use(cors({
-    origin: 'http://localhost:3000',
+    origin: true,
     credentials: true // 크로스 도메인 허용
 }));
 
@@ -14,9 +14,13 @@ const bodyParser = require('body-parser');
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
+// crypto 사용
+const { pbkdf2, pbkdf2Sync } = require('crypto');
+
 // DB(MYSQL) 연동
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv').config(); // 민감한 정보 숨기기 위해 사용 
+const randomSalt = process.env.SALT;
 
 const options = {
     host: process.env.MYSQL_HOST,
@@ -193,9 +197,12 @@ app.post('/api/user/login', async (req, res) => {
     console.log(req.body);
     const Id = req.body.Id;
     const Password = req.body.Password;
+    const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
 
     try {
-        const [rows] = await conn.query(`SELECT COUNT(*) AS num FROM users WHERE Id='${Id}' AND Password='${Password}'`);
+        const sql = `SELECT COUNT(*) AS num FROM users WHERE Id=? AND Password=?`;
+        const params = [Id, cryptedPassword];
+        const [rows] = await conn.query(sql, params);
         if (rows[0].num)
             res.send('OK');
         else
@@ -205,7 +212,7 @@ app.post('/api/user/login', async (req, res) => {
     } finally {
         conn.release();
     }
-});
+}); //현재 hello 안녕 각각 아이디와 비밀번호로 입력되어 있음
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)

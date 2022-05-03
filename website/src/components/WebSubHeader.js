@@ -12,7 +12,7 @@ const WebSubHeaderBlock = styled.div`
     border-bottom: solid 1px;
 
     display: grid;
-    grid-template-columns: 1fr 75px 200px;
+    grid-template-columns: 1fr 75px 170px 75px; //각각 button(item들) 사이 간격 결정
     gap: 5px;
     // grid-template-rows: 1fr 1fr;
     align-items: center;
@@ -34,6 +34,7 @@ const SizeButton = styled.button`
       background: #dd9ffc;
   }
 `
+
 export default function WebSubHeader({ boxSize, onClick, didLogin, onLogin }) {
     const currentCategory = useCurrentCategory();
 

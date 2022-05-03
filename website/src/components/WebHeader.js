@@ -1,4 +1,5 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 
 const WebHeadBlock = styled.div`
@@ -22,6 +23,7 @@ const WebHeadBlock = styled.div`
 
     h1 {
         margin: 5px 0 5px 0;
+        cursor: pointer;
 
         // 제목 가운데 정렬
         flex-basis: 100%;
@@ -30,11 +32,18 @@ const WebHeadBlock = styled.div`
     }
 `
 
-function WebHeader(){
-    return(
+function WebHeader() {
+
+    const navigate = useNavigate();
+
+    const onClick = () => {
+        navigate('/');
+    }
+
+    return (
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
-            <h1>Webtorage</h1>
+            <h1 onClick={onClick}>Webtorage</h1>
         </WebHeadBlock>
     );
 }

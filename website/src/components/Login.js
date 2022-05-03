@@ -3,34 +3,36 @@ import { useNavigate } from 'react-router-dom';
 import styled, { createGlobalStyle } from "styled-components";
 import { darken } from 'polished';
 import { TodoApi } from '../utils/axios';
+import WebHeader from './WebHeader';
 
 const LoginBlock = styled.div`
-  width: 512px;
-  height: 550px;
-  background: #DAEBE2;
+  width: 600px;
+  //background: #DAEBE2;
+  background: #BFDCF4;
+  //background: #DEF1F7;
   border-radius: 12px; /*둥그란 정도*/
   margin: 0 auto; /* 페이지 중앙에 나타나도록 설정 */
-  margin-top: 96px;
-  margin-bottom: 96px;
+  margin-top: 35px;
+  justify-content: center;
   display: flex; /*요소들을 자유자제로 위치시키는 속성, block처럼 container 수직 쌓임*/
   flex-direction: column; //Item의 주 축이 수직
 `;
 
 const GlobalStyle = createGlobalStyle`
   body {
-    //background: #e9ecef;
-    background: white;
+    //background: #DEF1F7;
+    background: #e9ecef;
+    //background: white;
   }
 `;
 
 const LoginHeader = styled.div`
-  padding: 30px 32px 30px 24px;
-  display: flex;
-  justify-content: center;
+  padding: 20px 20px 30px 20px;
   border-bottom: 1px solid #e9ecef;
   h1 {
     margin: 0;
     font-size: 40px;
+    text-align: center;
     color: #343a40;
   }
 `;
@@ -39,35 +41,39 @@ const LoginBody = styled.div`
   display: block;
   padding: 10px 15px;
   align-items: center;
+  border-radius: 0px 0px 12px 12px;
   background: #BFDCF4;
+  h2 {
+    margin: 10px;
+  }
 `;
 
 const LoginInput = styled.input`
   border-radius: 8px;
   border: 1px solid #ada7ab;
   width: 90%;
+  transform: translate(2%);
   height: 45px;
-  font-size: 20px; //왜 적용 안될까
+  font-size: 15px;
   align-items: center;
   justify-content: center;
-  margin: 5px 20px;
-  font-size: 12px;
+  margin: 5px 10px;
 `;
 
 const LoginButton = styled.button`
-  width: 80%;
+  width: 82%;
   height: 55px;
-  justify-content: center;
-  align-items: center;
-  transform: translate(12%,50%);
-  font-size: 15px;
+  transform: translate(9%);
+  font-size: 16px;
   border: 1px solid #ada7ab;
   border-radius: 10px;
-  background: #e2e2e2;
-  margin-top: 20px;
+  //background: #e2e2e2;
+  background: #BCE9E8;
+  margin-top: 30px;
+  margin-bottom: 20px;
 
   &:hover {
-    background: ${darken(0.1, '#e2e2e2')};
+    background: ${darken(0.1, '#BCE9E8')};
   }
 `;
 
@@ -97,7 +103,7 @@ function Login() {
         alert("성공적으로 로그인되었습니다.");
         navigate('/');
       }
-      else if (res.data === 'Invalid User') { //didLogin이 false일 때
+      else if (res.data === 'Invalid User') {
         alert("아이디 또는 비밀번호를 확인하세요.");
       }
     } catch (err) {
@@ -135,8 +141,9 @@ function Login() {
 
   return (
     <div>
+      <GlobalStyle />
+      <WebHeader />
       <LoginBlock>
-        <GlobalStyle />
         <LoginHeader>
           <h1>Login Page</h1>
         </LoginHeader>
