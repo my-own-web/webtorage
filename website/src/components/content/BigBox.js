@@ -45,10 +45,36 @@ const BoxBlock = styled.div`
     text-overflow: ellipsis;
   }
 
-  .memo {
+  .memo-box {
+    display: flex;
+    gap: 3px;
     height: 60px;
+  }
+
+  .memo{
+    width: 280px;
+    padding-left: 3px;
     overflow-y: auto;
     font-size: 13px;
+    font-family: sans-serif;
+    border: solid 1px #DBDCF5;
+  }
+
+  .textarea{
+    width: 280px;
+    resize:none;
+    padding-left: 3px;
+    font-size: 13px;
+    font-family: sans-serif;
+    border: ${props => props.editMemo ? 'solid 1px red' : 'solid 1px #DBDCF5'}
+  }
+
+  .memo-save-button{
+    cursor: pointer;
+    height: 20px;
+    width: 20px;
+    padding: 0 0 0 0;
+    border: solid 1px #DBDCF5;
   }
 
   .box-footer{
@@ -75,12 +101,6 @@ const BoxBlock = styled.div`
 
 `;
 //박스 하나의 전체 디자인
-
-const WriteMemo = styled.input`
-  width: 200px;
-  padding-top: 3px;
-  font-size: 10px;
-`
 
 function BigBox({ id, category, title, data_url, image, description, date, memo }) {
   const dispatch = useContentDispatch();
@@ -125,6 +145,8 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   };
 
   const onSaveMemo = () => {
+    console.log(changeMemo); // dbg
+    setEditMemo(false);
     dispatch({
       type: "EDITMEMO",
       id,
@@ -132,33 +154,21 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
     });
   };
 
-  const onClickMemo = () => {
-    if (editMemo) onSaveMemo();
-    setEditMemo(!editMemo);
-  }
-
   const onClickCategory = () => {
     setEditCategory(!editCategory);
     console.log('change editCategory');
   }
 
   return (
-    <BoxBlock>
+    <BoxBlock editMemo={editMemo}>
       <h3>{title}</h3>
       <a href={data_url}>{data_url}</a>
       <div className='description'>{description}</div>
-      <img src={image} width='280px' height='100px'/>
+      <img src={image} width='280px' height='100px' />
 
-      <div className='memo'>
-        {editMemo ?
-          <div>
-            <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
-            <MdEdit onClick={onClickMemo} style={{ cursor: 'pointer' }} />
-          </div> :
-          <div>
-            {changeMemo}<MdEdit onClick={onClickMemo} style={{ cursor: 'pointer' }} />
-          </div>
-        }
+      <div className='memo-box'>
+        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)}>{changeMemo}</textarea>
+        <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
       </div>
 
       <div className='box-footer'>
@@ -180,7 +190,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
             <div className='category' onClick={onClickCategory} style={{ cursor: 'pointer' }}>{category}</div>}
         </div>
 
-        <div className='date'>{date.substr(0, 4)}-{date.substr(4,2)}-{date.substr(6,2)} {date.substr(8,2)}:{date.substr(10,2)}</div>
+        <div className='date'>{date.substr(0, 4)}-{date.substr(4, 2)}-{date.substr(6, 2)} {date.substr(8, 2)}:{date.substr(10, 2)}</div>
         <MdDelete onClick={onRemove} style={{ cursor: 'pointer', color: 'red' }} />
       </div>
 
