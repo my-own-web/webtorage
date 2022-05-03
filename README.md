@@ -1,9 +1,10 @@
 # webtorage
 
 ## 1. 역할 분담
-  - 박정규 : 크롬 익스텐션 (dir: `chrome_extension`)
-  - 권지은 : 웹사이트 - 전체적인 틀 (dir: `website`)
-  - 이소연 : 웬사이트 - 사이트 미리보기 시각화 (dir: `web`)
+  - juk1329 : 크롬 익스텐션 (dir: `chrome_extension`)
+  - lectura7942 : 웹사이트 - 전체적인 틀 (dir: `website`)
+  - lee0594 : 웬사이트 - 사이트 미리보기 시각화 (dir: `web`)
+  - hamuneulbo
 
 ## 2. 사용할 데이터
   1. og.url, og.title, og.description, og.image
