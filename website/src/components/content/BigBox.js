@@ -92,14 +92,16 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   const cglist = useCategoryList();
   const [input, setInput] = useState('');
 
-  const onChange = (e) =>{
-      setInput(e.target.value);
+  const onChange = (e) => {
+    setInput(e.target.value);
   }
 
-  const onInput = (e) =>{//엔터키로도 입력 가능하도록
-      if(e.key == 'Enter'){
-          console.log(input);
-      }
+  const onInput = (e) => {//엔터키로도 입력 가능하도록
+    if (e.key == 'Enter') {
+      dispatch({ type: 'EDITCATEGORY', id, old_category: category, new_category: input });
+      setInput('');
+      setEditCategory(false);
+    }
   };
 
   const onExit = () => {
@@ -108,7 +110,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   }
 
   const onSaveCategory = () => {
-    console.log(input);
+    dispatch({ type: 'EDITCATEGORY', id, old_category: category, new_category: input });
     setInput('');
     setEditCategory(false);
   }
@@ -148,40 +150,40 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
       <img src={image} width='280px' height='100px'/>
 
       <div className='memo'>
-        {editMemo ? 
-        <div>
-          <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
-          <MdEdit onClick={onClickMemo} style={{cursor: 'pointer'}}/>
-        </div> : 
-        <div>
-          {changeMemo}<MdEdit onClick={onClickMemo} style={{cursor: 'pointer'}} />
-        </div>
+        {editMemo ?
+          <div>
+            <WriteMemo autoFocus value={changeMemo} onChange={onEditMemo} />
+            <MdEdit onClick={onClickMemo} style={{ cursor: 'pointer' }} />
+          </div> :
+          <div>
+            {changeMemo}<MdEdit onClick={onClickMemo} style={{ cursor: 'pointer' }} />
+          </div>
         }
       </div>
 
       <div className='box-footer'>
         <div className='category-select-container'>
 
-        {editCategory? 
-        <>
-        <input list="category-list" className="category-choice" name="category-choice" placeholder={category} onChange={onChange} value = {input} onKeyPress={onInput}/>
+          {editCategory ?
+            <>
+              <input list="category-list" className="category-choice" name="category-choice" placeholder={category} onChange={onChange} value={input} onKeyPress={onInput} />
 
-        <datalist id="category-list">
-            {cglist.map((cg) => (
-            <option value = {cg.name}></option>
-            ))}
-        </datalist>
+              <datalist id="category-list">
+                {cglist.map((cg) => (
+                  <option value={cg.name}></option>
+                ))}
+              </datalist>
 
-        <MdClear onClick={onExit} style={{cursor: 'pointer'}}/>
-        <MdCheck onClick={onSaveCategory} style={{cursor: 'pointer'}}/> 
-      </>: 
-        <div className='category' onClick={onClickCategory} style={{cursor: 'pointer'}}>{category}</div>}
-      </div>
+              <MdClear onClick={onExit} style={{ cursor: 'pointer' }} />
+              <MdCheck onClick={onSaveCategory} style={{ cursor: 'pointer' }} />
+            </> :
+            <div className='category' onClick={onClickCategory} style={{ cursor: 'pointer' }}>{category}</div>}
+        </div>
 
         <div className='date'>{date.substr(0, 8)}</div>
-        <MdDelete onClick={onRemove} style={{cursor: 'pointer', color: 'red'}}/>
+        <MdDelete onClick={onRemove} style={{ cursor: 'pointer', color: 'red' }} />
       </div>
-      
+
     </BoxBlock >
   );
 }

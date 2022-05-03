@@ -93,6 +93,23 @@ app.post('/api/tabinfo/website', async (req, res)=>{
           conn.query(query, [action.category]);
         }
         break;
+      case 'EDITCATEGORY':
+        {
+          query = 'SELECT id FROM category WHERE name=?';
+          const [row] = await conn.query(query, [action.new_category]);
+          if(!row[0]) {
+            // insert new category
+            query = 'INSERT INTO category(name) VALUES(?)';
+            conn.query(query, [action.new_category]);
+          }
+          // -1 to old category size
+          conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
+          // +1 to new category size
+          conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
+          // update category of tab
+         conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
+        break;
+        }
     }
     query = "SELECT * FROM tabinfo";
     const [rows] = await conn.query(query);
