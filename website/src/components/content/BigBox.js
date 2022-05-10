@@ -175,7 +175,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
       <img src={image} width='280px' height='100px' />
 
       <div className='memo-box'>
-        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)}>{changeMemo}</textarea>
+        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
         <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
       </div>
 

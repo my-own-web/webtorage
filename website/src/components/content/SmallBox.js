@@ -177,7 +177,7 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
       <img src={image} className='image' />
 
       <div className='memo-box'>
-        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)}>{changeMemo}</textarea>
+        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
         <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
       </div>
 

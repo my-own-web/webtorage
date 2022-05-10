@@ -64,7 +64,7 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
-            <BigBox className='small-box'
+            <BigBox
               key={data.id}
               id={data.id}
               category={data.category}
@@ -76,6 +76,7 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
               memo={data.memo}
             />)) : datas.map(data => (
               <SmallBox
+                key={data.id}
                 id={data.id}
                 category={data.category}
                 title={data.title}
