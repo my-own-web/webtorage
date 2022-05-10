@@ -76,6 +76,7 @@ const BoxBlock = styled.div`
     width: 20px;
     padding: 0 0 0 0;
     border: solid 1px #DBDCF5;
+    color: ${props => props.editMemo ? 'red' : 'black'}
   }
 
   .box-footer{
