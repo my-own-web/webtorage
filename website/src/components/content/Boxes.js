@@ -8,7 +8,7 @@ const WebContentBlock = styled.div`
   // background: pink; // dbg: 하얀색으로 변경?
   min-height: 100vh; // 70vh; // dbg: 
   display: block;
-  padding: 5px;
+  // padding: 5px;
   // border: solid gray 1px; // dbg
 `
 
@@ -19,7 +19,8 @@ const BoxesBlock = styled.div`
   // background: pink; // dbg
   display: flex;
   flex-wrap: wrap; /*item이 container의 너비를 초과하면 줄바꿈함*/
-  padding: 10px;
+  padding: 10px 15px 10px 15px;
+  gap: 10px;
 `;
 //여러 박스들이 모여있을 때의 전체 색깔, 위치 등
 //height를 지정하지 않아 item들이 쌓일 때 그것에 맞게 height가 변하도록 함
@@ -63,7 +64,7 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
-            <BigBox
+            <BigBox className='small-box'
               key={data.id}
               id={data.id}
               category={data.category}

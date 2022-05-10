@@ -8,7 +8,8 @@ const BoxBlock = styled.div`
   // background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
-  margin: 7px 9px;
+  // margin: 7px 9px;
+  // margin: 7px 9px 3px 0px;
 
   width: 280px;
   height: 260px;
@@ -86,12 +87,18 @@ const BoxBlock = styled.div`
     align-items: center;
   }
 
-  .category, .date{
+  .category{
+    font-size: 13px;
+    padding: 3px 0;
+  }
+
+  .date{
     font-size: 13px;
   }
 
   .category-select-container{
     width: 140px;
+    height: 25px;
     text-decoration: underline;
   }
 
