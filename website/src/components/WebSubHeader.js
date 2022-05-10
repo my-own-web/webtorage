@@ -22,7 +22,7 @@ const WebSubHeaderBlock = styled.div`
     // justify-content: space-between;
     // padding: 0px 5px 0px 5px;
 `
-const SizeButton = styled.button`
+const SubHeaderButton = styled.button`
   height: 25px;
   width: 75px;
   background: #E5B2FF;
@@ -43,11 +43,11 @@ export default function WebSubHeader({ boxSize, onClick, didLogin, onLogin }) {
     return (
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
-            <SizeButton onClick={() => {
+            <SubHeaderButton onClick={() => {
                 onClick();
-            }}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
+            }}>{boxSize ? "작게보기" : "크게보기"}</SubHeaderButton>
             <DateButton />
-            <SizeButton onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</SizeButton>
+            <SubHeaderButton onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</SubHeaderButton>
         </WebSubHeaderBlock>
     );
 }
