@@ -97,6 +97,7 @@ const BoxBlock = styled.div`
 
   .delete-icon{
     grid-row-start: 2;
+    justify-self: end;
   }
 
   .category-select-container{
