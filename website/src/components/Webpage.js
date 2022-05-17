@@ -24,18 +24,41 @@ const WebBodyTemplate = styled.div`
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
-    const [didLogin, setDidLogin] = useState(0);
-    const navigate = useNavigate();
+    const [select, setSelect] = useState(false);
+    const [selectedItems, setSelectedItems] = useState(new Set());
 
-    function onClick() {
+    // 사이즈 버튼 눌렀을 때
+    function onChangeSize() {
         setBoxSize(1 - boxSize);
         console.log('changesize!'); //dbg
     }
 
-    function onLogin() {
-        if (didLogin === 0)
-            navigate('/login');
-        //setDidLogin(1 - didLogin);
+    // 선택 버튼 눌렀을 때
+    function onClickSelect() {
+        if (!select) {
+            selectedItems.clear();
+        }
+        setSelect(!select);
+    }
+
+    // 체크 박스 체크할 때
+    function onCheck(e) {
+        // console.log(e.target.id, e.target.checked);
+        // e.target.checked = !e.target.checked;
+        if (e.target.checked) {
+            selectedItems.add(e.target.id);
+        }
+        else {
+            selectedItems.delete(e.target.id);
+        }
+        console.log('selected', selectedItems);
+    }
+
+    // 선택한 미리보기들 삭제
+    function onClickDelete() {
+        selectedItems.map((e) => {
+            console.log(e.id);
+        })
     }
 
     return (
@@ -44,8 +67,8 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onClick={onClick} didLogin={didLogin} onLogin={onLogin} />
-                    <Boxes boxSize={boxSize} />
+                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} />
+                    <Boxes boxSize={boxSize} select={select} onCheck={onCheck} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
         </>

@@ -38,7 +38,7 @@ function configDateRange(range) {
   return [start, end];
 }
 
-function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
+function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
   const currentCategory = useCurrentCategory();
   const dateRange = configDateRange(useDateRange());
 
@@ -57,24 +57,25 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return b.date - a.date;
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
-  console.log(datas); // dbg
-
   return (
     <div>
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
-            <BigBox
-              key={data.id}
-              id={data.id}
-              category={data.category}
-              title={data.title}
-              data_url={data.data_url}
-              image={data.image}
-              description={data.description}
-              date={data.date}
-              memo={data.memo}
-            />)) : datas.map(data => (
+            <div>
+              {select ? <input type='checkbox' id={data.id} onChange={onCheck} /> : ''}
+              <BigBox
+                key={data.id}
+                id={data.id}
+                category={data.category}
+                title={data.title}
+                data_url={data.data_url}
+                image={data.image}
+                description={data.description}
+                date={data.date}
+                memo={data.memo}
+              />
+            </div>)) : datas.map(data => (
               <SmallBox
                 key={data.id}
                 id={data.id}
