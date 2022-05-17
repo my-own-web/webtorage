@@ -60,8 +60,20 @@ function Webpage() {
     function onClickDelete() {
         content.forEach((el) => {
             if (selectedItems.has(el.id)) {
-                console.log(el.id, el.category); // dbg
+                console.log('delete', el.id, el.category); // dbg
                 dispatch({ type: 'REMOVE', id: el.id, category: el.category });
+            }
+        });
+        selectedItems.clear();
+        setSelect(false);
+    }
+
+    // 선택한 미리보기 카테고리 수정
+    function onChangeCategory(new_category) {
+        content.forEach((el) => {
+            if (selectedItems.has(el.id)) {
+                console.log('change category', el.id, el.category); // dbg
+                dispatch({ type: 'EDITCATEGORY', id: el.id, old_category: el.category, new_category });
             }
         });
         selectedItems.clear();
@@ -74,7 +86,7 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} />
+                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} />
                     <Boxes boxSize={boxSize} select={select} onCheck={onCheck} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
