@@ -116,7 +116,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   const [changeMemo, setChangeMemo] = useState(memo);
   const [editCategory, setEditCategory] = useState(false);
 
-  // category select dropbox
+  // $begin category select dropbox
   const cglist = useCategoryList();
   const [input, setInput] = useState('');
 
@@ -142,10 +142,10 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
     setInput('');
     setEditCategory(false);
   }
-  // ---
+  // $end category select dropbox
 
   const onRemove = () => {
-    dispatch({ type: 'REMOVE', id, category })
+    dispatch({ type: 'REMOVE', id, category });
   };
 
   const onEditMemo = (e) => {
@@ -176,7 +176,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
 
       <div className='memo-box'>
         <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
-        <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
+        <button className='memo-save-button' onClick={onSaveMemo}><MdCheck /></button>
       </div>
 
       <div className='box-footer'>
