@@ -63,7 +63,7 @@ function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date�
         <BoxesBlock>
           {boxSize ? datas.map(data => (
             <div>
-              {select ? <input type='checkbox' id={data.id} onChange={onCheck} /> : ''}
+              {select ? <input type='checkbox' id={data.id} category={data.category} onChange={onCheck} /> : ''}
               <BigBox
                 key={data.id}
                 id={data.id}

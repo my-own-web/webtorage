@@ -5,6 +5,7 @@ import WebHeader from './WebHeader';
 import WebSidebar from './WebSidebar';
 import WebSubHeader from './WebSubHeader';
 import Boxes from './content/Boxes';
+import { useContent, useContentDispatch } from './InfoContext';
 
 const WebTemplateBlock = styled.div`
     // background: gray;
@@ -26,6 +27,8 @@ function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
     const [select, setSelect] = useState(false);
     const [selectedItems, setSelectedItems] = useState(new Set());
+    const content = useContent();
+    const dispatch = useContentDispatch();
 
     // 사이즈 버튼 눌렀을 때
     function onChangeSize() {
@@ -43,22 +46,26 @@ function Webpage() {
 
     // 체크 박스 체크할 때
     function onCheck(e) {
-        // console.log(e.target.id, e.target.checked);
-        // e.target.checked = !e.target.checked;
+        // Number() 사용하지 않으면 string으로 들어감
         if (e.target.checked) {
-            selectedItems.add(e.target.id);
+            selectedItems.add(Number(e.target.id));
         }
         else {
-            selectedItems.delete(e.target.id);
+            selectedItems.delete(Number(e.target.id));
         }
         console.log('selected', selectedItems);
     }
 
     // 선택한 미리보기들 삭제
     function onClickDelete() {
-        selectedItems.map((e) => {
-            console.log(e.id);
-        })
+        content.forEach((el) => {
+            if (selectedItems.has(el.id)) {
+                console.log(el.id, el.category); // dbg
+                dispatch({ type: 'REMOVE', id: el.id, category: el.category });
+            }
+        });
+        selectedItems.clear();
+        setSelect(false);
     }
 
     return (
