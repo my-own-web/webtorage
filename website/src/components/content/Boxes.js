@@ -8,7 +8,7 @@ const WebContentBlock = styled.div`
   // background: pink; // dbg: 하얀색으로 변경?
   min-height: 100vh; // 70vh; // dbg: 
   display: block;
-  padding: 5px;
+  // padding: 5px;
   // border: solid gray 1px; // dbg
 `
 
@@ -19,7 +19,8 @@ const BoxesBlock = styled.div`
   // background: pink; // dbg
   display: flex;
   flex-wrap: wrap; /*item이 container의 너비를 초과하면 줄바꿈함*/
-  padding: 10px;
+  padding: 10px 15px 10px 15px;
+  gap: 10px;
 `;
 //여러 박스들이 모여있을 때의 전체 색깔, 위치 등
 //height를 지정하지 않아 item들이 쌓일 때 그것에 맞게 height가 변하도록 함
@@ -37,7 +38,7 @@ function configDateRange(range) {
   return [start, end];
 }
 
-function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
+function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
   const currentCategory = useCurrentCategory();
   const dateRange = configDateRange(useDateRange());
 
@@ -56,25 +57,27 @@ function Boxes({ boxSize }) { //더 늦게 저장한 순(date가 늦은 순)으�
     return b.date - a.date;
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
-  console.log(datas); // dbg
-
   return (
     <div>
       <WebContentBlock>
         <BoxesBlock>
           {boxSize ? datas.map(data => (
-            <BigBox
-              key={data.id}
-              id={data.id}
-              category={data.category}
-              title={data.title}
-              data_url={data.data_url}
-              image={data.image}
-              description={data.description}
-              date={data.date}
-              memo={data.memo}
-            />)) : datas.map(data => (
+            <div>
+              {select ? <input type='checkbox' id={data.id} category={data.category} onChange={onCheck} /> : ''}
+              <BigBox
+                key={data.id}
+                id={data.id}
+                category={data.category}
+                title={data.title}
+                data_url={data.data_url}
+                image={data.image}
+                description={data.description}
+                date={data.date}
+                memo={data.memo}
+              />
+            </div>)) : datas.map(data => (
               <SmallBox
+                key={data.id}
                 id={data.id}
                 category={data.category}
                 title={data.title}

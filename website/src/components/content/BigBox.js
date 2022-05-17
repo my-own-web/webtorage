@@ -8,7 +8,8 @@ const BoxBlock = styled.div`
   // background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
-  margin: 7px 9px;
+  // margin: 7px 9px;
+  // margin: 7px 9px 3px 0px;
 
   width: 280px;
   height: 260px;
@@ -75,6 +76,7 @@ const BoxBlock = styled.div`
     width: 20px;
     padding: 0 0 0 0;
     border: solid 1px #DBDCF5;
+    color: ${props => props.editMemo ? 'red' : 'black'}
   }
 
   .box-footer{
@@ -86,12 +88,18 @@ const BoxBlock = styled.div`
     align-items: center;
   }
 
-  .category, .date{
+  .category{
+    font-size: 13px;
+    padding: 3px 0;
+  }
+
+  .date{
     font-size: 13px;
   }
 
   .category-select-container{
     width: 140px;
+    height: 25px;
     text-decoration: underline;
   }
 
@@ -108,7 +116,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
   const [changeMemo, setChangeMemo] = useState(memo);
   const [editCategory, setEditCategory] = useState(false);
 
-  // category select dropbox
+  // $begin category select dropbox
   const cglist = useCategoryList();
   const [input, setInput] = useState('');
 
@@ -134,10 +142,10 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
     setInput('');
     setEditCategory(false);
   }
-  // ---
+  // $end category select dropbox
 
   const onRemove = () => {
-    dispatch({ type: 'REMOVE', id, category })
+    dispatch({ type: 'REMOVE', id, category });
   };
 
   const onEditMemo = (e) => {
@@ -167,8 +175,8 @@ function BigBox({ id, category, title, data_url, image, description, date, memo 
       <img src={image} width='280px' height='100px' />
 
       <div className='memo-box'>
-        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)}>{changeMemo}</textarea>
-        <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
+        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
+        <button className='memo-save-button' onClick={onSaveMemo}><MdCheck /></button>
       </div>
 
       <div className='box-footer'>
