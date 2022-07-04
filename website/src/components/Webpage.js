@@ -16,9 +16,10 @@ const WebTemplateBlock = styled.div`
 `
 
 const WebBodyTemplate = styled.div`
-    // 사용 안 하는 중
     position: relative;  
     margin-right: 20px;
+    overflow-x: clip;
+    // width: 83vw;
     // background: pink; //white;
     // border: solid gray 1px; // dbg
 `
