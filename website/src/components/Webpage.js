@@ -26,6 +26,7 @@ const WebBodyTemplate = styled.div`
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
     const [select, setSelect] = useState(false);
+    const [selectAll, setSelectAll] = useState(false);
     const [selectedItems, setSelectedItems] = useState(new Set());
     const content = useContent();
     const dispatch = useContentDispatch();
@@ -42,16 +43,21 @@ function Webpage() {
             selectedItems.clear();
         }
         setSelect(!select);
+        if (selectAll) {
+            setSelectAll(false);
+        }
     }
 
-    // 체크 박스 체크할 때
-    function onCheck(e) {
-        // Number() 사용하지 않으면 string으로 들어감
-        if (e.target.checked) {
-            selectedItems.add(Number(e.target.id));
+    // 체크된 미리보기들 set에서 관리
+    function checkedItemHandler(id, add) {
+        // console.log(id, checked);
+        if (add) { // 추가
+            selectedItems.add(Number(id));
+            setSelectedItems(selectedItems);
         }
-        else {
-            selectedItems.delete(Number(e.target.id));
+        else { // 삭제
+            selectedItems.delete(Number(id));
+            setSelectedItems(selectedItems);
         }
         console.log('selected', selectedItems);
     }
@@ -66,6 +72,7 @@ function Webpage() {
         });
         selectedItems.clear();
         setSelect(false);
+        setSelectAll(false);
     }
 
     // 선택한 미리보기 카테고리 수정
@@ -78,6 +85,7 @@ function Webpage() {
         });
         selectedItems.clear();
         setSelect(false);
+        setSelectAll(false);
     }
 
     return (
@@ -86,8 +94,8 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} />
-                    <Boxes boxSize={boxSize} select={select} onCheck={onCheck} />
+                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} setSelectAll={setSelectAll} />
+                    <Boxes boxSize={boxSize} select={select} checkedItemHandler={checkedItemHandler} selectAll={selectAll} setSelectAll={setSelectAll} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
         </>

@@ -61,7 +61,7 @@ const WebSubHeaderBlock = styled.div`
     }
 `
 
-export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSelect, onClickDelete, onChangeCategory }) {
+export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSelect, onClickDelete, onChangeCategory, setSelectAll }) {
     const currentCategory = useCurrentCategory();
 
     // $begin category select dropbox
@@ -91,7 +91,7 @@ export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSel
             {select ?
                 <>
                     <div className="all-checkbox" select={select}>
-                        전체<input type='checkbox' />
+                        전체<input type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} />
                     </div>
                     <button className="delete-button" onClick={onClickDelete}>삭제</button>
                     <div>
