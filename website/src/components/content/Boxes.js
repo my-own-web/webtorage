@@ -90,6 +90,10 @@ function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll })
                 description={data.description}
                 date={data.date}
                 memo={data.memo}
+                select={select}
+                checkedItemHandler={checkedItemHandler}
+                selectAll={selectAll}
+                setSelectAll={setSelectAll}
               />))}
         </BoxesBlock>
       </WebContentBlock>

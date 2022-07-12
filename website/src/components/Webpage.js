@@ -26,8 +26,8 @@ const WebBodyTemplate = styled.div`
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
-    const [select, setSelect] = useState(false);
-    const [selectAll, setSelectAll] = useState(false);
+    const [select, setSelect] = useState(false); // 선택하기 기능 on/off 여부
+    const [selectAll, setSelectAll] = useState(false); // 전체 선택하기 기능 on/off 여부
     const [selectedItems, setSelectedItems] = useState(new Set());
     const content = useContent();
     const dispatch = useContentDispatch();
