@@ -21,7 +21,7 @@ const BoxBlock = styled.div`
 
   // $start 선택 체크 박스
   .cover{
-    visibility: hidden;
+    visibility: ${props => props.bChecked ? "visible" : "hidden"};
 
     right: 10px;
     position: absolute;
@@ -219,7 +219,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo,
   return (
     <div>
       {select ? <input type='checkbox' checked={bChecked} onChange={checkHandler} /> : ''}
-      <BoxBlock editMemo={editMemo}>
+      <BoxBlock editMemo={editMemo} bChecked={bChecked}>
         <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
         <h3>{title}</h3>
         <a href={data_url}>{data_url}</a>
