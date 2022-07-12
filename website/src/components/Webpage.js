@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
@@ -26,7 +26,7 @@ const WebBodyTemplate = styled.div`
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
-    const [select, setSelect] = useState(false); // 선택하기 기능 on/off 여부
+    const [selected, setSelected] = useState(false); // true: 선택된 미리보기 존재
     const [selectAll, setSelectAll] = useState(false); // 전체 선택하기 기능 on/off 여부
     const [selectedItems, setSelectedItems] = useState(new Set());
     const content = useContent();
@@ -36,17 +36,6 @@ function Webpage() {
     function onChangeSize() {
         setBoxSize(1 - boxSize);
         console.log('changesize!'); //dbg
-    }
-
-    // 선택 버튼 눌렀을 때
-    function onClickSelect() {
-        if (!select) {
-            selectedItems.clear();
-        }
-        setSelect(!select);
-        if (selectAll) {
-            setSelectAll(false);
-        }
     }
 
     // 체크된 미리보기들 set에서 관리
@@ -59,8 +48,11 @@ function Webpage() {
         else { // 삭제
             selectedItems.delete(Number(id));
             setSelectedItems(selectedItems);
+
         }
-        console.log('selected', selectedItems);
+        console.log('selected', selectedItems, selected);
+        if (selectedItems.size == 0) setSelected(false);
+        else setSelected(true);
     }
 
     // 선택한 미리보기들 삭제
@@ -72,7 +64,6 @@ function Webpage() {
             }
         });
         selectedItems.clear();
-        setSelect(false);
         setSelectAll(false);
     }
 
@@ -85,7 +76,6 @@ function Webpage() {
             }
         });
         selectedItems.clear();
-        setSelect(false);
         setSelectAll(false);
     }
 
@@ -95,8 +85,8 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} setSelectAll={setSelectAll} />
-                    <Boxes boxSize={boxSize} select={select} checkedItemHandler={checkedItemHandler} selectAll={selectAll} setSelectAll={setSelectAll} />
+                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} setSelectAll={setSelectAll} selected={selected} />
+                    <Boxes boxSize={boxSize} checkedItemHandler={checkedItemHandler} selectAll={selectAll} setSelectAll={setSelectAll} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
         </>

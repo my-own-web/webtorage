@@ -132,7 +132,7 @@ const BoxBlock = styled.div`
 `;
 //박스 하나의 전체 디자인
 
-function BigBox({ id, category, title, data_url, image, description, date, memo, select, checkedItemHandler, selectAll, setSelectAll }) {
+function BigBox({ id, category, title, data_url, image, description, date, memo, checkedItemHandler, selectAll, setSelectAll }) {
   const dispatch = useContentDispatch();
   const [editMemo, setEditMemo] = useState(false);
   const [changeMemo, setChangeMemo] = useState(memo);
@@ -203,11 +203,6 @@ function BigBox({ id, category, title, data_url, image, description, date, memo,
     }
   }
 
-  // 선택 해제 버튼을 누를 때, 미리보기 체크 해제
-  useEffect(() => {
-    if (!select) setChecked(false);
-  }, [select]);
-
   // 전체 선택 버튼을 누를 때, selectAll값에 따라 미리보기 체크/해제
   useEffect(() => {
     // if (selectAll) { // 전체 선택 체크되면 모든 미리보기 체크 -> chk
@@ -218,7 +213,6 @@ function BigBox({ id, category, title, data_url, image, description, date, memo,
 
   return (
     <div>
-      {select ? <input type='checkbox' checked={bChecked} onChange={checkHandler} /> : ''}
       <BoxBlock editMemo={editMemo} bChecked={bChecked}>
         <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
         <h3>{title}</h3>

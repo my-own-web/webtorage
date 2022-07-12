@@ -14,7 +14,7 @@ const WebSubHeaderBlock = styled.div`
     border-bottom: solid 1px;
 
     display: grid;
-    grid-template-columns: 1fr 25px 150px 50px 75px 75px 170px; //각각 button(item들) 사이 간격 결정
+    grid-template-columns: 1fr 150px 50px 25px 75px 170px; //각각 button(item들) 사이 간격 결정
     gap: 5px;
     align-items: center;
 
@@ -26,6 +26,7 @@ const WebSubHeaderBlock = styled.div`
         box-sizing: border-box;
     }
     .all-checkbox-container{
+        grid-column-start: 4;
         width: 25px;
         display: flex;
         justify-content: center;
@@ -35,11 +36,8 @@ const WebSubHeaderBlock = styled.div`
         cursor: pointer;
     }
 
-    .select-button{
-        grid-column-start: 5;
-    }
-
     .size-button{
+        grid-column-start: 5;
     }
 
     .category-select-container{
@@ -81,7 +79,7 @@ const WebSubHeaderBlock = styled.div`
     }
 `
 
-export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSelect, onClickDelete, onChangeCategory, setSelectAll }) {
+export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onChangeCategory, setSelectAll, selected }) {
     const currentCategory = useCurrentCategory();
 
     // $begin category select dropbox
@@ -105,17 +103,11 @@ export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSel
     }
     // $end category select dropbox
 
-    // 선택취소 했을 때 카테고리 선택 취소
-    useEffect(() => {
-        if (!select) setInput('');
-    }, [select]);
-
     return (
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
-            {select ?
+            {selected ?
                 <>
-                    <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
                     <div className="container category-select-container">
                         <input list="category-list" className="category-choice" name="category-choice" placeholder="카테고리 변경" onChange={onChange} value={input} onKeyPress={onInput} />
 
@@ -128,8 +120,9 @@ export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSel
                         <Button className="change-category-button" onClick={onSaveCategory}><MdCheck /></Button>
                     </div>
                     <Button className="delete-button" onClick={onClickDelete}>삭제</Button>
-                </> : ''}
-            <Button className='select-button' onClick={() => { onClickSelect() }}>{select ? '선택취소' : '선택하기'}</Button>
+                </> : ""}
+
+            <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
             <Button className='size-button' onClick={() => {
                 onChangeSize();
             }}>{boxSize ? "작게보기" : "크게보기"}</Button>

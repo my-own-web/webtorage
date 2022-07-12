@@ -7,6 +7,7 @@ const BoxBlock = styled.div`
   // background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
+  position: relative;
 
   width: 160px;
   height: 180px;
@@ -16,6 +17,30 @@ const BoxBlock = styled.div`
   flex-direction: column;
   gap: 4px;
   padding: 3px 10px 3px 10px;
+
+  // $start 선택 체크 박스
+  .cover{
+    visibility: ${props => props.bChecked ? "visible" : "hidden"};
+
+    right: 10px;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  input[type="checkbox"]{
+    cursor: pointer;
+  }
+
+  &:hover .cover{
+    visibility: visible;
+  }
+  // $end 선택 체크 박스
 
   a {
     height: 18px;
@@ -113,7 +138,7 @@ const BoxBlock = styled.div`
 `;
 //박스 하나의 전체 디자인
 
-function SmallBox({ id, category, title, data_url, image, description, date, memo, select, checkedItemHandler, selectAll, setSelectAll }) {
+function SmallBox({ id, category, title, data_url, image, description, date, memo, checkedItemHandler, selectAll, setSelectAll }) {
   const dispatch = useContentDispatch();
   const [editMemo, setEditMemo] = useState(false);
   const [changeMemo, setChangeMemo] = useState(memo);
@@ -186,11 +211,6 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
     }
   }
 
-  // 선택 해제 버튼을 누를 때, 미리보기 체크 해제
-  useEffect(() => {
-    if (!select) setChecked(false);
-  }, [select]);
-
   // 전체 선택 버튼을 누를 때, selectAll값에 따라 미리보기 체크/해제
   useEffect(() => {
     // if (selectAll) { // 전체 선택 체크되면 모든 미리보기 체크 -> chk
@@ -204,8 +224,8 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
 
   return (
     <div>
-      {select ? <input type='checkbox' checked={bChecked} onChange={checkHandler} /> : ''}
-      <BoxBlock editMemo={editMemo}>
+      <BoxBlock editMemo={editMemo} bChecked={bChecked}>
+        <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
         <a href={data_url} target='_black' title={data_url}>{title}</a>
         {/* <a href={data_url} title={data_url}>{title}</a> */}
         <div className='description'>{description}</div>
