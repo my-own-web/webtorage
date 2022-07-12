@@ -5,17 +5,18 @@ import "react-datepicker/dist/react-datepicker.css";
 import { useDateRange, useSetDateRange } from "./InfoContext";
 
 const DatePickerTemplate = styled.div`
+    // 버튼 디자인
     .example-custom-input{
       height: 25px;
       width: 170px;
       cursor: pointer;
       text-align: center;
-      background: #E5B2FF;
-      border: solid purple 1px;
+      background: whitesmoke;
+      border: solid #bfbdbd 1px;
       border-radius: 7px;
       font-size: 12px;
       &:hover{
-        background: #dd9ffc;
+        background: #bfbdbd;
       }
     }
 
@@ -91,7 +92,7 @@ const DatePickerComponent = () => {
   const ExampleCustomInput = forwardRef(({ value, onClick }, ref) => (
     <button
       className="example-custom-input" onClick={onClick} ref={ref}>
-      {value ? value : 'Search Date'}
+      {value ? value : '날짜 검색'}
     </button>
   ));
 

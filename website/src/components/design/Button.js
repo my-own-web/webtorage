@@ -1,15 +1,15 @@
-import styled from "styled-components";
+import styled, { css } from "styled-components";
 
 const Button = styled.button`
   height: 25px;
-  // width: 75px;
-  background: #E5B2FF;
-  border: solid purple 1px;
+  width: auto;
+  border: solid #bfbdbd 1px;
   border-radius: 7px;
   font-size: 12px;
   cursor: pointer;
+  background: whitesmoke;
   &:hover{
-      background: #dd9ffc;
+    background: #bfbdbd;
   }
 `
 

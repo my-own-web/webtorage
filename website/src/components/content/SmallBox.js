@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { MdEdit, MdDelete, MdCheck, MdClear } from 'react-icons/md';
 import { useContentDispatch, useCategoryList } from "../InfoContext";
@@ -7,6 +7,7 @@ const BoxBlock = styled.div`
   // background: #F2F3F5;
   border-radius: 5px;
   border: 2px solid #DBDCF5;
+  position: relative;
 
   width: 160px;
   height: 180px;
@@ -16,6 +17,30 @@ const BoxBlock = styled.div`
   flex-direction: column;
   gap: 4px;
   padding: 3px 10px 3px 10px;
+
+  // $start 선택 체크 박스
+  .cover{
+    visibility: ${props => props.bChecked ? "visible" : "hidden"};
+
+    right: 10px;
+    position: absolute;
+    background: rgba(0,0,0,0.1);
+    width: 30px;
+    height: 30px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  input[type="checkbox"]{
+    cursor: pointer;
+  }
+
+  &:hover .cover{
+    visibility: visible;
+  }
+  // $end 선택 체크 박스
 
   a {
     height: 18px;
@@ -113,11 +138,12 @@ const BoxBlock = styled.div`
 `;
 //박스 하나의 전체 디자인
 
-function SmallBox({ id, category, title, data_url, image, description, date, memo }) {
+function SmallBox({ id, category, title, data_url, image, description, date, memo, checkedItemHandler, selectAll, setSelectAll }) {
   const dispatch = useContentDispatch();
   const [editMemo, setEditMemo] = useState(false);
   const [changeMemo, setChangeMemo] = useState(memo);
   const [editCategory, setEditCategory] = useState(false);
+  const [bChecked, setChecked] = useState(false);
 
   // category select dropbox
   const cglist = useCategoryList();
@@ -170,42 +196,71 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
     console.log('change editCategory');
   }
 
+  //$begin 체크박스 관련 기능
+
+  // 체크박스 체크할 때
+  const checkHandler = (e) => {
+    if (selectAll) { // 체크된 전체에서 하나 해제 -> chk
+      // setSelectAll(false);
+      setChecked(false);
+      checkedItemHandler(id, false);
+    }
+    else { // 각각 체크
+      setChecked(!bChecked); // 체크 상태 변화
+      checkedItemHandler(id, e.target.checked); // selectedItems set 수정
+    }
+  }
+
+  // 전체 선택 버튼을 누를 때, selectAll값에 따라 미리보기 체크/해제
+  useEffect(() => {
+    // if (selectAll) { // 전체 선택 체크되면 모든 미리보기 체크 -> chk
+    setChecked(selectAll);
+    checkedItemHandler(id, selectAll);
+    // }
+  }, [selectAll]);
+
+  //$end 체크박스 관련 기능
+
+
   return (
-    <BoxBlock editMemo={editMemo}>
-      <a href={data_url} target='_black' title={data_url}>{title}</a>
-      {/* <a href={data_url} title={data_url}>{title}</a> */}
-      <div className='description'>{description}</div>
-      <img src={image} className='image' />
+    <div>
+      <BoxBlock editMemo={editMemo} bChecked={bChecked}>
+        <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
+        <a href={data_url} target='_black' title={data_url}>{title}</a>
+        {/* <a href={data_url} title={data_url}>{title}</a> */}
+        <div className='description'>{description}</div>
+        <img src={image} className='image' />
 
-      <div className='memo-box'>
-        <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
-        <button className='memo-save-button'onClick={onSaveMemo}><MdCheck /></button>
-      </div>
-
-      <div className='box-footer'>
-        <div className='category-select-container'>
-
-          {editCategory ?
-            <>
-              <input list="category-list" className="category-choice" name="category-choice" placeholder={category} onChange={onChange} value={input} onKeyPress={onInput} />
-
-              <datalist id="category-list">
-                {cglist.map((cg) => (
-                  <option value={cg.name}></option>
-                ))}
-              </datalist>
-
-              <MdClear onClick={onExit} style={{ cursor: 'pointer' }} />
-              <MdCheck onClick={onSaveCategory} style={{ cursor: 'pointer' }} />
-            </> :
-            <div className='category' onClick={onClickCategory} style={{ cursor: 'pointer' }}>{category}</div>}
+        <div className='memo-box'>
+          <textarea className='textarea' onClick={() => { setEditMemo(true) }} onChange={(onEditMemo)} value={changeMemo} />
+          <button className='memo-save-button' onClick={onSaveMemo}><MdCheck /></button>
         </div>
 
-        <div className='date'>{date.substr(0, 4)}-{date.substr(4, 2)}-{date.substr(6, 2)} {date.substr(8, 2)}:{date.substr(10, 2)}</div>
-        <MdDelete className='delete-icon' onClick={onRemove} style={{ cursor: 'pointer', color: 'red' }} />
-      </div>
+        <div className='box-footer'>
+          <div className='category-select-container'>
 
-    </BoxBlock >
+            {editCategory ?
+              <>
+                <input list="category-list" className="category-choice" name="category-choice" placeholder={category} onChange={onChange} value={input} onKeyPress={onInput} />
+
+                <datalist id="category-list">
+                  {cglist.map((cg) => (
+                    <option value={cg.name}></option>
+                  ))}
+                </datalist>
+
+                <MdClear onClick={onExit} style={{ cursor: 'pointer' }} />
+                <MdCheck onClick={onSaveCategory} style={{ cursor: 'pointer' }} />
+              </> :
+              <div className='category' onClick={onClickCategory} style={{ cursor: 'pointer' }}>{category}</div>}
+          </div>
+
+          <div className='date'>{date.substr(0, 4)}-{date.substr(4, 2)}-{date.substr(6, 2)} {date.substr(8, 2)}:{date.substr(10, 2)}</div>
+          <MdDelete className='delete-icon' onClick={onRemove} style={{ cursor: 'pointer', color: 'red' }} />
+        </div>
+
+      </BoxBlock >
+    </div>
   );
 }
 

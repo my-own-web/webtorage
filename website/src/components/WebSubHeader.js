@@ -1,4 +1,4 @@
-import react, { useState } from "react";
+import react, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useCurrentCategory, useCategoryList } from "./InfoContext";
 import DateButton from "./DateButton";
@@ -14,54 +14,72 @@ const WebSubHeaderBlock = styled.div`
     border-bottom: solid 1px;
 
     display: grid;
-    grid-template-columns: 1fr 50px 50px 130px 75px 75px 170px; //각각 button(item들) 사이 간격 결정
+    grid-template-columns: 1fr 150px 50px 25px 75px 170px; //각각 button(item들) 사이 간격 결정
     gap: 5px;
-    // grid-template-rows: 1fr 1fr;
     align-items: center;
 
-    // display: flex;
-    // // flex-direction: column;
-    // justify-content: space-between;
-    // padding: 0px 5px 0px 5px;
-
-    .all-checkbox{
+    .container{
+        height: 25px;
+        background: whitesmoke;
+        border: solid #bfbdbd 1px;
+        border-radius: 7px;
+        box-sizing: border-box;
     }
-
-    .select-button{
-        grid-column-start: 5;
+    .all-checkbox-container{
+        grid-column-start: 4;
+        width: 25px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .all-checkbox{
+        cursor: pointer;
     }
 
     .size-button{
+        grid-column-start: 5;
     }
 
     .category-select-container{
-    width: 130px;
-    height: 25px;
-    text-decoration: underline;
+        background-color: white;
+        width: 150px;
+        display: flex;
+        gap: 1px;
+        align-items: center;
+        justify-content: center;
+        box-sizing: border-box;
+        background: white;
     }
 
   .category-choice{
-    width: 100px;
+        height: 20px;
+        width: 110px;
+        border: none;
     }
 
   .change-category-button{
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    padding: 0 0 0 0;
-    border: solid 1px #DBDCF5;
+        background: white;
+        &:hover{
+            background: #bfbdbd;
+        }
+        box-sizing: border-box;
+      width: 20px;
+      height: 20px;
+      border-radius: 0px;
+      border: none;
+        padding: 1px;
+
     }
 
     .delete-button{
-        // width: 45px;
-        // height: 20px;
-        // padding: 3px 3px;
-        // border: solid 1px #DBDCF5;
-        cursor: pointer;
+        background: white;
+         &:hover{
+            background: #bfbdbd;
+        }
     }
 `
 
-export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSelect, onClickDelete, onChangeCategory }) {
+export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onChangeCategory, setSelectAll, selected }) {
     const currentCategory = useCurrentCategory();
 
     // $begin category select dropbox
@@ -88,13 +106,9 @@ export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSel
     return (
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
-            {select ?
+            {selected ?
                 <>
-                    <div className="all-checkbox" select={select}>
-                        전체<input type='checkbox' />
-                    </div>
-                    <button className="delete-button" onClick={onClickDelete}>삭제</button>
-                    <div>
+                    <div className="container category-select-container">
                         <input list="category-list" className="category-choice" name="category-choice" placeholder="카테고리 변경" onChange={onChange} value={input} onKeyPress={onInput} />
 
                         <datalist id="category-list">
@@ -103,10 +117,12 @@ export default function WebSubHeader({ boxSize, onChangeSize, select, onClickSel
                             ))}
                         </datalist>
 
-                        <button className="change-category-button" onClick={onSaveCategory}><MdCheck /></button>
+                        <Button className="change-category-button" onClick={onSaveCategory}><MdCheck /></Button>
                     </div>
-                </> : ''}
-            <Button className='select-button' onClick={() => { onClickSelect() }}>{select ? '선택취소' : '선택하기'}</Button>
+                    <Button className="delete-button" onClick={onClickDelete}>삭제</Button>
+                </> : ""}
+
+            <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
             <Button className='size-button' onClick={() => {
                 onChangeSize();
             }}>{boxSize ? "작게보기" : "크게보기"}</Button>

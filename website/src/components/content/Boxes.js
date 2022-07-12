@@ -38,7 +38,7 @@ function configDateRange(range) {
   return [start, end];
 }
 
-function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
+function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll }) { //더 늦게 저장한 순(date가 늦은 순)으로 정렬함
   const currentCategory = useCurrentCategory();
   const dateRange = configDateRange(useDateRange());
 
@@ -63,7 +63,7 @@ function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date�
         <BoxesBlock>
           {boxSize ? datas.map(data => (
             <div>
-              {select ? <input type='checkbox' id={data.id} category={data.category} onChange={onCheck} /> : ''}
+              {/* {select ? <input type='checkbox' id={data.id} category={data.category} onChange={onCheck} /> : ''} */}
               <BigBox
                 key={data.id}
                 id={data.id}
@@ -74,6 +74,10 @@ function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date�
                 description={data.description}
                 date={data.date}
                 memo={data.memo}
+                select={select}
+                checkedItemHandler={checkedItemHandler}
+                selectAll={selectAll}
+                setSelectAll={setSelectAll}
               />
             </div>)) : datas.map(data => (
               <SmallBox
@@ -86,6 +90,10 @@ function Boxes({ boxSize, select, onCheck }) { //더 늦게 저장한 순(date�
                 description={data.description}
                 date={data.date}
                 memo={data.memo}
+                select={select}
+                checkedItemHandler={checkedItemHandler}
+                selectAll={selectAll}
+                setSelectAll={setSelectAll}
               />))}
         </BoxesBlock>
       </WebContentBlock>

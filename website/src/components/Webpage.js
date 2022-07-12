@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styled from 'styled-components';
 import WebHeader from './WebHeader';
@@ -16,16 +16,18 @@ const WebTemplateBlock = styled.div`
 `
 
 const WebBodyTemplate = styled.div`
-    // 사용 안 하는 중
     position: relative;  
     margin-right: 20px;
+    overflow-x: clip;
+    // width: 83vw;
     // background: pink; //white;
     // border: solid gray 1px; // dbg
 `
 
 function Webpage() {
     const [boxSize, setBoxSize] = useState(1);
-    const [select, setSelect] = useState(false);
+    const [selected, setSelected] = useState(false); // true: 선택된 미리보기 존재
+    const [selectAll, setSelectAll] = useState(false); // 전체 선택하기 기능 on/off 여부
     const [selectedItems, setSelectedItems] = useState(new Set());
     const content = useContent();
     const dispatch = useContentDispatch();
@@ -36,24 +38,21 @@ function Webpage() {
         console.log('changesize!'); //dbg
     }
 
-    // 선택 버튼 눌렀을 때
-    function onClickSelect() {
-        if (!select) {
-            selectedItems.clear();
+    // 체크된 미리보기들 set에서 관리
+    function checkedItemHandler(id, add) {
+        // console.log(id, checked);
+        if (add) { // 추가
+            selectedItems.add(Number(id));
+            setSelectedItems(selectedItems);
         }
-        setSelect(!select);
-    }
+        else { // 삭제
+            selectedItems.delete(Number(id));
+            setSelectedItems(selectedItems);
 
-    // 체크 박스 체크할 때
-    function onCheck(e) {
-        // Number() 사용하지 않으면 string으로 들어감
-        if (e.target.checked) {
-            selectedItems.add(Number(e.target.id));
         }
-        else {
-            selectedItems.delete(Number(e.target.id));
-        }
-        console.log('selected', selectedItems);
+        console.log('selected', selectedItems, selected);
+        if (selectedItems.size == 0) setSelected(false);
+        else setSelected(true);
     }
 
     // 선택한 미리보기들 삭제
@@ -65,7 +64,7 @@ function Webpage() {
             }
         });
         selectedItems.clear();
-        setSelect(false);
+        setSelectAll(false);
     }
 
     // 선택한 미리보기 카테고리 수정
@@ -77,7 +76,7 @@ function Webpage() {
             }
         });
         selectedItems.clear();
-        setSelect(false);
+        setSelectAll(false);
     }
 
     return (
@@ -86,8 +85,8 @@ function Webpage() {
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
-                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} select={select} onClickSelect={onClickSelect} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} />
-                    <Boxes boxSize={boxSize} select={select} onCheck={onCheck} />
+                    <WebSubHeader boxSize={boxSize} onChangeSize={onChangeSize} onClickDelete={onClickDelete} onChangeCategory={onChangeCategory} setSelectAll={setSelectAll} selected={selected} />
+                    <Boxes boxSize={boxSize} checkedItemHandler={checkedItemHandler} selectAll={selectAll} setSelectAll={setSelectAll} />
                 </WebBodyTemplate>
             </WebTemplateBlock>
         </>
