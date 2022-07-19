@@ -15,8 +15,12 @@ const WebHeadBlock = styled.div`
     padding: 5px;
     // border: solid black 1px; // dbg
 
-    display: flex;
-    justify-content: space-between;
+    // display: flex;
+    // justify-content: space-between;
+    
+    display: grid;
+    grid-template-columns: auto auto 1fr auto auto;
+    gap: 20px;
 
     .logo{
         height: 30px;
@@ -24,13 +28,29 @@ const WebHeadBlock = styled.div`
     }
 
     h1 {
-        margin: 5px 0 5px 0;
+        box-sizing: border-box;
+        margin: 3px 0 10px 0;
         cursor: pointer;
 
         // 제목 가운데 정렬
         // flex-basis: 100%;
         text-align: center;
         // ---
+    }
+
+    // TODO 검색창
+    .search-input{
+        // box-sizing: border-box;
+        margin: 10px 100px;
+        // width: 600px;
+    }
+
+    .add-button{
+        margin: 12px 0px;
+        background: black;
+        color: white;
+        // height: 40px;
+        // margin: 0 auto;
     }
 
     .login-button{
@@ -56,6 +76,8 @@ function WebHeader() {
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>Webtorage</h1>
+            <input className="search-input" placeholder="TODO 검색창" />
+            <Button className="add-button">추가하기</Button>
             <Button className='login-button' onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</Button>
         </WebHeadBlock>
     );
