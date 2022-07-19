@@ -12,7 +12,7 @@ const WebHeadBlock = styled.div`
     z-index:1;
 
     background: white;
-    padding: 5px;
+    padding: 5px 20px;
     // border: solid black 1px; // dbg
 
     // display: flex;
