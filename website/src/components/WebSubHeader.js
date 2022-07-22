@@ -1,4 +1,4 @@
-import react from "react";
+import react,{useState} from "react";
 import styled from "styled-components";
 import { useCurrentCategory } from "./InfoContext";
 import DateButton from "./DateButton";
@@ -35,7 +35,7 @@ const SizeButton = styled.button`
   }
 `
 
-export default function WebSubHeader({ boxSize, onClick, didLogin, onLogin }) {
+export default function WebSubHeader({ boxSize, onClick}) {
     const currentCategory = useCurrentCategory();
 
     console.log('subheader boxSize', boxSize); // dbg
@@ -43,11 +43,8 @@ export default function WebSubHeader({ boxSize, onClick, didLogin, onLogin }) {
     return (
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
-            <SizeButton onClick={() => {
-                onClick();
-            }}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
+            <SizeButton onClick={onClick}>{boxSize ? "작게보기" : "크게보기"}</SizeButton>
             <DateButton />
-            <SizeButton onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</SizeButton>
         </WebSubHeaderBlock>
     );
 }
