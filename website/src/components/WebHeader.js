@@ -1,5 +1,5 @@
-import React from 'react';
 import {useUserLoginId } from "./InfoContext";
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { TodoApi } from '../utils/axios';
 import styled from 'styled-components';
@@ -18,6 +18,7 @@ const WebHeadBlock = styled.div`
     ///display: flex;
     ///justify-content: space-between;
     display: flex;
+
     .logo{
         height: 30px;
         margin: 10px 10px 10px 10px;
@@ -36,7 +37,7 @@ const WebHeadBlock = styled.div`
         font-size: 15px;
     }
     .login-button{
-        margin: 10px 5px;
+        margin: 12px 5px;
     }
 `
 

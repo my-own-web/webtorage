@@ -85,6 +85,7 @@ app.get('/api/tabinfo', async (req, res) => {
 app.post('/api/tabinfo/website', async (req, res) => {
     const action = req.body;
     console.log(action); //dbg
+<<<<<<< HEAD
     
     const clientToken = req.cookies.validuser;
     const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
@@ -130,13 +131,55 @@ app.post('/api/tabinfo/website', async (req, res) => {
             console.log(error);
         } finally {
             conn.release();
+=======
+
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    let query;
+    try {
+        switch (action.type) {
+            case 'FETCH':
+                break;
+            case 'EDITMEMO':
+                query = "UPDATE tabinfo SET memo=? WHERE id=?";
+                conn.query(query, [action.value, action.id]);
+                break;
+            case "REMOVE":
+                query = "DELETE FROM tabinfo WHERE id=?";
+                conn.query(query, [action.id]);
+                if (action.category != "DEFAULT") {
+                    query = 'UPDATE category SET size=size-1 WHERE name=?';
+                    conn.query(query, [action.category]);
+                }
+                break;
+            case 'EDITCATEGORY':
+            {
+              query = 'SELECT id FROM category WHERE name=?';
+              const [row] = await conn.query(query, [action.new_category]);
+              if(!row[0]) {
+                // insert new category
+                query = 'INSERT INTO category(name) VALUES(?)';
+                conn.query(query, [action.new_category]);
+              }
+              // -1 to old category size
+              conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
+              // +1 to new category size
+              conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
+              // update category of tab
+             conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
+            break;
+            }
+>>>>>>> upstream/main
         }
     }
+<<<<<<< HEAD
     else{
         //res.status(401).send("TOKEN_INVALID");
         ////////////////
         console.log("로그인을 해야합니다");
     }
+=======
+>>>>>>> upstream/main
 });
 
 app.get('/api/category', async (req, res) => {
