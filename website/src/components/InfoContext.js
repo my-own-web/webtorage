@@ -95,10 +95,13 @@ const ContentListContext = createContext(null);
 const ContentDispatchContext = createContext(null);
 const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
+const UserLoginIdContext = createContext(null);
 
 export function InfoProvider({ children }) {
+
   const [content, setContent] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('ALL');
+  const [userLoginId,setUserLoginId] = useState('');
 
   // 전체 카테고리 리스트
   const [allCategoryList, setAllCategoryList] = useState([]);
@@ -109,9 +112,11 @@ export function InfoProvider({ children }) {
 
   async function postAction(action) {
     try {
-      // const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
-      const { data } = await TodoApi.post('/tabinfo/website', action);
-      setContent(data);
+      const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
+      //const { data } = await TodoApi.post('/tabinfo/website', action);
+      setContent(data.bookmark);
+      setUserLoginId(data.userID);
+      ////////////////////////////////////////////////
     } catch (error) {
       console.log(error);
 
@@ -161,23 +166,25 @@ export function InfoProvider({ children }) {
   }
 
   return (
-    <CategoryListContext.Provider value={categoryList}>
-      <SearchCategoryListContext.Provider value={searchCategoryList}>
-        <CurrentCategoryContext.Provider value={currentCategory}>
-          <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
-            <ContentListContext.Provider value={content}>
-              <ContentDispatchContext.Provider value={postAction}>
-                <DateRangeContext.Provider value={dateRange}>
-                  <SetDateRangeContext.Provider value={setDateRange}>
-                    {children}
-                  </SetDateRangeContext.Provider>
-                </DateRangeContext.Provider>
-              </ContentDispatchContext.Provider>
-            </ContentListContext.Provider>
-          </SetCurrentCategoryContext.Provider>
-        </CurrentCategoryContext.Provider>
-      </SearchCategoryListContext.Provider>
-    </CategoryListContext.Provider>
+      <UserLoginIdContext.Provider value={userLoginId}>
+        <CategoryListContext.Provider value={categoryList}>
+          <SearchCategoryListContext.Provider value={searchCategoryList}>
+            <CurrentCategoryContext.Provider value={currentCategory}>
+              <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
+                <ContentListContext.Provider value={content}>
+                  <ContentDispatchContext.Provider value={postAction}>
+                    <DateRangeContext.Provider value={dateRange}>
+                      <SetDateRangeContext.Provider value={setDateRange}>
+                        {children}
+                      </SetDateRangeContext.Provider>
+                    </DateRangeContext.Provider>
+                  </ContentDispatchContext.Provider>
+                </ContentListContext.Provider>
+              </SetCurrentCategoryContext.Provider>
+            </CurrentCategoryContext.Provider>
+          </SearchCategoryListContext.Provider>
+        </CategoryListContext.Provider>
+      </UserLoginIdContext.Provider>
   );
 }
 
@@ -243,4 +250,12 @@ export function useSetDateRange() {
     throw new Error('SetDateRange Error');
   }
   return set;
+}
+
+export function useUserLoginId(){
+  const UserLoginID = useContext(UserLoginIdContext);
+  /*if (!UserLoginID){
+    throw new Error('UserLoginID Error');
+  }*/
+  return UserLoginID;
 }
