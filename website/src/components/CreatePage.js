@@ -8,19 +8,7 @@ import Input from "./design/Input";
 import BigBox from './content/BigBox';
 import Button from './design/Button';
 
-const DarkBackground = styled.div`
-    position: fixed;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    // display: flex;
-    // align-items: center;
-    // justify-content: center;
-    background: rgba(0, 0, 0, 0.3);
-`;
-
-const PopupBox = styled.div`
+const CreateBox = styled.div`
     width: 500px;
 
     // position: fixed; 
@@ -36,44 +24,27 @@ const PopupBox = styled.div`
 
     display: grid;
 
-    // 미사용
-    .memo-box {
-    display: flex;
-    gap: 3px;
-    height: 60px;
-  }
-
     .textarea{
-    // width: 280px;
-    height: 100px;
-    resize:none;
-    padding-left: 3px;
-    font-size: 13px;
-    font-family: sans-serif;
-    border: solid 1px #DBDCF5;
-  }
-
-  // 미사용
-  .memo-save-button{
-    cursor: pointer;
-    height: 20px;
-    width: 20px;
-    padding: 0 0 0 0;
-    border: solid 1px #DBDCF5;
-    color: ${props => props.editMemo ? 'red' : 'black'}
-  }
+        // width: 280px;
+        height: 100px;
+        resize:none;
+        padding-left: 3px;
+        font-size: 13px;
+        font-family: sans-serif;
+        border: solid 1px #DBDCF5;
+    }
 
   .category-select-container{
-    // width: 140px;
-    // height: 25px;
-    // text-decoration: underline;
+        // width: 140px;
+        // height: 25px;
+        // text-decoration: underline;
 
-    display: flex;
-  }
+        display: flex;
+    }
 
    .category-choice{
-    width: 100%;
-  }
+        width: 100%;
+    }
 `
 
 export default function CreatePage() {
@@ -96,7 +67,7 @@ export default function CreatePage() {
     return (
         <>
             <WebHeader />
-            <PopupBox>
+            <CreateBox>
                 <b>URL</b>
                 <Input />
 
@@ -131,7 +102,7 @@ export default function CreatePage() {
                     setSelectAll={false}
                 />
                 <Button>저장</Button>
-            </PopupBox>
+            </CreateBox>
 
 
         </>
