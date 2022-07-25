@@ -1,9 +1,9 @@
 # webtorage
 
 ## 1. 역할 분담
-  - 박정규 : 크롬 익스텐션 (dir: `chrome_extension`)
-  - 권지은 : 웹사이트 - 전체적인 틀 (dir: `website`)
-  - 이소연 : 웬사이트 - 사이트 미리보기 시각화 (dir: `web`)
+  - juk1329 : 크롬 익스텐션
+  - lectura7942 : 웹사이트 - 전체적인 틀, 사이트 미리보기 디자인
+  - lee0594 : 웬사이트 - 사이트 미리보기 디자인, 로그인 기능
 
 ## 2. 사용할 데이터
   1. og.url, og.title, og.description, og.image
@@ -16,7 +16,7 @@
   
   확장자에서 저장 -> DB -> 사이트에서 시각화
   
-  > **database table**
+  > **database table** (TODO: 수정)
   > * category: id, name, size
   > * tabinfo: id, category, title, data_url, image, description, date
   

@@ -24,7 +24,7 @@ const WebBodyTemplate = styled.div`
     // border: solid gray 1px; // dbg
 `
 
-function Webpage() {
+function Webpage() {  
     const [boxSize, setBoxSize] = useState(1);
     const [selected, setSelected] = useState(false); // true: 선택된 미리보기 존재
     const [selectAll, setSelectAll] = useState(false); // 전체 선택하기 기능 on/off 여부
