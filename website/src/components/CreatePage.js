@@ -5,7 +5,7 @@ import { useContentDispatch, useCategoryList } from "./InfoContext";
 
 import WebHeader from './WebHeader';
 import Input from "./design/Input";
-import BigBox from './content/BigBox';
+import BigBoxReadonly from './content/BigBoxReadonly';
 import Button from './design/Button';
 
 const CreateBox = styled.div`
@@ -122,7 +122,7 @@ export default function CreatePage() {
                 <div className="item-container">
                     <b>Preview</b>
                     <div className="preview-add-container">
-                        <BigBox
+                        <BigBoxReadonly
                             id=""
                             category="DEFAULT"
                             title="title"
