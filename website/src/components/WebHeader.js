@@ -72,12 +72,16 @@ function WebHeader() {
         //setDidLogin(1 - didLogin);
     }
 
+    function onClickCreate() {
+        navigate("/create");
+    }
+
     return (
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>Webtorage</h1>
             <input className="search-input" placeholder="TODO 검색창" />
-            <Button className="add-button">추가하기</Button>
+            <Button className="add-button" onClick={onClickCreate}>추가하기</Button>
             <Button className='login-button' onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</Button>
         </WebHeadBlock>
     );
