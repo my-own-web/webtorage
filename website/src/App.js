@@ -1,8 +1,9 @@
 import React from 'react';
-import { BrowserRouter, Route, Routes } from 'react-router-dom';
-import { InfoProvider } from './components/InfoContext';
 import Webpage from './components/Webpage';
+import { InfoProvider } from './components/InfoContext';
+import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
+import CreatePage from './components/CreatePage';
 
 function App() {
   return (
@@ -11,6 +12,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Webpage />} />
           <Route path='/login' element={<Login />} />
+          <Route path='create' element={<CreatePage />} />
         </Routes>
       </BrowserRouter>
     </InfoProvider>
