@@ -23,6 +23,16 @@ const CreateBox = styled.div`
     // margin-bottom: 32px;
 
     display: grid;
+    gap: 10px;
+
+    // 레이블과 입력창을 묶는 컨테이너
+    .item-container{
+        display: flex;
+        flex-direction: column;
+        width: 500px;
+        // align-items: center;
+        // justify-content: center;
+    }
 
     .textarea{
         // width: 280px;
@@ -68,40 +78,53 @@ export default function CreatePage() {
         <>
             <WebHeader />
             <CreateBox>
-                <b>URL</b>
-                <Input />
-
-                <b>Memo</b>
-                <textarea className='textarea' />
-
-                <b>Category</b>
-                <div className='category-select-container'>
-                    <input list="category-list" className="category-choice" name="category-choice" placeholder="DEFAULT" onChange={onChange} value={input} />
-
-                    <datalist id="category-list">
-                        {cglist.map((cg) => (
-                            <option value={cg.name}></option>
-                        ))}
-                    </datalist>
-
-                    <MdClear onClick={onExit} style={{ cursor: 'pointer' }} />
+                <div className="item-container">
+                    <b>URL</b>
+                    <Input />
                 </div>
 
-                <b>Preview</b>
-                <BigBox
-                    id=""
-                    category="DEFAULT"
-                    title="title"
-                    data_url="url"
-                    image=""
-                    description="description"
-                    date="000000000000"
-                    memo="memo"
-                    checkedItemHandler={(id, add) => { }}
-                    selectAll={false}
-                    setSelectAll={false}
-                />
-                <Button>저장</Button>
+                <div className="item-container">
+                    <b>Memo</b>
+                    <textarea className='textarea' />
+                </div>
+
+                <div className="item-container">
+                    <b>Category</b>
+                    <div className='category-select-container'>
+                        <input list="category-list" className="category-choice" name="category-choice" placeholder="DEFAULT" onChange={onChange} value={input} />
+
+                        <datalist id="category-list">
+                            {cglist.map((cg) => (
+                                <option value={cg.name}></option>
+                            ))}
+                        </datalist>
+
+                        <MdClear onClick={onExit} style={{ cursor: 'pointer' }} />
+                    </div>
+                </div>
+
+                <div className="item-container">
+                    <b>Preview</b>
+                    <div className="preview-add-container">
+                        <BigBox
+                            id=""
+                            category="DEFAULT"
+                            title="title"
+                            data_url="url"
+                            image=""
+                            description="description"
+                            date="000000000000"
+                            memo="memo"
+                            checkedItemHandler={(id, add) => { }}
+                            selectAll={false}
+                            setSelectAll={false}
+                        />
+                        {/* <Button className="add-button">저장</Button> */}
+                    </div>
+                </div>
+
+                <Button className="add-button">저장</Button>
+
             </CreateBox>
 
 
