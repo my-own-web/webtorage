@@ -55,6 +55,22 @@ const CreateBox = styled.div`
    .category-choice{
         width: 100%;
     }
+
+    // 미리보기와 저장 버튼 컨테이너
+    .preview-add-container{
+        display: flex;
+        // justify-content: center;
+        gap: 20px;
+    }
+
+    .add-button{
+        width: 180px;
+        height: 100px;
+        align-self: end;
+        background: black;
+        color: white;
+        font-size: 20px;
+    }
 `
 
 export default function CreatePage() {
@@ -119,12 +135,9 @@ export default function CreatePage() {
                             selectAll={false}
                             setSelectAll={false}
                         />
-                        {/* <Button className="add-button">저장</Button> */}
+                        <Button className="add-button">저장</Button>
                     </div>
                 </div>
-
-                <Button className="add-button">저장</Button>
-
             </CreateBox>
 
 
