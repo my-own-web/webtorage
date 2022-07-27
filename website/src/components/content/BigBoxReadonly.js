@@ -134,7 +134,6 @@ const BoxBlock = styled.div`
 
 /* 읽을 수만 있는 미리보기. 수정/삭제 불가능. */
 function BigBoxReadonly({ id, category, title, data_url, image, description, date, memo }) {
-  const [changeMemo, setChangeMemo] = useState(memo);
 
   return (
     <div>
@@ -146,14 +145,15 @@ function BigBoxReadonly({ id, category, title, data_url, image, description, dat
         <img src={image} width='280px' height='100px' />
 
         <div className='memo-box'>
-          <textarea className='textarea' readonly={true} value={changeMemo} />
+          <textarea className='textarea' readOnly={true} value={memo} />
           <button className='memo-save-button'><MdCheck /></button>
         </div>
 
         <div className='box-footer'>
           <div className='category-select-container'>
-            <div className='category' style={{ cursor: 'pointer' }}>{category}</div>
+            <div className='category' style={{ cursor: 'pointer' }}>{category || "DEFAULT"}</div>
           </div>
+          {/* category에 빈 문자열이 오면 "DEFAULT" 설정 */}
 
           <div className='date'>{date.substr(0, 4)}-{date.substr(4, 2)}-{date.substr(6, 2)} {date.substr(8, 2)}:{date.substr(10, 2)}</div>
           <MdDelete style={{ cursor: 'pointer', color: 'red' }} />

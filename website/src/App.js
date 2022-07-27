@@ -12,7 +12,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Webpage />} />
           <Route path='/login' element={<Login />} />
-          <Route path='create' element={<CreatePage />} />
+          <Route path='/create' element={<CreatePage />} />
         </Routes>
       </BrowserRouter>
     </InfoProvider>
