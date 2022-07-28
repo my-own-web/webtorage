@@ -35,10 +35,12 @@ const WebHeadBlock = styled.div`
         text-align: center;
         // ---
     }
+
     h3 {
         margin: 12px 10px 0px 0px;
         font-size: 15px;
     }
+
     .login-button{
         margin: 12px 5px;
     }
