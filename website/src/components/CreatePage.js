@@ -1,7 +1,6 @@
 import styled from 'styled-components';
 import { useState } from 'react';
 import { MdEdit, MdDelete, MdCheck, MdClear } from 'react-icons/md';
-import { useCategoryList, useContentDispatch } from "./InfoContext";
 import { useNavigate } from 'react-router-dom';
 
 import WebHeader from './WebHeader';
@@ -9,6 +8,7 @@ import Input from "./design/Input";
 import BigBoxReadonly from './content/BigBoxReadonly';
 import Button from './design/Button';
 import { TodoApi } from '../utils/axios';
+import { useCategoryList, useContentDispatch, useUserLoginId, useCurrentCategory } from "./InfoContext";
 
 const CreateBox = styled.div`
     width: 500px;
@@ -76,14 +76,16 @@ const CreateBox = styled.div`
 `
 
 export default function CreatePage() {
+    const currentCategory = useCurrentCategory();
     const [inputs, setInputs] = useState({
         url: "",
         memo: "",
-        category: ""
+        category: currentCategory
     });
     const [dateString, setDateString] = useState("000000000000");
     const navigate = useNavigate();
     const dispatch = useContentDispatch();
+    const userLoginId = useUserLoginId();
 
     // Date()를 DB date 문자열로 변환
     function parseDate() {
@@ -134,7 +136,7 @@ export default function CreatePage() {
     const onSave = () => {
         parseDate();
 
-        console.log(`save url[${inputs.url}]memo[${inputs.memo}]category[${inputs.category}]timestamp[${dateString}]`); // dbg
+        console.log(`user[${userLoginId}] saves url[${inputs.url}]memo[${inputs.memo}]category[${inputs.category}]timestamp[${dateString}]`); // dbg
 
         // TODO inputs.url/category 앞뒤로 빈칸 제거
 
@@ -158,7 +160,7 @@ export default function CreatePage() {
                 memo: inputs.memo.trimEnd(),
                 category: inputs.category,
                 date: dateString,
-                clientId: "" // TODO 사용자에 따라 달라짐
+                clientId: userLoginId
             }
 
             const { data } = await TodoApi.post('/tabinfo', params);
