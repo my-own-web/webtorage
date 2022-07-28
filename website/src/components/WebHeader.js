@@ -39,14 +39,6 @@ const WebHeadBlock = styled.div`
         // ---
     }
 
-    .add-button{
-        margin: 12px 0px;
-        background: black;
-        color: white;
-        // height: 40px;
-        // margin: 0 auto;
-    }
-
     .login-button{
         margin: 12px 0px;
     }
@@ -66,15 +58,10 @@ function WebHeader() {
         //setDidLogin(1 - didLogin);
     }
 
-    function onClickCreate() {
-        navigate("/create");
-    }
-
     return (
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>Webtorage</h1>
-            <Button className="add-button" onClick={onClickCreate}>추가하기</Button>
             <Button className='login-button' onClick={onLogin}>{didLogin ? "로그아웃" : "로그인"}</Button>
         </WebHeadBlock>
     );
