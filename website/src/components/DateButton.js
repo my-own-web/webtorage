@@ -8,7 +8,7 @@ const DatePickerTemplate = styled.div`
     // 버튼 디자인
     .example-custom-input{
       height: 25px;
-      width: 170px;
+      width: 80px;
       cursor: pointer;
       text-align: center;
       background: whitesmoke;
@@ -20,8 +20,8 @@ const DatePickerTemplate = styled.div`
       }
     }
 
-    .some-custom-class{
-        z-index: 1000 !important;
+    .react-datepicker-wrapper{
+      width: 80px;
     }
 
     .react-datepicker__input-container {

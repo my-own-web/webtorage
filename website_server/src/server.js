@@ -45,17 +45,24 @@ function DB_Connection() {
     return globalPool;
 }
 
+// website, extension에서 DB에 탭 정보 저장
 app.post('/api/tabinfo', async (req, res) => {
     const body = req.body;
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
+    let category = body.category;
+    let url = body.data_url.trim(); // 앞뒤 빈칸 제거
+    if (!category) { // 빈 문자열 DEFAULT로 변환
+        category = "DEFAULT";
+    }
+
     try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-        const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
+        const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=?", [url, category]);
         if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
-            await conn.query(`INSERT INTO tabinfo(clientId, category, title, data_url, image, description, date, memo) 
-        VALUES ('${body.clientId}', ${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}')`);
+            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
             res.send(true);
         }
         else {
@@ -85,11 +92,11 @@ app.get('/api/tabinfo', async (req, res) => {
 app.post('/api/tabinfo/website', async (req, res) => {
     const action = req.body;
     console.log(action); //dbg
-    
+
     const clientToken = req.cookies.validuser;
-    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
-    
-    if (decoded){
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (decoded) {
         const pool = DB_Connection();
         const conn = await pool.getConnection();
         clientId = decoded.userId;
@@ -119,20 +126,20 @@ app.post('/api/tabinfo/website', async (req, res) => {
                     break;
                 case 'EDITCATEGORY':
                     {
-                    query = 'SELECT id FROM category WHERE name=?';
-                    const [row] = await conn.query(query, [action.new_category]);
-                    if(!row[0]) {
-                    // insert new category
-                    query = 'INSERT INTO category(name) VALUES(?)';
-                    conn.query(query, [action.new_category]);
-                    }
-                    // -1 to old category size
-                    conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
-                    // +1 to new category size
-                    conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
-                    // update category of tab
-                    conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
-                    break;
+                        query = 'SELECT id FROM category WHERE name=?';
+                        const [row] = await conn.query(query, [action.new_category]);
+                        if (!row[0]) {
+                            // insert new category
+                            query = 'INSERT INTO category(name) VALUES(?)';
+                            conn.query(query, [action.new_category]);
+                        }
+                        // -1 to old category size
+                        conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
+                        // +1 to new category size
+                        conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
+                        // update category of tab
+                        conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
+                        break;
                     }
             }
             query = "SELECT * FROM tabinfo WHERE clientID=?";
@@ -142,14 +149,14 @@ app.post('/api/tabinfo/website', async (req, res) => {
                 userID: clientId,
                 bookmark: rows
             });
-            
+
         } catch (error) {
             console.log(error);
         } finally {
             conn.release();
         }
     }
-    else{
+    else {
         //res.status(401).send("TOKEN_INVALID");
         ////////////////
         console.log("로그인을 해야합니다");
@@ -212,7 +219,7 @@ app.post('/api/user/login', async (req, res) => {
             res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정
             res.send('OK');
         }
-        else{
+        else {
             res.clearCookie('validuser');
             res.send('Invalid User');
         }
@@ -223,11 +230,11 @@ app.post('/api/user/login', async (req, res) => {
     }
 }); //현재 hello 안녕 잠 자고싶다 각각 아이디와 비밀번호로 입력되어 있음
 
-app.post('/api/user/logout', async(req,res)=>{
-    try{
+app.post('/api/user/logout', async (req, res) => {
+    try {
         res.clearCookie('validuser');
         res.send('Logout');
-    } catch(error){
+    } catch (error) {
         console.log(error);
     }
 })

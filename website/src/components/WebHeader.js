@@ -6,8 +6,10 @@ import styled from 'styled-components';
 import Button from './design/Button';
 
 const WebHeadBlock = styled.div`
-    // width: 100%; // chk: 패이지 넘어감
-    height: 50px;
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
+
     position: sticky; 
     top: 0px;
     z-index:1;
@@ -15,8 +17,8 @@ const WebHeadBlock = styled.div`
     padding: 5px 20px;
     // border: solid black 1px; // dbg
 
-    ///display: flex;
-    ///justify-content: space-between;
+    //display: flex;
+    //justify-content: space-between;
     display: flex;
 
     .logo{
@@ -71,7 +73,7 @@ function WebHeader() {
             <h1 onClick={onClick}>Webtorage</h1>
             {userLoginId ? <div><h3>{userLoginId}{'님'}</h3></div> : ''}
             <Button className="login-button" onClick={onClick2}>{userLoginId ? buttonName = "로그아웃" : buttonName = "로그인"}</Button>
-        </WebHeadBlock>
+        </WebHeadBlock >
     );
 }
 

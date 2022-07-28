@@ -58,46 +58,43 @@ function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll })
   }); ////더 늦게 저장한 순(date가 늦은 순)으로 정렬하는 함수
 
   return (
-    <div>
-      <WebContentBlock>
-        <BoxesBlock>
-          {boxSize ? datas.map(data => (
-            <div>
-              {/* {select ? <input type='checkbox' id={data.id} category={data.category} onChange={onCheck} /> : ''} */}
-              <BigBox
-                key={data.id}
-                id={data.id}
-                category={data.category}
-                title={data.title}
-                data_url={data.data_url}
-                image={data.image}
-                description={data.description}
-                date={data.date}
-                memo={data.memo}
-                select={select}
-                checkedItemHandler={checkedItemHandler}
-                selectAll={selectAll}
-                setSelectAll={setSelectAll}
-              />
-            </div>)) : datas.map(data => (
-              <SmallBox
-                key={data.id}
-                id={data.id}
-                category={data.category}
-                title={data.title}
-                data_url={data.data_url}
-                image={data.image}
-                description={data.description}
-                date={data.date}
-                memo={data.memo}
-                select={select}
-                checkedItemHandler={checkedItemHandler}
-                selectAll={selectAll}
-                setSelectAll={setSelectAll}
-              />))}
-        </BoxesBlock>
-      </WebContentBlock>
-    </div>
+    <WebContentBlock>
+      <BoxesBlock>
+        {boxSize ? datas.map(data => (
+          <div>
+            <BigBox
+              key={data.id}
+              id={data.id}
+              category={data.category}
+              title={data.title}
+              data_url={data.data_url}
+              image={data.image}
+              description={data.description}
+              date={data.date}
+              memo={data.memo}
+              select={select}
+              checkedItemHandler={checkedItemHandler}
+              selectAll={selectAll}
+              setSelectAll={setSelectAll}
+            />
+          </div>)) : datas.map(data => (
+            <SmallBox
+              key={data.id}
+              id={data.id}
+              category={data.category}
+              title={data.title}
+              data_url={data.data_url}
+              image={data.image}
+              description={data.description}
+              date={data.date}
+              memo={data.memo}
+              select={select}
+              checkedItemHandler={checkedItemHandler}
+              selectAll={selectAll}
+              setSelectAll={setSelectAll}
+            />))}
+      </BoxesBlock>
+    </WebContentBlock>
   );
 }
 

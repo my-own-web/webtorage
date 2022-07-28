@@ -1,5 +1,6 @@
 import react, { useEffect, useState } from "react";
 import styled from "styled-components";
+import { useNavigate } from "react-router-dom";
 import { useCurrentCategory, useCategoryList } from "./InfoContext";
 import DateButton from "./DateButton";
 import Button from "./design/Button";
@@ -7,16 +8,33 @@ import { MdCheck } from "react-icons/md";
 
 const WebSubHeaderBlock = styled.div`
     background: white;
-    height: 70px;
+    height: 75px;
     position: sticky;
     top: 60px; //chk
     z-index: 1;
     border-bottom: solid 1px;
+    padding: 0px 17px 6px 16px;
+    margin-bottom: 5px;
 
     display: grid;
-    grid-template-columns: 1fr 150px 50px 25px 75px 170px; //각각 button(item들) 사이 간격 결정
+    grid-template-rows: 40px 30px;
+    grid-template-columns: 25px 60px 50px 150px 1fr;
     gap: 5px;
     align-items: center;
+
+    h2{
+        grid-row-start: 1;
+        grid-column: 1/4;
+        margin: 0;
+    }
+
+     .add-button{
+        background: black;
+        color: white;
+        width: 62px;
+        grid-row-start: 2;
+        grid-column-start: 2;
+    }
 
     .container{
         height: 25px;
@@ -26,7 +44,8 @@ const WebSubHeaderBlock = styled.div`
         box-sizing: border-box;
     }
     .all-checkbox-container{
-        grid-column-start: 4;
+        grid-column-start: 1;
+        grid-row-start: 2;
         width: 25px;
         display: flex;
         justify-content: center;
@@ -37,7 +56,6 @@ const WebSubHeaderBlock = styled.div`
     }
 
     .size-button{
-        grid-column-start: 5;
     }
 
     .category-select-container{
@@ -49,6 +67,9 @@ const WebSubHeaderBlock = styled.div`
         justify-content: center;
         box-sizing: border-box;
         background: white;
+
+        grid-row-start: 2;
+        grid-column-start: 4;
     }
 
   .category-choice{
@@ -76,11 +97,25 @@ const WebSubHeaderBlock = styled.div`
          &:hover{
             background: #bfbdbd;
         }
+        grid-row-start: 2;
+        grid-column-start: 3;
+    }
+
+    .date-button{
+    }
+
+    .right-button-group{
+        display: flex;
+        gap: 5px;
+        grid-row-start:2;
+        grid-column-start: 5;
+        justify-content: right;
     }
 `
 
 export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onChangeCategory, setSelectAll, selected }) {
     const currentCategory = useCurrentCategory();
+    const navigate = useNavigate();
 
     // $begin category select dropbox
     const cglist = useCategoryList();
@@ -103,9 +138,15 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
     }
     // $end category select dropbox
 
+    function onClickCreate() {
+        navigate("/create");
+    }
+
     return (
         <WebSubHeaderBlock>
             <h2>{currentCategory}</h2>
+            <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
+            <Button className="add-button" onClick={onClickCreate}>추가하기</Button>
             {selected ?
                 <>
                     <div className="container category-select-container">
@@ -121,12 +162,12 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
                     </div>
                     <Button className="delete-button" onClick={onClickDelete}>삭제</Button>
                 </> : ""}
-
-            <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
-            <Button className='size-button' onClick={() => {
-                onChangeSize();
-            }}>{boxSize ? "작게보기" : "크게보기"}</Button>
-            <DateButton className='date-button' />
+            <div className="right-button-group">
+                <Button className='size-button' onClick={() => {
+                    onChangeSize();
+                }}>{boxSize ? "작게보기" : "크게보기"}</Button>
+                <DateButton className='date-button' />
+            </div>
         </WebSubHeaderBlock>
     );
 }
