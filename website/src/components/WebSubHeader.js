@@ -24,7 +24,7 @@ const WebSubHeaderBlock = styled.div`
 
     h2{
         grid-row-start: 1;
-        grid-column: 1/4;
+        grid-column: 1/5;
         margin: 0;
     }
 
