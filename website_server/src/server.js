@@ -15,12 +15,20 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // crypto 사용
-const { pbkdf2, pbkdf2Sync } = require('crypto');
+const { pbkdf2Sync } = require('crypto');
+
+//cookie 사용
+const cookieParser = require('cookie-parser');
+app.use(cookieParser());
 
 // DB(MYSQL) 연동
 const mysql = require('mysql2/promise');
 const dotenv = require('dotenv').config(); // 민감한 정보 숨기기 위해 사용 
 const randomSalt = process.env.SALT;
+
+//jwt 사용
+const jwt = require('jsonwebtoken');
+const jwt_key = process.env.SECRET_KEY;
 
 const options = {
     host: process.env.MYSQL_HOST,
@@ -53,7 +61,7 @@ app.post('/api/tabinfo', async (req, res) => {
 
         const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=?", [url, category]);
         if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
-            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId) 
+            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
             res.send(true);
         }
@@ -85,50 +93,73 @@ app.post('/api/tabinfo/website', async (req, res) => {
     const action = req.body;
     console.log(action); //dbg
 
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-    let query;
-    try {
-        switch (action.type) {
-            case 'FETCH':
-                break;
-            case 'EDITMEMO':
-                query = "UPDATE tabinfo SET memo=? WHERE id=?";
-                conn.query(query, [action.value, action.id]);
-                break;
-            case "REMOVE":
-                query = "DELETE FROM tabinfo WHERE id=?";
-                conn.query(query, [action.id]);
-                if (action.category != "DEFAULT") {
-                    query = 'UPDATE category SET size=size-1 WHERE name=?';
-                    conn.query(query, [action.category]);
-                }
-                break;
-            case 'EDITCATEGORY':
-                {
-                    query = 'SELECT id FROM category WHERE name=?';
-                    const [row] = await conn.query(query, [action.new_category]);
-                    if (!row[0]) {
-                        // insert new category
-                        query = 'INSERT INTO category(name) VALUES(?)';
-                        conn.query(query, [action.new_category]);
-                    }
-                    // -1 to old category size
-                    conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
-                    // +1 to new category size
-                    conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
-                    // update category of tab
-                    conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (decoded) {
+        const pool = DB_Connection();
+        const conn = await pool.getConnection();
+        clientId = decoded.userId;
+        //console.log(clientId);
+        let query;
+        try {
+            switch (action.type) {
+                case 'FETCH':
                     break;
-                }
+                case 'EDITMEMO':
+                    //query = "UPDATE tabinfo SET memo=? WHERE id=? AND clientID=?";
+                    query = "UPDATE tabinfo SET memo=? WHERE id=?";
+                    //conn.query(query, [action.value, action.id, clientId]);
+                    conn.query(query, [action.value, action.id]);
+                    break;
+                case "REMOVE":
+                    //query = "DELETE FROM tabinfo WHERE id=? AND clientID=?";
+                    query = "DELETE FROM tabinfo WHERE id=?";
+                    //conn.query(query, [action.id, clientId]);
+                    conn.query(query, [action.id]);
+                    if (action.category != "DEFAULT") {
+                        //query = 'UPDATE category SET size=size-1 WHERE name=? AND clientID=?';
+                        query = 'UPDATE category SET size=size-1 WHERE name=?';
+                        //conn.query(query, [action.category, cientId]);
+                        conn.query(query, [action.category]);
+                    }
+                    break;
+                case 'EDITCATEGORY':
+                    {
+                        query = 'SELECT id FROM category WHERE name=?';
+                        const [row] = await conn.query(query, [action.new_category]);
+                        if (!row[0]) {
+                            // insert new category
+                            query = 'INSERT INTO category(name) VALUES(?)';
+                            conn.query(query, [action.new_category]);
+                        }
+                        // -1 to old category size
+                        conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
+                        // +1 to new category size
+                        conn.query('UPDATE category SET size=size+1 WHERE name=?', [action.new_category]);
+                        // update category of tab
+                        conn.query('UPDATE tabinfo SET category=? WHERE id=?', [action.new_category, action.id]);
+                        break;
+                    }
+            }
+            query = "SELECT * FROM tabinfo WHERE clientID=?";
+            const [rows] = await conn.query(query, clientId);
+            //const [rows] = await conn.query("SELECT * FROM tabinfo");
+            res.send({
+                userID: clientId,
+                bookmark: rows
+            });
+
+        } catch (error) {
+            console.log(error);
+        } finally {
+            conn.release();
         }
-        query = "SELECT * FROM tabinfo";
-        const [rows] = await conn.query(query);
-        res.send(rows);
-    } catch (error) {
-        console.log(error);
-    } finally {
-        conn.release();
+    }
+    else {
+        //res.status(401).send("TOKEN_INVALID");
+        ////////////////
+        console.log("로그인을 해야합니다");
     }
 });
 
@@ -153,7 +184,7 @@ app.get('/api/category', async (req, res) => {
 
 });
 
-app.get('api/user', async (req, res) => {
+/*app.get('/api/user', async (req, res) => {
     const pool = DB_connection();
     const conn = await pool.getConnection();
     try {
@@ -164,13 +195,13 @@ app.get('api/user', async (req, res) => {
     } finally {
         conn.release();
     }
-});
+});*/
 
 app.post('/api/user/login', async (req, res) => {
 
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-    console.log(req.body);
+    //console.log(req.body);
     const Id = req.body.Id;
     const Password = req.body.Password;
     const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
@@ -179,16 +210,34 @@ app.post('/api/user/login', async (req, res) => {
         const sql = `SELECT COUNT(*) AS num FROM users WHERE Id=? AND Password=?`;
         const params = [Id, cryptedPassword];
         const [rows] = await conn.query(sql, params);
-        if (rows[0].num)
+        if (rows[0].num) {
+            const token = jwt.sign({
+                userId: Id
+            }, jwt_key, {
+                expiresIn: '1m' ////////임시
+            });
+            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정
             res.send('OK');
-        else
+        }
+        else {
+            res.clearCookie('validuser');
             res.send('Invalid User');
+        }
     } catch (error) {
         console.log(error);
     } finally {
         conn.release();
     }
-}); //현재 hello 안녕 각각 아이디와 비밀번호로 입력되어 있음
+}); //현재 hello 안녕 잠 자고싶다 각각 아이디와 비밀번호로 입력되어 있음
+
+app.post('/api/user/logout', async (req, res) => {
+    try {
+        res.clearCookie('validuser');
+        res.send('Logout');
+    } catch (error) {
+        console.log(error);
+    }
+})
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
