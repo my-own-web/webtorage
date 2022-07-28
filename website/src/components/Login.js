@@ -5,11 +5,12 @@ import { darken, lighten } from 'polished';
 import { TodoApi } from '../utils/axios';
 import WebHeader from './WebHeader';
 import Cookies from 'universal-cookie';
+import { useContentDispatch } from "./InfoContext";
 
 const LoginBlock = styled.div`
   width: 700px;
   //background: #BFDCF4;
-  background: ${lighten(0.05,'#BFDCF4')};
+  background: ${lighten(0.05, '#BFDCF4')};
   border-radius: 12px; /*둥그란 정도*/
   margin: 0 auto; /* 페이지 중앙에 나타나도록 설정 */
   margin-top: 60px;
@@ -91,6 +92,8 @@ function Login() {
 
   const { Id, Password } = userInf;
 
+  const dispatch = useContentDispatch();
+
   const onChange = useCallback(
     e => {
       const { name, value } = e.target;
@@ -105,7 +108,7 @@ function Login() {
   const onSubmit = () => {
     console.log(userInf);
     UserLogin(userInf);
-    if (fin === 1){
+    if (fin === 1) {
       setUserInf({
         Id: '',
         Password: ''
@@ -117,7 +120,7 @@ function Login() {
   const navigate = useNavigate();
   const cookies = new Cookies();
 
-  const onKeyPress = (e) =>{
+  const onKeyPress = (e) => {
     if (e.key == 'Enter')
       onSubmit();
   }
@@ -129,13 +132,14 @@ function Login() {
       alert("아이디를 입력해주세요");
     else if (Password === '')
       alert("비밀번호를 입력해주세요");
-    else{
+    else {
       fin = 1;
       try {
-        const res = await TodoApi.post("/user/login", userInf,{withCredentials: true});
+        const res = await TodoApi.post("/user/login", userInf, { withCredentials: true });
         if (res.data === 'OK') {
           console.log(cookies.get('validuser')); //확인용
           alert("성공적으로 로그인되었습니다.");
+          dispatch({ type: "FETCH" }); // 로그인 정보로 미리보기 불러오기
           navigate('/');
         }
         else if (res.data === 'Invalid User') {
@@ -160,9 +164,9 @@ function Login() {
         </LoginHeader>
         <LoginBody>
           <h2>ID</h2>
-          <LoginInput name="Id" onChange={onChange} value={Id} placeholder="ID를 입력해주세요" onKeyPress={onKeyPress}/>
+          <LoginInput name="Id" onChange={onChange} value={Id} placeholder="ID를 입력해주세요" onKeyPress={onKeyPress} />
           <h2>Password</h2>
-          <LoginInput name="Password" onChange={onChange} value={Password} type="password" placeholder="Password를 입력해주세요" onKeyPress={onKeyPress}/>
+          <LoginInput name="Password" onChange={onChange} value={Password} type="password" placeholder="Password를 입력해주세요" onKeyPress={onKeyPress} />
           <LoginButton onClick={onSubmit}>
             로그인
           </LoginButton>
