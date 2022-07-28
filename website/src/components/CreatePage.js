@@ -210,7 +210,6 @@ export default function CreatePage() {
                     <b>Preview</b>
                     <div className="preview-add-container">
                         <BigBoxReadonly
-                            id=""
                             category={inputs.category}
                             title=""
                             data_url={inputs.url}
