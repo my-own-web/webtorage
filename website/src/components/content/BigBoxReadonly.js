@@ -74,19 +74,10 @@ const BoxBlock = styled.div`
     height: 60px;
   }
 
-  .memo{
-    width: 280px;
-    padding-left: 3px;
-    overflow-y: auto;
-    font-size: 13px;
-    font-family: sans-serif;
-    border: solid 1px #DBDCF5;
-  }
-
-  .textarea{
-    width: 280px;
-    height: 50px;
-    resize:none;
+  textarea{
+    width: 258px; //
+    height: 50px; //
+    resize: none;
     padding-left: 3px;
     font-size: 13px;
     font-family: sans-serif;
@@ -133,7 +124,7 @@ const BoxBlock = styled.div`
 //박스 하나의 전체 디자인
 
 /* 읽을 수만 있는 미리보기. 수정/삭제 불가능. */
-function BigBoxReadonly({ id, category, title, data_url, image, description, date, memo }) {
+function BigBoxReadonly({ category, title, data_url, image, description, date, memo }) {
 
   return (
     <div>
@@ -145,7 +136,7 @@ function BigBoxReadonly({ id, category, title, data_url, image, description, dat
         <img src={image} width='280px' height='100px' />
 
         <div className='memo-box'>
-          <textarea className='textarea' readOnly={true} value={memo} />
+          <textarea readOnly value={memo} />
           <button className='memo-save-button'><MdCheck /></button>
         </div>
 
