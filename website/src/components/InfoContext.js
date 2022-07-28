@@ -83,7 +83,7 @@ let initialCategory = [
 
 ];
 // dbg: 내용 채우기
-for (var i = 5; i <= 10; i++) {
+for (var i = 5; i <= 20; i++) {
   initialCategory.push({ id: i, name: `category${i}`, size: 0 });
 }
 

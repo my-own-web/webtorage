@@ -4,8 +4,9 @@ import styled from 'styled-components';
 import Button from './design/Button';
 
 const WebHeadBlock = styled.div`
-    // width: 100%; // chk: 패이지 넘어감
-    height: 50px;
+    width: 100%;
+    height: 60px;
+    box-sizing: border-box;
 
     position: sticky; 
     top: 0px;
