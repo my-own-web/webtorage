@@ -50,21 +50,33 @@ app.post('/api/tabinfo', async (req, res) => {
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
-    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
+    
+    if (decoded){
+        clientId = decoded.userId;
+        let query;
 
-        const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.data_url}'`);
-        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
-            await conn.query(`INSERT INTO tabinfo(clientId, category, title, data_url, image, description, date, memo) 
-        VALUES ('${body.clientId}', ${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}')`);
-            res.send(true);
+        try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+
+            const [exist] = await conn.query(`SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='${body.data_url}' AND category = '${body.category}' AND clientId='${clientId}'`);
+            if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+                await conn.query(`INSERT INTO tabinfo(clientId, category, title, data_url, image, description, date, memo) 
+            VALUES ('${body.clientId}', ${body.category}', '${body.title}', '${body.data_url}', '${body.image}', '${body.description}', '${body.date}', '${body.memo}', '${clientId}')`);
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            conn.release();
         }
-        else {
-            res.send(false);
-        }
-    } catch (err) {
-        console.log(err);
-    } finally {
-        conn.release();
+    }
+    else{
+        console.log("다시 로그인 해 주세요");
+        //res.send("<script>alert('다시 로그인해 주세요.');location.href='/login';</script>");
     }
 });
 
@@ -101,20 +113,20 @@ app.post('/api/tabinfo/website', async (req, res) => {
                     break;
                 case 'EDITMEMO':
                     //query = "UPDATE tabinfo SET memo=? WHERE id=? AND clientID=?";
-                    query = "UPDATE tabinfo SET memo=? WHERE id=?";
-                    //conn.query(query, [action.value, action.id, clientId]);
-                    conn.query(query, [action.value, action.id]);
+                    query = "UPDATE tabinfo SET memo=? WHERE id=? AND clientId=?";
+                    conn.query(query, [action.value, action.id, clientId]);
+                    //conn.query(query, [action.value, action.id]);
                     break;
                 case "REMOVE":
-                    //query = "DELETE FROM tabinfo WHERE id=? AND clientID=?";
-                    query = "DELETE FROM tabinfo WHERE id=?";
-                    //conn.query(query, [action.id, clientId]);
-                    conn.query(query, [action.id]);
+                    query = "DELETE FROM tabinfo WHERE id=? AND clientId=?";
+                    //query = "DELETE FROM tabinfo WHERE id=?";
+                    conn.query(query, [action.id, clientId]);
+                    //conn.query(query, [action.id]);
                     if (action.category != "DEFAULT") {
-                        //query = 'UPDATE category SET size=size-1 WHERE name=? AND clientID=?';
-                        query = 'UPDATE category SET size=size-1 WHERE name=?';
-                        //conn.query(query, [action.category, cientId]);
-                        conn.query(query, [action.category]);
+                        query = 'UPDATE category SET size=size-1 WHERE name=? AND clientId=?';
+                        //query = 'UPDATE category SET size=size-1 WHERE name=?';
+                        conn.query(query, [action.category, clientId]);
+                        //conn.query(query, [action.category]);
                     }
                     break;
                 case 'EDITCATEGORY':
@@ -152,6 +164,7 @@ app.post('/api/tabinfo/website', async (req, res) => {
     else{
         //res.status(401).send("TOKEN_INVALID");
         ////////////////
+        //res.send("<script>alert('다시 로그인해 주세요.');location.href='/login';</script>");
         console.log("로그인을 해야합니다");
     }
 });
@@ -159,36 +172,32 @@ app.post('/api/tabinfo/website', async (req, res) => {
 app.get('/api/category', async (req, res) => {
     // res.send(initialCategory); // dbg용
 
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-
-    let query;
-    try {
-        query = 'SELECT * FROM category';
-        const [cats] = await conn.query(query);
-        console.log(cats); // dbg
-        // cats: 객체 배열 {id, name, size}
-        res.send(cats);
-    } catch (error) {
-        console.log('query:', error);
-    } finally {
-        conn.release();
+    
+    if (decoded){
+        clientId = decoded.userId;
+        let query;
+        try {
+            query = 'SELECT * FROM category WHERE clientId=?';
+            const [cats] = await conn.query(query, [clientId]);
+            //const [cats] = await conn.query(query);
+            console.log(cats); // dbg
+            // cats: 객체 배열 {id, name, size, clientId}
+            res.send(cats);
+        } catch (error) {
+            console.log('query:', error);
+        } finally {
+            conn.release();
+        }
+    }
+    else{   //////////////////////////////////////////////////////
+        res.send([]);
     }
 
 });
-
-/*app.get('/api/user', async (req, res) => {
-    const pool = DB_connection();
-    const conn = await pool.getConnection();
-    try {
-        const [rows] = await conn.query("SELECT * FROM users");
-        res.send(rows);
-    } catch (err) {
-        console.log(err);
-    } finally {
-        conn.release();
-    }
-});*/
 
 app.post('/api/user/login', async (req, res) => {
 
@@ -209,7 +218,7 @@ app.post('/api/user/login', async (req, res) => {
             }, jwt_key, {
                 expiresIn: '1m' ////////임시
             });
-            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정
+            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정하기!
             res.send('OK');
         }
         else{
