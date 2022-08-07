@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
+
 import CategoryList from './CategoryList';
 import CategorySearch from './CategorySearch';
 import Input from './design/Input';
+import BoxSearch from './BoxSearch';
 
 const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
@@ -48,8 +50,8 @@ function WebSidebar() {
     return (
         <WebSideTemplate>
             <WebSideBlock>
-                <h2>TODO Search Tab</h2>
-                <CategorySearch />
+                <h2>Search</h2>
+                <BoxSearch />
             </WebSideBlock>
             <WebSideBlock>
                 <h2>Category</h2>

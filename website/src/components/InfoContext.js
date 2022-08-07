@@ -96,12 +96,13 @@ const ContentDispatchContext = createContext(null);
 const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
 const UserLoginIdContext = createContext(null);
+const BoxSearchManagerContext = createContext(null); // 검색 관련 통합 context
 
 export function InfoProvider({ children }) {
 
   const [content, setContent] = useState([]);
   const [currentCategory, setCurrentCategory] = useState('ALL');
-  const [userLoginId,setUserLoginId] = useState('');
+  const [userLoginId, setUserLoginId] = useState('');
 
   // 전체 카테고리 리스트
   const [allCategoryList, setAllCategoryList] = useState([]);
@@ -109,6 +110,31 @@ export function InfoProvider({ children }) {
   const [categoryList, setCategoryList] = useState([]);
   // 검색할 기간
   const [dateRange, setDateRange] = useState([null, null]);
+
+  /** $start 검색 관련 */
+  const [isSearch, setIsSearch] = useState(false); // true: 키워드가 적용된 미리보기만 보이기
+  const [searchWord, setSearchWord] = useState(""); // 검색할 키워드
+
+  function BoxSearchManager(type, param = null) {
+    switch (type) {
+      case "ISSEARCH":
+        console.log(type, isSearch);
+        return isSearch;
+      case "SETSEARCH":
+        setIsSearch(param);
+        console.log(type, param);
+        break;
+      case "GETWORD":
+        console.log(type, searchWord);
+        return searchWord;
+      case "SETWORD":
+        console.log(type, param);
+        setSearchWord(param);
+        break;
+    }
+  }
+  /** $end 검색 관련 */
+
 
   async function postAction(action) {
     try {
@@ -166,25 +192,27 @@ export function InfoProvider({ children }) {
   }
 
   return (
-      <UserLoginIdContext.Provider value={userLoginId}>
-        <CategoryListContext.Provider value={categoryList}>
-          <SearchCategoryListContext.Provider value={searchCategoryList}>
-            <CurrentCategoryContext.Provider value={currentCategory}>
-              <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
-                <ContentListContext.Provider value={content}>
-                  <ContentDispatchContext.Provider value={postAction}>
-                    <DateRangeContext.Provider value={dateRange}>
-                      <SetDateRangeContext.Provider value={setDateRange}>
+    <UserLoginIdContext.Provider value={userLoginId}>
+      <CategoryListContext.Provider value={categoryList}>
+        <SearchCategoryListContext.Provider value={searchCategoryList}>
+          <CurrentCategoryContext.Provider value={currentCategory}>
+            <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
+              <ContentListContext.Provider value={content}>
+                <ContentDispatchContext.Provider value={postAction}>
+                  <DateRangeContext.Provider value={dateRange}>
+                    <SetDateRangeContext.Provider value={setDateRange}>
+                      <BoxSearchManagerContext.Provider value={BoxSearchManager}>
                         {children}
-                      </SetDateRangeContext.Provider>
-                    </DateRangeContext.Provider>
-                  </ContentDispatchContext.Provider>
-                </ContentListContext.Provider>
-              </SetCurrentCategoryContext.Provider>
-            </CurrentCategoryContext.Provider>
-          </SearchCategoryListContext.Provider>
-        </CategoryListContext.Provider>
-      </UserLoginIdContext.Provider>
+                      </BoxSearchManagerContext.Provider>
+                    </SetDateRangeContext.Provider>
+                  </DateRangeContext.Provider>
+                </ContentDispatchContext.Provider>
+              </ContentListContext.Provider>
+            </SetCurrentCategoryContext.Provider>
+          </CurrentCategoryContext.Provider>
+        </SearchCategoryListContext.Provider>
+      </CategoryListContext.Provider>
+    </UserLoginIdContext.Provider>
   );
 }
 
@@ -252,10 +280,18 @@ export function useSetDateRange() {
   return set;
 }
 
-export function useUserLoginId(){
+export function useUserLoginId() {
   const UserLoginID = useContext(UserLoginIdContext);
   /*if (!UserLoginID){
     throw new Error('UserLoginID Error');
   }*/
   return UserLoginID;
+}
+
+export function useBoxSearchManager() {
+  const context = useContext(BoxSearchManagerContext);
+  if (!context) {
+    throw new Error("BoxSearchManager Context Error");
+  }
+  return context;
 }
