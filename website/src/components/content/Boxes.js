@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import BigBox from './BigBox';
 import SmallBox from './SmallBox';
-import { useContent, useCurrentCategory, useDateRange } from '../InfoContext';
+import { useBoxSearchManager, useContent, useCurrentCategory, useDateRange } from '../InfoContext';
 
 const WebContentBlock = styled.div`
   // background: pink; // dbg: 하얀색으로 변경?
@@ -42,7 +42,9 @@ function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll })
   const currentCategory = useCurrentCategory();
   const dateRange = configDateRange(useDateRange());
 
-  const datas = useContent().filter((e) => {
+  const boxSearchManager = useBoxSearchManager();
+
+  let datas = useContent().filter((e) => {
     // 카테고리 필터
     if (currentCategory === 'ALL') return true;
     return e.category === currentCategory;
@@ -52,6 +54,19 @@ function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll })
     if (dateRange[0] == null || dateRange[1] == null) return true;
     return dateRange[0] <= e.date && e.date <= dateRange[1];
   });
+
+  // 사용자가 입력한 검색 키워드 적용
+  if (boxSearchManager("ISSEARCH")) {
+    const word = boxSearchManager("GETWORD");
+    datas = datas.filter(e => {
+      if (e.data_url.toLowerCase().includes(word)) return true;
+      if (e.description.toLowerCase().includes(word)) return true;
+      if (e.memo.toLowerCase().includes(word)) return true;
+      if (e.title.toLowerCase().includes(word)) return true;
+      return false;
+    })
+    console.log("filter", word);
+  }
 
   datas.sort(function (a, b) {
     return b.date - a.date;
