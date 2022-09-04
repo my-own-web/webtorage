@@ -2,6 +2,8 @@ const express = require('express');
 const app = express(); // express 실행한 것을 받음
 const port = 3001;
 
+const axios = require("axios");
+
 // cors policy 무시
 const cors = require('cors');
 app.use(cors({
@@ -44,6 +46,58 @@ function DB_Connection() {
     globalPool = mysql.createPool(options);
     return globalPool;
 }
+
+/**
+ * req: url
+ * res: title, description, image
+ * 전달받은 URL의 title, description, image를 스크래핑해서 반환
+ * TODO 알고리즘 수정
+ */
+app.post("/api/tabinfo/scrap", async (req, res) => {
+    let title, description, image;
+    const url = req.body.url;
+
+    // TODO URL 앞에 http:// 없으면 오류 남.
+
+
+    try {
+        console.log("Crawling data...");
+        console.log(url);
+        // make http call to url
+        let response = await axios(url);
+        if (response.status !== 200 || !response.data) {
+            console.log("Error occurred while fetching data");
+        }
+
+        // 스크래핑한 html에서 필요한 정보 찾기
+        const html = response.data;
+        const metas = html.split("<meta ").filter((el) => {
+            return el.includes("og:");
+        });
+        metas.forEach(el => {
+            if (el.includes("title")) {
+                title = el.split('"')[3];
+            }
+            else if (el.includes("image")) {
+                image = el.split('"')[3];
+
+            } else if (el.includes("description")) {
+                description = el.split('"')[3];
+            }
+        });
+
+    } catch (e) {
+        console.log(e);
+    }
+
+    console.log(title + "\n" + description + "\n" + image);
+    res.send({
+        title: title,
+        description: description,
+        image: image
+    });
+
+});
 
 // website, extension에서 DB에 탭 정보 저장
 app.post('/api/tabinfo', async (req, res) => {

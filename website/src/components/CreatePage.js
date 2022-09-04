@@ -83,6 +83,11 @@ export default function CreatePage() {
         memo: "",
         category: currentCategory
     });
+    const [previewInfo, setPreviewInfo] = useState({
+        title: "",
+        description: "",
+        image: ""
+    });
     const [dateString, setDateString] = useState("000000000000");
     const navigate = useNavigate();
     const dispatch = useContentDispatch();
@@ -120,6 +125,7 @@ export default function CreatePage() {
         parseDate();
 
         // TODO 웹 title, description, image 크롤링
+        scrapTabInfo(inputs.url);
     }
 
     // $begin category select dropbox
@@ -155,9 +161,9 @@ export default function CreatePage() {
         try {
             let params = {
                 data_url: inputs.url,
-                title: "", // TODO 크롤링 한 정보
-                description: "",
-                image: "",
+                title: previewInfo.title,
+                description: previewInfo.description,
+                image: previewInfo.image,
                 memo: inputs.memo.trimEnd(),
                 category: inputs.category,
                 date: dateString,
@@ -177,6 +183,21 @@ export default function CreatePage() {
             }
         } catch (error) {
             console.log(error);
+        }
+    }
+
+    async function scrapTabInfo(url) {
+        console.log("scapTabInfo " + url);
+        try {
+            const res = await TodoApi.post("/tabinfo/scrap", { url: url });
+            console.log(res.data);
+            setPreviewInfo({
+                title: res.data.title,
+                description: res.data.description,
+                image: res.data.image
+            });
+        } catch (e) {
+            console.log(e);
         }
     }
 
@@ -214,10 +235,10 @@ export default function CreatePage() {
                     <div className="preview-add-container">
                         <BigBoxReadonly
                             category={inputs.category}
-                            title=""
+                            title={previewInfo.title}
                             data_url={inputs.url}
-                            image=""
-                            description=""
+                            image={previewInfo.image}
+                            description={previewInfo.description}
                             date={dateString}
                             memo={inputs.memo}
                             checkedItemHandler={(id, add) => { }}
