@@ -3,6 +3,7 @@ const app = express(); // express 실행한 것을 받음
 const port = 3001;
 
 const axios = require("axios");
+const cheerio = require("cheerio"); // 스크래핑 때 사용
 
 // cors policy 무시
 const cors = require('cors');
@@ -56,9 +57,10 @@ function DB_Connection() {
 app.post("/api/tabinfo/scrap", async (req, res) => {
     let title, description, image;
     let url = req.body.url;
+    let sidx, eidx;
 
     // URL 앞에 http:// 없으면 오류 나므로 추가
-    if (url.substr(0, 3) != "http") {
+    if (url.substring(0, 4) != "http") {
         url = "http://" + url;
     }
 
@@ -73,20 +75,28 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
 
         // 스크래핑한 html에서 필요한 정보 찾기
         const html = response.data;
-        const metas = html.split("<meta ").filter((el) => {
-            return el.includes("og:");
-        });
-        metas.forEach(el => {
-            if (el.includes("title")) {
-                title = el.split('"')[3];
-            }
-            else if (el.includes("image")) {
-                image = el.split('"')[3];
+        const $ = cheerio.load(html);
 
-            } else if (el.includes("description")) {
-                description = el.split('"')[3];
-            }
-        });
+        // OpenGraph 태그
+        title = $("meta[property=og:title]").attr("content");
+        image = $("meta[property=og:image]").attr("content");
+        description = $("meta[property=og:description]").attr("content");
+
+        // Twitter Card 태그
+        if (!title) {
+            title = $("meta[name=twitter:title]").attr("content");
+        }
+        if (!image) {
+            image = $("meta[name=twitter:image]").attr("content");
+        }
+        if (!description) {
+            description = $("meta[name=twitter:description]").attr("content");
+        }
+
+        // <title> 태그
+        if (!title) {
+            title = $("title").text();
+        }
 
     } catch (e) {
         console.log(e);
