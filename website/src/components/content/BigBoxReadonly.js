@@ -130,9 +130,9 @@ function BigBoxReadonly({ category, title, data_url, image, description, date, m
     <div>
       <BoxBlock>
         <div className="cover"><input type='checkbox' /></div>
-        <h3>{title}</h3>
-        <a href={data_url}>{data_url}</a>
-        <div className='description'>{description}</div>
+        <h3 title={title}>{title}</h3>
+        <a href={data_url} title={data_url}>{data_url}</a>
+        <div className='description' title={description}>{description}</div>
         <img src={image} width='280px' height='100px' />
 
         <div className='memo-box'>
