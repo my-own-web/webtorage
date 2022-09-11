@@ -55,10 +55,12 @@ function DB_Connection() {
  */
 app.post("/api/tabinfo/scrap", async (req, res) => {
     let title, description, image;
-    const url = req.body.url;
+    let url = req.body.url;
 
-    // TODO URL 앞에 http:// 없으면 오류 남.
-
+    // URL 앞에 http:// 없으면 오류 나므로 추가
+    if (url.substr(0, 3) != "http") {
+        url = "http://" + url;
+    }
 
     try {
         console.log("Crawling data...");
@@ -90,7 +92,7 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
         console.log(e);
     }
 
-    console.log(title + "\n" + description + "\n" + image);
+    console.log("title: " + title + "\ndescription: " + description + "\nimage: " + image);
     res.send({
         title: title,
         description: description,
