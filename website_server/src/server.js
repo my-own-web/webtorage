@@ -49,43 +49,34 @@ function DB_Connection() {
 }
 
 /**
- * req: url
- * res: title, description, image
- * 전달받은 URL의 title, description, image를 스크래핑해서 반환
- * TODO 알고리즘 수정
+ * {title, description, image, url} 반환
+ * @param {*} url_input 
  */
-app.post("/api/tabinfo/scrap", async (req, res) => {
+// TODO 주소창에서 url 가져오기 (https인 경우 올바르게 갖고오기 위해)
+async function scrapTabInfo(url_input) {
     let title, description, image;
-    let url = req.body.url;
-    let sidx, eidx;
-
-    // URL 앞에 http:// 없으면 오류 나므로 추가
-    if (url.substring(0, 4) != "http") {
-        url = "http://" + url;
-    }
-
+    let url = url_input;
+    console.log("scrapTabInfo..." + url_input);
+    // make http call to url
     try {
-        console.log("Crawling data...");
-        console.log(url);
-        // make http call to url
-        let response = await axios(url);
-        if (response.status !== 200 || !response.data) {
-            console.log("Error occurred while fetching data");
-        }
-
+        let response = await axios(url_input);
+        url = response.request.res.responseUrl;
         // 스크래핑한 html에서 필요한 정보 찾기
         const html = response.data;
         const $ = cheerio.load(html);
 
+        // <title> 태그 - 모든 HTML 문서에 필수
+        title = $("title").text();
+        // <meta name="description"
+        description = $("meta[name=description]").attr("content");
+
         // OpenGraph 태그
-        title = $("meta[property=og:title]").attr("content");
         image = $("meta[property=og:image]").attr("content");
-        description = $("meta[property=og:description]").attr("content");
+        if (!description) {
+            description = $("meta[property=og:description]").attr("content");
+        }
 
         // Twitter Card 태그
-        if (!title) {
-            title = $("meta[name=twitter:title]").attr("content");
-        }
         if (!image) {
             image = $("meta[name=twitter:image]").attr("content");
         }
@@ -93,27 +84,39 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
             description = $("meta[name=twitter:description]").attr("content");
         }
 
-        // <title> 태그
-        if (!title) {
-            title = $("title").text();
-        }
+        /* 기타 알고리즘 */
 
+        // root url 뽑아내기
+        const tmpArray = url_input.split("/", 3);
+        const domain = tmpArray[0] + tmpArray[1] + tmpArray[2];
+
+        // favicon을 image로 사용
+        if (!image) {
+            let imgPath = $("link[rel=icon]").attr("href");
+            if (imgPath) image = domain + imgPath;
+        }
     } catch (e) {
         console.log(e);
     }
 
-    console.log("title: " + title + "\ndescription: " + description + "\nimage: " + image);
-    res.send({
-        title: title,
-        description: description,
-        image: image
-    });
+    console.log("url: " + url + "\ntitle: " + title + "\ndescription: " + description + "\nimage: " + image);
 
+    return { title: title, description: description, image: image };
+}
+
+/**
+ * req: { url }
+ * res: title, description, image
+ * 전달받은 URL의 title, description, image를 스크래핑해서 반환
+ */
+app.post("/api/tabinfo/scrap", async (req, res) => {
+    const tabInfo = await scrapTabInfo(req.body.url);
+    res.send(tabInfo);
 });
 
 // website, extension에서 DB에 탭 정보 저장
 app.post('/api/tabinfo', async (req, res) => {
-    const body = req.body;
+    let body = req.body; // {title, data_url, image, description, date, memo, clientId}
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
@@ -125,8 +128,16 @@ app.post('/api/tabinfo', async (req, res) => {
 
     try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
+        // 스크래핑 하지 않아서 페이지 정보 모르는 상태
+        if (!body.title) {
+            let tabInfo = await scrapTabInfo(url);
+            body.title = tabInfo.title;
+            body.description = tabInfo.description;
+            body.image = tabInfo.image;
+        }
+
         const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=?", [url, category]);
-        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+        if (exist[0].num < 1) {// 중복 url 확인
             await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
         VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
             res.send(true);
