@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import styled from 'styled-components';
 import CategoryList from './CategoryList';
 import CategorySearch from './CategorySearch';
+import Input from './design/Input';
 
 const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
@@ -42,12 +43,14 @@ const WebSideBlock = styled.div`
     hr{
         margin: 0 20px 0 0;
     }
-
 `
-
 function WebSidebar() {
     return (
         <WebSideTemplate>
+            <WebSideBlock>
+                <h2>TODO Search Tab</h2>
+                <CategorySearch />
+            </WebSideBlock>
             <WebSideBlock>
                 <h2>Category</h2>
                 <CategorySearch />

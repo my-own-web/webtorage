@@ -58,7 +58,7 @@ function CategoryList() {
                 categoryList.map((el) => {
                     return (
                         <CategoryItem key={el.id} name={el.name} />
-                        // el: 객체 {id, name, size, clientId}
+                        // el: 객체 {id, name, size}
                     );
                 })
             }

@@ -83,7 +83,7 @@ let initialCategory = [
 
 ];
 // dbg: 내용 채우기
-for (var i = 5; i <= 10; i++) {
+for (var i = 5; i <= 20; i++) {
   initialCategory.push({ id: i, name: `category${i}`, size: 0 });
 }
 
@@ -96,6 +96,7 @@ const ContentDispatchContext = createContext(null);
 const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
 const UserLoginIdContext = createContext(null);
+const UpdateCategoryContext = createContext(null);/////////////////////////////////////////
 
 export function InfoProvider({ children }) {
 
@@ -113,10 +114,20 @@ export function InfoProvider({ children }) {
   async function postAction(action) {
     try {
       const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
-      //const { data } = await TodoApi.post('/tabinfo/website', action);
-      setContent(data.bookmark);
-      setUserLoginId(data.userID);
-      ////////////////////////////////////////////////
+
+      if (data==='login again'){
+        alert('다시 로그인해 주세요.');
+        window.location.replace("/login"); //새로고침
+      }
+      else{
+        ///////////////////////////
+        console.log(data.userID);
+        ///////////////////////////////
+        setContent(data.bookmark);
+        setUserLoginId(data.userID);
+        ///////////////////////
+        getCategory(data.userID);
+      }
     } catch (error) {
       console.log(error);
 
@@ -127,9 +138,26 @@ export function InfoProvider({ children }) {
     }
   }
 
-  async function getCategory() {
+  /*async function getCategory() {
     try {
       const { data } = await TodoApi.get('/category');
+      // data: {id, name, size} 객체 배열
+      setAllCategoryList(data);
+      setCategoryList(data);
+    } catch (error) {
+      console.log(error);
+
+      // dbg: 서버 안 켰을 때 디버그용
+      if (process.env.NODE_ENV === "development") {
+        setAllCategoryList(initialCategory);
+        setCategoryList(initialCategory);
+      }
+    }
+  }*/
+
+  async function getCategory(Id) {
+    try {
+      const { data } = await TodoApi.post('/category', {clientId: Id}, { withCredentials: true });
       // data: {id, name, size} 객체 배열
       setAllCategoryList(data);
       setCategoryList(data);
@@ -147,7 +175,7 @@ export function InfoProvider({ children }) {
   // 첫 렌더링에서만 실행
   useEffect(() => {
     postAction({ type: 'FETCH' });
-    getCategory();
+    //getCategory();
   }, []);
 
   const searchCategoryList = (value) => {
@@ -166,6 +194,7 @@ export function InfoProvider({ children }) {
   }
 
   return (
+    <UpdateCategoryContext.Provider value={getCategory}>
       <UserLoginIdContext.Provider value={userLoginId}>
         <CategoryListContext.Provider value={categoryList}>
           <SearchCategoryListContext.Provider value={searchCategoryList}>
@@ -185,7 +214,14 @@ export function InfoProvider({ children }) {
           </SearchCategoryListContext.Provider>
         </CategoryListContext.Provider>
       </UserLoginIdContext.Provider>
+    </UpdateCategoryContext.Provider>
   );
+}
+
+export function useLoginCategory(){
+  const loginCategory = useContext(UpdateCategoryContext);
+  ///////////////////////////////////
+  return loginCategory; 
 }
 
 export function useCategoryList() {
