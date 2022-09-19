@@ -1,7 +1,7 @@
 import react, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useCurrentCategory, useCategoryList } from "./InfoContext";
+import { useCurrentCategory, useCategoryList, useUserLoginId } from "./InfoContext";
 import DateButton from "./DateButton";
 import Button from "./design/Button";
 import { MdCheck } from "react-icons/md";
@@ -116,6 +116,7 @@ const WebSubHeaderBlock = styled.div`
 export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onChangeCategory, setSelectAll, selected }) {
     const currentCategory = useCurrentCategory();
     const navigate = useNavigate();
+    const userLoginId = useUserLoginId();
 
     // $begin category select dropbox
     const cglist = useCategoryList();
@@ -139,7 +140,8 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
     // $end category select dropbox
 
     function onClickCreate() {
-        navigate("/create");
+        if (userLoginId) navigate("/create");
+        else navigate("/login");
     }
 
     return (
