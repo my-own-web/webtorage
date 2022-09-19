@@ -62,6 +62,8 @@ function WebHeader() {
         else {
             try {
                 await TodoApi.post('/user/logout', null, { withCredentials: true });
+                //window.location.reload(); //새로고침
+                window.location.replace("/"); //새로고침
                 navigate('/');
             } catch (err) {
                 console.log(err);

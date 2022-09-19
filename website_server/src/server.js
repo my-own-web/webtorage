@@ -28,6 +28,8 @@ const randomSalt = process.env.SALT;
 
 //jwt 사용
 const jwt = require('jsonwebtoken');
+const { nextTick } = require('process');
+const { CLIENT_RENEG_WINDOW } = require('tls');
 const jwt_key = process.env.SECRET_KEY;
 
 const options = {
@@ -117,35 +119,42 @@ app.post('/api/tabinfo', async (req, res) => {
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
     let category = body.category;
     let url = body.data_url.trim(); // 앞뒤 빈칸 제거
     if (!category) { // 빈 문자열 DEFAULT로 변환
         category = "DEFAULT";
     }
 
-    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+    if (decoded){
+        clientId = decoded.userId;
+        console.log(clientId);////////////////////////////
 
-        // 스크래핑 하지 않아서 페이지 정보 모르는 상태
-        if (!body.title) {
-            let tabInfo = await scrapTabInfo(url);
-            body.title = tabInfo.title;
-            body.description = tabInfo.description;
-            body.image = tabInfo.image;
-        }
+        try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-        const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=?", [url, category]);
-        if (exist[0].num < 1) {// 중복 url 확인
-            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
-            res.send(true);
+            // 스크래핑 하지 않아서 페이지 정보 모르는 상태
+            if (!body.title) {
+                let tabInfo = await scrapTabInfo(url);
+                body.title = tabInfo.title;
+                body.description = tabInfo.description;
+                body.image = tabInfo.image;
+            }
+
+            const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [url, category, clientId]);
+            if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+                await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
+                res.send(true);
+            }
+            else {
+                res.send(false);
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            conn.release();
         }
-        else {
-            res.send(false);
-        }
-    } catch (err) {
-        console.log(err);
-    } finally {
-        conn.release();
     }
 });
 
@@ -163,7 +172,7 @@ app.get('/api/tabinfo', async (req, res) => {
     }
 });
 
-app.post('/api/tabinfo/website', async (req, res) => {
+app.post('/api/tabinfo/website', async (req, res, next) => {
     const action = req.body;
     console.log(action); //dbg
 
@@ -174,7 +183,6 @@ app.post('/api/tabinfo/website', async (req, res) => {
         const pool = DB_Connection();
         const conn = await pool.getConnection();
         clientId = decoded.userId;
-        //console.log(clientId);
         let query;
         try {
             switch (action.type) {
@@ -182,20 +190,20 @@ app.post('/api/tabinfo/website', async (req, res) => {
                     break;
                 case 'EDITMEMO':
                     //query = "UPDATE tabinfo SET memo=? WHERE id=? AND clientID=?";
-                    query = "UPDATE tabinfo SET memo=? WHERE id=?";
-                    //conn.query(query, [action.value, action.id, clientId]);
-                    conn.query(query, [action.value, action.id]);
+                    query = "UPDATE tabinfo SET memo=? WHERE id=? AND clientId=?";
+                    conn.query(query, [action.value, action.id, clientId]);
+                    //conn.query(query, [action.value, action.id]);
                     break;
                 case "REMOVE":
-                    //query = "DELETE FROM tabinfo WHERE id=? AND clientID=?";
-                    query = "DELETE FROM tabinfo WHERE id=?";
-                    //conn.query(query, [action.id, clientId]);
-                    conn.query(query, [action.id]);
+                    query = "DELETE FROM tabinfo WHERE id=? AND clientId=?";
+                    //query = "DELETE FROM tabinfo WHERE id=?";
+                    conn.query(query, [action.id, clientId]);
+                    //conn.query(query, [action.id]);
                     if (action.category != "DEFAULT") {
-                        //query = 'UPDATE category SET size=size-1 WHERE name=? AND clientID=?';
-                        query = 'UPDATE category SET size=size-1 WHERE name=?';
-                        //conn.query(query, [action.category, cientId]);
-                        conn.query(query, [action.category]);
+                        query = 'UPDATE category SET size=size-1 WHERE name=? AND clientId=?';
+                        //query = 'UPDATE category SET size=size-1 WHERE name=?';
+                        conn.query(query, [action.category, clientId]);
+                        //conn.query(query, [action.category]);
                     }
                     break;
                 case 'EDITCATEGORY':
@@ -230,46 +238,35 @@ app.post('/api/tabinfo/website', async (req, res) => {
             conn.release();
         }
     }
-    else {
-        //res.status(401).send("TOKEN_INVALID");
-        ////////////////
-        console.log("로그인을 해야합니다");
+    else { /////////////////////
+        if (action.type !== 'FETCH')
+            res.send("login again!");
     }
 });
 
-app.get('/api/category', async (req, res) => {
-    // res.send(initialCategory); // dbg용
+app.post('/api/category', async (req, res) => {
 
+    const clientId = req.body.clientId;
+    //////////////////
+    console.log(clientId);
+;
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
     let query;
     try {
-        query = 'SELECT * FROM category';
-        const [cats] = await conn.query(query);
+        query = "SELECT * FROM category WHERE clientID=?";
+        const [cats] = await conn.query(query, [clientId]);
+      
         console.log(cats); // dbg
-        // cats: 객체 배열 {id, name, size}
+        // cats: 객체 배열 {id, name, size, clientId}
         res.send(cats);
     } catch (error) {
         console.log('query:', error);
     } finally {
         conn.release();
     }
-
 });
-
-/*app.get('/api/user', async (req, res) => {
-    const pool = DB_connection();
-    const conn = await pool.getConnection();
-    try {
-        const [rows] = await conn.query("SELECT * FROM users");
-        res.send(rows);
-    } catch (err) {
-        console.log(err);
-    } finally {
-        conn.release();
-    }
-});*/
 
 app.post('/api/user/login', async (req, res) => {
 
@@ -290,7 +287,7 @@ app.post('/api/user/login', async (req, res) => {
             }, jwt_key, {
                 expiresIn: '1m' ////////임시
             });
-            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정
+            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정하기!
             res.send('OK');
         }
         else {

@@ -96,6 +96,7 @@ const ContentDispatchContext = createContext(null);
 const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
 const UserLoginIdContext = createContext(null);
+const UpdateCategoryContext = createContext(null);/////////////////////////////////////////
 const BoxSearchManagerContext = createContext(null); // 검색 관련 통합 context
 
 export function InfoProvider({ children }) {
@@ -139,10 +140,20 @@ export function InfoProvider({ children }) {
   async function postAction(action) {
     try {
       const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
-      //const { data } = await TodoApi.post('/tabinfo/website', action);
-      setContent(data.bookmark);
-      setUserLoginId(data.userID);
-      ////////////////////////////////////////////////
+
+      if (data==='login again'){
+        alert('다시 로그인해 주세요.');
+        window.location.replace("/login"); //새로고침
+      }
+      else{
+        ///////////////////////////
+        console.log(data.userID);
+        ///////////////////////////////
+        setContent(data.bookmark);
+        setUserLoginId(data.userID);
+        ///////////////////////
+        getCategory(data.userID);
+      }
     } catch (error) {
       console.log(error);
 
@@ -153,9 +164,26 @@ export function InfoProvider({ children }) {
     }
   }
 
-  async function getCategory() {
+  /*async function getCategory() {
     try {
       const { data } = await TodoApi.get('/category');
+      // data: {id, name, size} 객체 배열
+      setAllCategoryList(data);
+      setCategoryList(data);
+    } catch (error) {
+      console.log(error);
+
+      // dbg: 서버 안 켰을 때 디버그용
+      if (process.env.NODE_ENV === "development") {
+        setAllCategoryList(initialCategory);
+        setCategoryList(initialCategory);
+      }
+    }
+  }*/
+
+  async function getCategory(Id) {
+    try {
+      const { data } = await TodoApi.post('/category', {clientId: Id}, { withCredentials: true });
       // data: {id, name, size} 객체 배열
       setAllCategoryList(data);
       setCategoryList(data);
@@ -173,7 +201,7 @@ export function InfoProvider({ children }) {
   // 첫 렌더링에서만 실행
   useEffect(() => {
     postAction({ type: 'FETCH' });
-    getCategory();
+    //getCategory();
   }, []);
 
   const searchCategoryList = (value) => {
@@ -192,28 +220,34 @@ export function InfoProvider({ children }) {
   }
 
   return (
-    <UserLoginIdContext.Provider value={userLoginId}>
-      <CategoryListContext.Provider value={categoryList}>
-        <SearchCategoryListContext.Provider value={searchCategoryList}>
-          <CurrentCategoryContext.Provider value={currentCategory}>
-            <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
-              <ContentListContext.Provider value={content}>
-                <ContentDispatchContext.Provider value={postAction}>
-                  <DateRangeContext.Provider value={dateRange}>
-                    <SetDateRangeContext.Provider value={setDateRange}>
-                      <BoxSearchManagerContext.Provider value={BoxSearchManager}>
+    <UpdateCategoryContext.Provider value={getCategory}>
+      <UserLoginIdContext.Provider value={userLoginId}>
+        <CategoryListContext.Provider value={categoryList}>
+          <SearchCategoryListContext.Provider value={searchCategoryList}>
+            <CurrentCategoryContext.Provider value={currentCategory}>
+              <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
+                <ContentListContext.Provider value={content}>
+                  <ContentDispatchContext.Provider value={postAction}>
+                    <DateRangeContext.Provider value={dateRange}>
+                      <SetDateRangeContext.Provider value={setDateRange}>
                         {children}
-                      </BoxSearchManagerContext.Provider>
-                    </SetDateRangeContext.Provider>
-                  </DateRangeContext.Provider>
-                </ContentDispatchContext.Provider>
-              </ContentListContext.Provider>
-            </SetCurrentCategoryContext.Provider>
-          </CurrentCategoryContext.Provider>
-        </SearchCategoryListContext.Provider>
-      </CategoryListContext.Provider>
-    </UserLoginIdContext.Provider>
+                      </SetDateRangeContext.Provider>
+                    </DateRangeContext.Provider>
+                  </ContentDispatchContext.Provider>
+                </ContentListContext.Provider>
+              </SetCurrentCategoryContext.Provider>
+            </CurrentCategoryContext.Provider>
+          </SearchCategoryListContext.Provider>
+        </CategoryListContext.Provider>
+      </UserLoginIdContext.Provider>
+    </UpdateCategoryContext.Provider>
   );
+}
+
+export function useLoginCategory(){
+  const loginCategory = useContext(UpdateCategoryContext);
+  ///////////////////////////////////
+  return loginCategory; 
 }
 
 export function useCategoryList() {
