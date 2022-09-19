@@ -141,11 +141,11 @@ export function InfoProvider({ children }) {
     try {
       const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
 
-      if (data==='login again'){
+      if (data === 'login again') {
         alert('다시 로그인해 주세요.');
         window.location.replace("/login"); //새로고침
       }
-      else{
+      else {
         ///////////////////////////
         console.log(data.userID);
         ///////////////////////////////
@@ -183,7 +183,7 @@ export function InfoProvider({ children }) {
 
   async function getCategory(Id) {
     try {
-      const { data } = await TodoApi.post('/category', {clientId: Id}, { withCredentials: true });
+      const { data } = await TodoApi.post('/category', { clientId: Id }, { withCredentials: true });
       // data: {id, name, size} 객체 배열
       setAllCategoryList(data);
       setCategoryList(data);
@@ -230,7 +230,9 @@ export function InfoProvider({ children }) {
                   <ContentDispatchContext.Provider value={postAction}>
                     <DateRangeContext.Provider value={dateRange}>
                       <SetDateRangeContext.Provider value={setDateRange}>
-                        {children}
+                        <BoxSearchManagerContext.Provider value={BoxSearchManager}>
+                          {children}
+                        </BoxSearchManagerContext.Provider>
                       </SetDateRangeContext.Provider>
                     </DateRangeContext.Provider>
                   </ContentDispatchContext.Provider>
@@ -244,10 +246,10 @@ export function InfoProvider({ children }) {
   );
 }
 
-export function useLoginCategory(){
+export function useLoginCategory() {
   const loginCategory = useContext(UpdateCategoryContext);
   ///////////////////////////////////
-  return loginCategory; 
+  return loginCategory;
 }
 
 export function useCategoryList() {

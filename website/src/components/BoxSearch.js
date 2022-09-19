@@ -34,7 +34,6 @@ function BoxSearch() {
     const boxSearchManager = useBoxSearchManager();
     const isSearch = boxSearchManager("ISSEARCH");
 
-    // 입력값이 변할 때마다 검색함
     const onChange = (e) => {
         setInput(e.target.value);
     };
@@ -46,10 +45,16 @@ function BoxSearch() {
         boxSearchManager("SETSEARCH", false);
     }
 
+    // 엔터키 치면 검색함
     const onKeyPress = e => {
         if (e.key == "Enter") {
-            boxSearchManager("SETSEARCH", true);
-            boxSearchManager("SETWORD", input);
+            if (input) {
+                boxSearchManager("SETSEARCH", true);
+                boxSearchManager("SETWORD", input);
+            }
+            else {
+                boxSearchManager("SETSEARCH", false);
+            }
             inputRef.current.blur();
         }
     }
