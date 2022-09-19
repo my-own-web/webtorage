@@ -2,6 +2,9 @@ const express = require('express');
 const app = express(); // express 실행한 것을 받음
 const port = 3001;
 
+const axios = require("axios");
+const cheerio = require("cheerio"); // 스크래핑 때 사용
+
 // cors policy 무시
 const cors = require('cors');
 app.use(cors({
@@ -51,7 +54,6 @@ function DB_Connection() {
  * {title, description, image, url} 반환
  * @param {*} url_input 
  */
-// TODO 주소창에서 url 가져오기 (https인 경우 올바르게 갖고오기 위해)
 async function scrapTabInfo(url_input) {
     let title, description, image;
     let url = url_input;
@@ -95,12 +97,12 @@ async function scrapTabInfo(url_input) {
             if (imgPath) image = domain + imgPath;
         }
     } catch (e) {
-        console.log(e);
+        // console.log(e);
     }
 
     console.log("url: " + url + "\ntitle: " + title + "\ndescription: " + description + "\nimage: " + image);
 
-    return { title: title, description: description, image: image };
+    return { data_url: url, title: title, description: description, image: image };
 }
 
 /**
@@ -116,30 +118,30 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
 // website, extension에서 DB에 탭 정보 저장
 app.post('/api/tabinfo', async (req, res) => {
     let body = req.body; // {title, data_url, image, description, date, memo, clientId}
+    body = { ...body, title: "", image: "", description: "" }; // sql 오류 방지
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
     const clientToken = req.cookies.validuser;
-    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
     let category = body.category;
     let url = body.data_url.trim(); // 앞뒤 빈칸 제거
     if (!category) { // 빈 문자열 DEFAULT로 변환
         category = "DEFAULT";
     }
 
-    if (decoded){
+    if (decoded) {
         clientId = decoded.userId;
         console.log(clientId);////////////////////////////
 
         try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-            // 스크래핑 하지 않아서 페이지 정보 모르는 상태
-            if (!body.title) {
-                let tabInfo = await scrapTabInfo(url);
-                body.title = tabInfo.title;
-                body.description = tabInfo.description;
-                body.image = tabInfo.image;
-            }
+            // 탭 정보 스크래핑
+            let tabInfo = await scrapTabInfo(url);
+            if (tabInfo.title) body.title = tabInfo.title;
+            if (tabInfo.description) body.description = tabInfo.description;
+            if (tabInfo.image) body.image = tabInfo.image;
+            body.data_url = tabInfo.data_url;
 
             const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [url, category, clientId]);
             if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
@@ -249,7 +251,7 @@ app.post('/api/category', async (req, res) => {
     const clientId = req.body.clientId;
     //////////////////
     console.log(clientId);
-;
+    ;
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
@@ -257,7 +259,7 @@ app.post('/api/category', async (req, res) => {
     try {
         query = "SELECT * FROM category WHERE clientID=?";
         const [cats] = await conn.query(query, [clientId]);
-      
+
         console.log(cats); // dbg
         // cats: 객체 배열 {id, name, size, clientId}
         res.send(cats);
