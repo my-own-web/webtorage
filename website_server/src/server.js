@@ -52,7 +52,6 @@ function DB_Connection() {
  * {title, description, image, url} 반환
  * @param {*} url_input 
  */
-// TODO 주소창에서 url 가져오기 (https인 경우 올바르게 갖고오기 위해)
 async function scrapTabInfo(url_input) {
     let title, description, image;
     let url = url_input;
@@ -96,12 +95,12 @@ async function scrapTabInfo(url_input) {
             if (imgPath) image = domain + imgPath;
         }
     } catch (e) {
-        console.log(e);
+        // console.log(e);
     }
 
     console.log("url: " + url + "\ntitle: " + title + "\ndescription: " + description + "\nimage: " + image);
 
-    return { title: title, description: description, image: image };
+    return { data_url: url, title: title, description: description, image: image };
 }
 
 /**
@@ -117,24 +116,23 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
 // website, extension에서 DB에 탭 정보 저장
 app.post('/api/tabinfo', async (req, res) => {
     let body = req.body; // {title, data_url, image, description, date, memo, clientId}
-    const pool = DB_Connection();
-    const conn = await pool.getConnection();
-
+    body = { ...body, title: "", image: "", description: "" }; // sql 오류 방지
     let category = body.category;
     let url = body.data_url.trim(); // 앞뒤 빈칸 제거
     if (!category) { // 빈 문자열 DEFAULT로 변환
         category = "DEFAULT";
     }
 
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
     try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-        // 스크래핑 하지 않아서 페이지 정보 모르는 상태
-        if (!body.title) {
-            let tabInfo = await scrapTabInfo(url);
-            body.title = tabInfo.title;
-            body.description = tabInfo.description;
-            body.image = tabInfo.image;
-        }
+        // 탭 정보 스크래핑
+        let tabInfo = await scrapTabInfo(url);
+        if (tabInfo.title) body.title = tabInfo.title;
+        if (tabInfo.description) body.description = tabInfo.description;
+        if (tabInfo.image) body.image = tabInfo.image;
+        body.data_url = tabInfo.data_url;
 
         const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=?", [url, category]);
         if (exist[0].num < 1) {// 중복 url 확인

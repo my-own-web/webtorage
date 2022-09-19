@@ -84,6 +84,7 @@ export default function CreatePage() {
         category: currentCategory
     });
     const [previewInfo, setPreviewInfo] = useState({
+        data_url: "",
         title: "",
         description: "",
         image: ""
@@ -116,16 +117,16 @@ export default function CreatePage() {
     const onBlur = e => {
         console.log(e.target.name + " lost focus, value:" + e.target.value); // dbg
 
-        // url 앞뒤 빈칸 제거
-        setInputs({
-            ...inputs,
-            url: inputs.url.trim()
-        });
+        // URL 앞뒤 빈칸 제거
+        let newURL = inputs.url.trim();
+        // URL 앞에 http:// 없으면 오류 나므로 추가
+        if (newURL && newURL.substring(0, 4) != "http") {
+            newURL = "http://" + newURL;
+        }
+        setInputs({ ...inputs, url: newURL });
 
-        parseDate();
-
-        // TODO 웹 title, description, image 크롤링
-        scrapTabInfo(inputs.url);
+        parseDate(); // 시간 형식에 맞춰 가져오기
+        scrapTabInfo(newURL); // 스크래핑
     }
 
     // $begin category select dropbox
@@ -145,14 +146,12 @@ export default function CreatePage() {
 
         console.log(`user[${userLoginId}] saves url[${inputs.url}]memo[${inputs.memo}]category[${inputs.category}]timestamp[${dateString}]`); // dbg
 
-        // TODO inputs.url/category 앞뒤로 빈칸 제거
-
-        // 서버로 탭 정보 post 후 홈으로 이동
-        if (inputs.url) { // url이 빈 문자열이 아니면
-            postTabInfo();
+        // 서버로 탭 정보 post
+        if (!inputs.url) {
+            alert("URL을 입력하세요.");
         }
         else {
-            alert("URL을 입력하세요.");
+            postTabInfo();
         }
     }
 
@@ -192,10 +191,12 @@ export default function CreatePage() {
             const res = await TodoApi.post("/tabinfo/scrap", { url: url });
             console.log(res.data);
             setPreviewInfo({
+                data_url: res.data.data_url,
                 title: res.data.title,
                 description: res.data.description,
                 image: res.data.image
             });
+
         } catch (e) {
             console.log(e);
         }
@@ -236,7 +237,7 @@ export default function CreatePage() {
                         <BigBoxReadonly
                             category={inputs.category}
                             title={previewInfo.title}
-                            data_url={inputs.url}
+                            data_url={previewInfo.data_url}
                             image={previewInfo.image}
                             description={previewInfo.description}
                             date={dateString}
