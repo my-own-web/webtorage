@@ -8,7 +8,7 @@ const DatePickerTemplate = styled.div`
     // 버튼 디자인
     .example-custom-input{
       height: 25px;
-      width: 80px;
+      width: 170px; // 기간 선택시 공간 필요함. 줄이지 말 것.
       cursor: pointer;
       text-align: center;
       background: whitesmoke;
@@ -21,7 +21,7 @@ const DatePickerTemplate = styled.div`
     }
 
     .react-datepicker-wrapper{
-      width: 80px;
+      width: 200px;
     }
 
     .react-datepicker__input-container {

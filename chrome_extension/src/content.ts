@@ -3,6 +3,7 @@ import {MessageType} from "./types";
 
 chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
     console.log("Hello from content script!");
+
     //메시지를 받을 때 REQ_TAB이라는 메시지를 받으면 tab 정보를 RES_TAB이라는 메시지와 함께
     //보내는 곳
     switch (message.type) {
@@ -13,7 +14,7 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
             let data_url = "";
             let description = "";
             let image = "";
-            console.log(body[0], temp[0].innerText)
+            console.log(body[0], temp[0])
 
             for(const prop in body){
                 console.log(prop);
@@ -60,11 +61,13 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
                     }
                 }
             }
-            if(title === "" && data_url === "" && description === "" && image === "" && document.getElementsByTagName("h1")[0].innerText != null &&  temp[0].innerText != null){
+            console.log("Responding...", title, data_url, description, image, sender.tab?.id);
+
+            if(title === "" && data_url === "" && description === "" && image === "" && document.getElementsByTagName("h1")[0] != null &&  temp[0] != null){
                 title = document.getElementsByTagName("h1")[0].innerText;
                 description = temp[0].innerText;
             }
-            console.log("Responding...", title, data_url, description, sender.tab?.id);
+            // console.log("Responding...", title, data_url, description, sender.tab?.id);
 
             chrome.runtime.sendMessage({type: "RES_TAB", data_url: data_url, title: title, description: description, image: image});
             break;

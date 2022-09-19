@@ -5,7 +5,7 @@ import { darken, lighten } from 'polished';
 import { TodoApi } from '../utils/axios';
 import WebHeader from './WebHeader';
 import Cookies from 'universal-cookie';
-import { useContentDispatch, useLoginCategory } from "./InfoContext";
+import { useContentDispatch} from "./InfoContext";
 
 const LoginBlock = styled.div`
   width: 700px;
@@ -93,7 +93,6 @@ function Login() {
   const { Id, Password } = userInf;
 
   const dispatch = useContentDispatch();
-  //const loginCategory = useLoginCategory();
 
   const onChange = useCallback(
     e => {
