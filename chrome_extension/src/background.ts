@@ -11,22 +11,29 @@ console.log("Hello from background script!")
 
 let category = '';
 let data_url = '';
-let title = '';
+// let title = '';
 let description = '';
 let image = '';
 let memo = '';
 
 let loginInfo : loginState = {
     flag : false,
-    id : ""
+    profile : {
+        id : "",
+        password : ""
+    }
 };
 
 const DBconn =async (params: MessageType) => {//tab 정보를 DB에 저장하는 함수
     console.log("DBconn : ", params);
 
     if(params.type === "DBINFO"){
+        console.log("DBconn 시작")
         try{
+            console.log("DB로 보내기 전..")
             const res = await TodoApi.post('/tabinfo', params);
+            console.log('res : ', res);
+
             chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data});
             if(res.data){
                 console.log("DB 저장 성공!");//여기를 chrome.runtime.sendmessage(type을 하나 더 만들어서)로 팝업창에 메시지 띄우기
@@ -68,10 +75,16 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             console.log('step RES_TAB');
             // const loginState = useSelector((state:RootState) => state.LoginState);
 
-            data_url = message.data_url;
-            title = message.title;
+            // data_url = message.data_url;
+            let title = message.title;
             description = message.description;
             image = message.image;
+            chrome.tabs.query({currentWindow: true, active : true}, function(tabs){
+                console.log(tabs[0].url);
+                if(tabs[0].url){
+                    data_url = tabs[0].url;
+                }
+            })
             let today = new Date();
             let year = today.getFullYear();
             let month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -81,7 +94,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) =>{
             console.log("completed?: ",loginInfo, category, data_url, title, description, image);
 
             //message.url, title, description 등 tab정보를 DB로 날리는 곳
-            DBconn({type: 'DBINFO', clientId : loginInfo.id ,category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
+            DBconn({type: 'DBINFO', clientId : loginInfo.profile.id ,category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
             break;
         
         default:

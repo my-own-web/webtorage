@@ -15,7 +15,7 @@ interface TabRequest {//background에서 content로 tab저장을 가져와줘
 interface TabResponse {//REQ_TAB메시지를 받은 content에서 tab정보를 받고 그 정보를 받았다고 background에 보내는 것
     type: "RES_TAB";
     data_url: string;
-    title: string;
+    title: string | null;
     description: string;
     image: string;
 }
@@ -25,7 +25,7 @@ interface DBinfo{//DB에 저장해줘
     clientId : string | undefined;
     category : string;
     data_url: string;
-    title: string;
+    title: string | null;
     description: string;
     image: string;
     date: string;

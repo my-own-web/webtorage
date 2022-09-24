@@ -63,13 +63,13 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
             }
             console.log("Responding...", title, data_url, description, image, sender.tab?.id);
 
-            if(title === "" && data_url === "" && description === "" && image === "" && document.getElementsByTagName("h1")[0] != null &&  temp[0] != null){
-                title = document.getElementsByTagName("h1")[0].innerText;
-                description = temp[0].innerText;
-            }
+            // if(title === "" && data_url === "" && description === "" && image === "" && document.getElementsByTagName("h1")[0] != null &&  temp[0] != null){
+            //     title = document.getElementsByTagName("h1")[0].innerText;
+            //     description = temp[0].innerText;
+            // }
             // console.log("Responding...", title, data_url, description, sender.tab?.id);
 
-            chrome.runtime.sendMessage({type: "RES_TAB", data_url: data_url, title: title, description: description, image: image});
+            chrome.runtime.sendMessage({type: "RES_TAB", data_url: data_url, title: null, description: description, image: image});
             break;
         default:
             break;
