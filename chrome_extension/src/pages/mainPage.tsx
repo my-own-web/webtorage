@@ -8,6 +8,7 @@ import styled from 'styled-components';
 import { TodoApi } from '../utils/axios';
 import {MessageType} from '../types';
 import {useSelector, useDispatch} from 'react-redux';
+import {login} from '../modules/login';
 import { RootState } from "../modules";
 
 const MainDiv = styled.div`
@@ -29,7 +30,18 @@ const MainDiv = styled.div`
         background-color: #ddeaf5;
       }
   }
-  
+  & .logoutbtn{
+      background-color: #e9f3fb;
+      border: none;
+      margin-left: 5px;
+      margin-right: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      &:hover{
+        background-color: #ddeaf5;
+      }
+  }
 `;
 const InnerDiv = styled.div`
   margin-top: 20px;
@@ -41,6 +53,9 @@ const MainPage = () => {
   const [memo, setMemo] = React.useState("");
   const [cglist, setCglist] = React.useState([]);
   const loginState = useSelector((state:RootState) => state.LoginState);
+
+  const dispatch = useDispatch();
+  const onLoginState = React.useCallback((profile : any) => dispatch(login(profile)), [dispatch]);
 
   console.log("id : ", loginState.profile.id, "password : ", loginState.profile.password);
 
@@ -93,6 +108,12 @@ const MainPage = () => {
     });
 
   };
+  const onLogout = () =>{
+    if(loginState.flag == true){
+      onLoginState({id : "", password : ""});
+    }
+  };
+
   const onInput = (e : React.KeyboardEvent<HTMLInputElement>) =>{//엔터키로도 입력 가능하도록
     if(e.key == 'Enter'){
         onClick();
@@ -116,6 +137,7 @@ const MainPage = () => {
           <input name="memo" placeholder="memo" onChange={memoChange} value = {memo} onKeyPress={onInput} />
         </InnerDiv>
         <Button onClick={onClick} className = "btn"> SAVE </Button>
+        <Button onClick={onLogout} className = "logoutbtn"> logout </Button>
     </MainDiv>
     )
 };
