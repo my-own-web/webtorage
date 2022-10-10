@@ -11,14 +11,17 @@ console.log("Hello from background script!")
 
 let category = '';
 let data_url = '';
-let title = '';
+// let title = '';
 let description = '';
 let image = '';
 let memo = '';
 
-let loginInfo: loginState = {
-    flag: false,
-    id: ""
+let loginInfo : loginState = {
+    flag : false,
+    profile : {
+        id : "",
+        password : ""
+    }
 };
 
 const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하는 함수
@@ -68,10 +71,16 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
             console.log('step RES_TAB');
             // const loginState = useSelector((state:RootState) => state.LoginState);
 
-            data_url = message.data_url;
-            title = message.title;
+            // data_url = message.data_url;
+            let title = message.title;
             description = message.description;
             image = message.image;
+            chrome.tabs.query({currentWindow: true, active : true}, function(tabs){
+                console.log(tabs[0].url);
+                if(tabs[0].url){
+                    data_url = tabs[0].url;
+                }
+            })
             let today = new Date();
             let year = today.getFullYear();
             let month = ('0' + (today.getMonth() + 1)).slice(-2);
@@ -81,7 +90,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
             console.log("completed?: ", loginInfo, category, data_url, title, description, image);
 
             //message.url, title, description 등 tab정보를 DB로 날리는 곳
-            DBconn({ type: 'DBINFO', clientId: loginInfo.id, category: category, data_url: data_url, title: title, description: description, image: image, date: dateString, memo: memo })
+            DBconn({type: 'DBINFO', clientId : loginInfo.profile.id ,category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
             break;
 
         default:

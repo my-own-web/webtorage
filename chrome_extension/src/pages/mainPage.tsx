@@ -1,11 +1,51 @@
 import * as React from "react";
 import logo from "./logo.svg";
 import "../App.css";
-import Button from "../components/Button/Button";
+import { Form, Button } from 'react-bootstrap';
+import styled from 'styled-components';
+
+// import Button from "../components/Button/Button";
 import { TodoApi } from '../utils/axios';
 import {MessageType} from '../types';
 import {useSelector, useDispatch} from 'react-redux';
+import {login} from '../modules/login';
 import { RootState } from "../modules";
+
+const MainDiv = styled.div`
+  display: flex;
+  margin-top: 20px;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  background-color: #d5e8f8;
+
+  & .btn{
+      background-color: #e9f3fb;
+      border: none;
+      margin-left: 100px;
+      margin-top: 15px;
+      margin-bottom: 20px;
+      cursor: pointer;
+      &:hover{
+        background-color: #ddeaf5;
+      }
+  }
+  & .logoutbtn{
+      background-color: #e9f3fb;
+      border: none;
+      margin-left: 5px;
+      margin-right: 5px;
+      margin-top: 5px;
+      margin-bottom: 5px;
+      cursor: pointer;
+      &:hover{
+        background-color: #ddeaf5;
+      }
+  }
+`;
+const InnerDiv = styled.div`
+  margin-top: 20px;
+`;
 
 const MainPage = () => {
 
@@ -13,6 +53,11 @@ const MainPage = () => {
   const [memo, setMemo] = React.useState("");
   const [cglist, setCglist] = React.useState([]);
   const loginState = useSelector((state:RootState) => state.LoginState);
+
+  const dispatch = useDispatch();
+  const onLoginState = React.useCallback((profile : any) => dispatch(login(profile)), [dispatch]);
+
+  console.log("id : ", loginState.profile.id, "password : ", loginState.profile.password);
 
   const onChange = (e : React.ChangeEvent<HTMLInputElement>) =>{
     const value = e.target.value;
@@ -49,7 +94,7 @@ const MainPage = () => {
     chrome.runtime.sendMessage({type: "SIGN_SAVE", loginInfo : loginState, category: categoryText, memo: memoText});
     setCategory("");
     setMemo("");
-    console.log('id : ', loginState.id);
+    console.log('id : ', loginState.profile.id);
     //CHECKURL이라는 message 받는 함수 만들고, true, false받는 함수 만들어서 아래 완료 창 띄우기
     chrome.runtime.onMessage.addListener((message:MessageType) => {
       if(message.type === "CHECKURL"){
@@ -63,30 +108,37 @@ const MainPage = () => {
     });
 
   };
+  const onLogout = () =>{
+    if(loginState.flag == true){
+      onLoginState({id : "", password : ""});
+    }
+  };
+
   const onInput = (e : React.KeyboardEvent<HTMLInputElement>) =>{//엔터키로도 입력 가능하도록
     if(e.key == 'Enter'){
         onClick();
     }
   };
   return (
-    <div className="MainPage">
+    <MainDiv className="MainPage">
         {/* <img src={logo} className="App-logo" alt="logo" /> */}
-        <div>
-        <h1>Webtorage!!(main)</h1>
+        <InnerDiv>
+          <h1>{loginState.profile.id}'s Webtorage</h1>
 
-        <p>category</p>
-        <input list = "cglist" name = "cgvalue" placeholder="Click to check your category" onChange={onChange} value = {category} onKeyPress={onInput} width = "60px" autoFocus/>
-          <datalist id = "cglist">
-            {cglist.map((cg:any) => (
-              <option value = {cg.category}></option>
-            ))}
-          </datalist>
-        <p>memo!</p>
-        
-        <input name="memo" placeholder="memo" onChange={memoChange} value = {memo} onKeyPress={onInput} />
-        </div>
-        <Button onClick={onClick}> SAVE </Button>
-    </div>
+          <p>category</p>
+          <input list = "cglist" name = "cgvalue" placeholder="your category" onChange={onChange} value = {category} onKeyPress={onInput} autoFocus/>
+            <datalist id = "cglist">
+              {cglist.map((cg:any) => (
+                <option value = {cg.category}></option>
+              ))}
+            </datalist>
+          <p>memo</p>
+          
+          <input name="memo" placeholder="memo" onChange={memoChange} value = {memo} onKeyPress={onInput} />
+        </InnerDiv>
+        <Button onClick={onClick} className = "btn"> SAVE </Button>
+        <Button onClick={onLogout} className = "logoutbtn"> logout </Button>
+    </MainDiv>
     )
 };
 
