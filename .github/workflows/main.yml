@@ -1,19 +1,27 @@
 name: webtorage_cicd                  # Workflow 이름
-on: 
+on:   
   push:
-    branches:
-      - test_juk1329                            # Event 감지
+    branches: [test_juk1329]          # Event 감지
 
 jobs:                                 # Job 설정
   build:                              # Job ID
     name: hello github action         # Job 이름
     runs-on: ubuntu-18.04             # Job 가상환경 인스턴스
-    steps:                            # Steps
-      - name: checkout source code    # Step 이름
-        uses: actions/checkout@test_juk1329 # Uses를 통한 외부 설정 가져오기: 자신의 레포지토리 소스 받아오기
+    steps:  # Steps
+      - uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials    
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.JUK1329_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.JUK1329_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
 
       - name: Install Dependencies              # Step 이름
         run: npm install             # Run을 통한 스크립트 실행: Hello 출력
-      
+
       - name: Build
         run: npm run build
+
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync ./build/ s3://webtorage-test --delete
