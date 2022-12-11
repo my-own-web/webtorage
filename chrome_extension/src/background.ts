@@ -27,6 +27,7 @@ let loginInfo : loginState = {
 const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하는 함수
     console.log("DBconn : ", params);
 
+
     if (params.type === "DBINFO") {
         try {
             const res = await TodoApi.post('/tabinfo', params);
