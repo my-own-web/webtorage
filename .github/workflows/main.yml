@@ -5,7 +5,7 @@ on:
 
 jobs:                                 # Job 설정
   build:                              # Job ID
-    name: hello github action         # Job 이름
+
     runs-on: ubuntu-latest        # Job 가상환경 인스턴스
     steps:  # Steps
 
@@ -21,9 +21,9 @@ jobs:                                 # Job 설정
 
       - name: Build chrome_extension
         run: |
-          cd chrome_extension
+          cd website
           npm install
-          npm run build
+          CI-false npm run build
         
       - name: Deploy app build to S3 bucket
-        run: aws s3 sync ./build/ s3://webtorage-test --delete
+        run: aws s3 sync website/build/ s3://webtorage-test --delete
