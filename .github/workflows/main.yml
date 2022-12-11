@@ -26,4 +26,4 @@ jobs:                                 # Job 설정
           CI=false npm run build
         
       - name: Deploy app build to S3 bucket
-        run: aws s3 sync website/build/ s3://webtorage-test --delete
+        run: aws s3 sync ./build/ s3://webtorage-test --delete
