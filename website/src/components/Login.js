@@ -5,7 +5,7 @@ import { darken, lighten } from 'polished';
 import { TodoApi } from '../utils/axios';
 import WebHeader from './WebHeader';
 import Cookies from 'universal-cookie';
-import { useContentDispatch} from "./InfoContext";
+import { useContentDispatch } from "./InfoContext";
 
 const LoginBlock = styled.div`
   width: 700px;
@@ -138,7 +138,6 @@ function Login() {
         const res = await TodoApi.post("/user/login", userInf, { withCredentials: true });
         if (res.data === 'OK') {
           console.log(cookies.get('validuser')); //확인용
-          alert("성공적으로 로그인되었습니다.");
           dispatch({ type: "FETCH" }); // 로그인 정보로 미리보기 불러오기
           navigate('/');
         }

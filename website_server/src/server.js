@@ -115,48 +115,62 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
     res.send(tabInfo);
 });
 
-// website, extension에서 DB에 탭 정보 저장
+
+/*** 
+ * website, extension에서 DB에 탭 정보 저장
+ * res.send({ 
+ * success: true/false, 
+ * type: client (invalid token) / tab (같은 카테고리에 이미 url 존재),
+ * message: "" 
+ * })
+ */
 app.post('/api/tabinfo', async (req, res) => {
-    let body = req.body; // {title, data_url, image, description, date, memo, clientId}
-    body = { ...body, title: "", image: "", description: "" }; // sql 오류 방지
+    // Verify user
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (!decoded) {
+        console.log("Invalid client token");
+        res.send({ success: false, type: "client", message: "로그인이 필요합니다." })
+        return;
+    }
+    clientId = decoded.userId;
+
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
-    const clientToken = req.cookies.validuser;
-    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+    let body = req.body; // {title, data_url, image, description, date, memo, clientId}
+    body = { ...body, title: "", image: "", description: "" }; // sql 오류 방지
     let category = body.category;
     let url = body.data_url.trim(); // 앞뒤 빈칸 제거
     if (!category) { // 빈 문자열 DEFAULT로 변환
         category = "DEFAULT";
     }
 
-    if (decoded) {
-        clientId = decoded.userId;
-        console.log(clientId);////////////////////////////
+    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-        try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+        // 탭 정보 스크래핑
+        let tabInfo = await scrapTabInfo(url);
+        if (tabInfo.title) body.title = tabInfo.title;
+        if (tabInfo.description) body.description = tabInfo.description;
+        if (tabInfo.image) body.image = tabInfo.image;
+        body.data_url = tabInfo.data_url;
 
-            // 탭 정보 스크래핑
-            let tabInfo = await scrapTabInfo(url);
-            if (tabInfo.title) body.title = tabInfo.title;
-            if (tabInfo.description) body.description = tabInfo.description;
-            if (tabInfo.image) body.image = tabInfo.image;
-            body.data_url = tabInfo.data_url;
-
-            const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [url, category, clientId]);
-            if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
-                await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
-                res.send(true);
-            }
-            else {
-                res.send(false);
-            }
-        } catch (err) {
-            console.log(err);
-        } finally {
-            conn.release();
+        const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [body.data_url, category, clientId]);
+        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, body.data_url, body.image, body.description, body.date, body.memo, body.clientId]);
+            // res.send(true);
+            res.send({ success: true, type: "", message: "" })
         }
+        else {
+            // res.send(false);
+            res.send({ success: false, type: "tab", message: "중복된 URL 입니다" })
+        }
+    } catch (err) {
+        console.log(err);
+    } finally {
+        conn.release();
     }
 });
 
@@ -287,9 +301,9 @@ app.post('/api/user/login', async (req, res) => {
             const token = jwt.sign({
                 userId: Id
             }, jwt_key, {
-                expiresIn: '1m' ////////임시
+                expiresIn: '1h' ////////TODO 임시
             });
-            res.cookie('validuser', token, { path: '/', maxAge: 1 * 60 * 1000 }); ///////////////임시 기간 수정하기!
+            res.cookie('validuser', token, { path: '/', maxAge: 60 * 1000 }); ///////////////TODO 임시 기간 수정하기!
             res.send('OK');
         }
         else {

@@ -173,13 +173,19 @@ export default function CreatePage() {
 
             console.log("postTabInfo res", data); // dbg
 
-            if (data) {
+            if (data.success) {
                 dispatch({ type: 'FETCH' });
                 navigate("/");
             }
-            else {
+            else if (data.type == "tab") {
                 alert("중복된 url");
             }
+            else { // data.type="client"
+                // 로그인 쿠키 만료
+                alert(data.message);
+                navigate("/login")
+            }
+
         } catch (error) {
             console.log(error);
         }
