@@ -4,7 +4,8 @@ import { MessageType } from './types';
 import { TodoApi } from './utils/axios';
 import { useSelector, useDispatch } from 'react-redux';
 import { RootState } from "./modules";
-import { loginState } from "./modules/login";
+import {loginState} from "./modules/login";
+import {signupState} from "./modules/signup";
 
 
 console.log("Hello from background script!")
@@ -15,6 +16,14 @@ let data_url = '';
 let description = '';
 let image = '';
 let memo = '';
+
+let signupInfo : signupState = {
+    emailprofile : {
+        email : "",
+        id : "",
+        password : ""
+    }
+};
 
 let loginInfo : loginState = {
     flag : false,
@@ -27,20 +36,81 @@ let loginInfo : loginState = {
 const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하는 함수
     console.log("DBconn : ", params);
 
-
-    if (params.type === "DBINFO") {
-        try {
+    if(params.type === "DBINFO"){
+        console.log("DBconn 시작")
+        try{
+            console.log("DB로 보내기 전..")
             const res = await TodoApi.post('/tabinfo', params);
-            chrome.runtime.sendMessage({ type: "CHECKURL", flag: res.data });
-            if (res.data.success) {
+            console.log('res : ', res);
+
+            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data});
+
+            if(res.data=== "newtab"){
                 console.log("DB 저장 성공!");//여기를 chrome.runtime.sendmessage(type을 하나 더 만들어서)로 팝업창에 메시지 띄우기
             }
-            else {
+            else if (res.data === "fail"){
                 console.log("DB 저장 실패..");
+            }
+            else if (res.data === "로그인 시간 만료"){
+                console.log("로그인 시간이 만료되었습니다.");
             }
         }
         catch (err) {
             console.error(err);
+        }
+    }
+
+    else if (params.type === "SIGNUPINFO"){ ///
+        try{
+            const res = await TodoApi.post('/user/signup', params);
+
+            chrome.runtime.sendMessage({type: "CHECKSIGNUP", flag : res.data});
+
+            if (res.data === "New User"){
+                console.log("회원가입되었습니다!");
+            }
+            else if (res.data === "Aleady Exist"){
+                console.log("이미 존재하는 계정입니다.");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    else if (params.type === "LOGINFO"){ ///
+        try{
+            const res = await TodoApi.post('/user/login', params, { withCredentials: true }); /////////////////////////////////
+
+            chrome.runtime.sendMessage({type: "CHECKLOGIN", flag : res.data});
+
+            if (res.data === "OK"){
+                console.log("로그인되었습니다!");
+            }
+            else if (res.data === "Invalid User"){
+                console.log("존재하지 않는 계정입니다.");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    else if (params.type === "LOGOUTINFO"){
+        try{
+            const res = await TodoApi.post('/user/logout', params, { withCredentials: true }); /////////////////////////////////
+
+            chrome.runtime.sendMessage({type: "CHECKLOGOUT", flag : res.data});
+
+            if (res.data === "Logout"){
+                console.log("로그아웃되었습니다!");
+            }
+            else{
+                console.log("로그아웃 과정에 오류가 발생했습니다. 다시 시도해 주세요.")
+            }
+        }
+        catch(err){
+            console.log(err);
         }
     }
 }
@@ -93,6 +163,21 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
             //message.url, title, description 등 tab정보를 DB로 날리는 곳
             DBconn({type: 'DBINFO', clientId : loginInfo.profile.id ,category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
             break;
+
+        case "LOGIN_SAVE":
+            loginInfo.profile.id = message.Id;
+            loginInfo.profile.password = message.Password;
+            DBconn({type: 'LOGINFO', Id : loginInfo.profile.id , Password : loginInfo.profile.password})
+            break;
+        
+        case "SIGNUP_SAVE":
+            signupInfo.emailprofile.email = message.Email;
+            signupInfo.emailprofile.id = message.Id;
+            signupInfo.emailprofile.password = message.Password;
+            DBconn({type: 'SIGNUPINFO', Email : signupInfo.emailprofile.email, Id : signupInfo.emailprofile.id , Password : signupInfo.emailprofile.password})
+
+        case "LOGOUT_SAVE":
+            DBconn({type: 'LOGOUTINFO'});
 
         default:
             break;

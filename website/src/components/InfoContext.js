@@ -221,7 +221,11 @@ export function InfoProvider({ children }) {
                     <DateRangeContext.Provider value={dateRange}>
                       <SetDateRangeContext.Provider value={setDateRange}>
                         <BoxSearchManagerContext.Provider value={BoxSearchManager}>
+<<<<<<< HEAD
                           {children}
+=======
+                        {children}
+>>>>>>> 88f8694 (chrome_Extension/회원가입/류그인/로그아웃)
                         </BoxSearchManagerContext.Provider>
                       </SetDateRangeContext.Provider>
                     </DateRangeContext.Provider>
