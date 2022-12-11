@@ -22,7 +22,7 @@ jobs:                                 # Job 설정
       - name: Build chrome_extension
         run: |
           cd chrome_extension
-          npm install
+          npm install --save --legacy-peer-deps
           CI=false npm run build
         
       - name: Deploy app build to S3 bucket
