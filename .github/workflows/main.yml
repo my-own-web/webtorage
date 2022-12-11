@@ -21,9 +21,9 @@ jobs:                                 # Job 설정
 
       - name: Build chrome_extension
         run: |
-          cd website
+          cd chrome_extension
           npm install
           CI=false npm run build
         
       - name: Deploy app build to S3 bucket
-        run: aws s3 sync ./build/ s3://webtorage-test --delete
+        run: aws s3 sync chrome_extension/dist/ s3://webtorage-test --delete
