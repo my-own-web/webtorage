@@ -230,7 +230,9 @@ export function InfoProvider({ children }) {
                   <ContentDispatchContext.Provider value={postAction}>
                     <DateRangeContext.Provider value={dateRange}>
                       <SetDateRangeContext.Provider value={setDateRange}>
+                        <BoxSearchManagerContext.Provider value={BoxSearchManager}>
                         {children}
+                        </BoxSearchManagerContext.Provider>
                       </SetDateRangeContext.Provider>
                     </DateRangeContext.Provider>
                   </ContentDispatchContext.Provider>

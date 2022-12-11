@@ -145,16 +145,19 @@ app.post('/api/tabinfo', async (req, res) => {
             if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
                 await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
-                res.send(true);
+                res.send("newtab");
             }
             else {
-                res.send(false);
+                res.send("fail");
             }
         } catch (err) {
             console.log(err);
         } finally {
             conn.release();
         }
+    }
+    else{
+        res.send("로그인 시간 만료");
     }
 });
 
@@ -263,6 +266,33 @@ app.post('/api/category', async (req, res) => {
         res.send(cats);
     } catch (error) {
         console.log('query:', error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.post('/api/user/signup',async(req,res)=>{ ///
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    const Email = req.body.Email;
+    const Id = req.body.Id;
+    const Password = req.body.Password;
+    const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
+
+    try{
+        const sql = `SELECT COUNT(*) AS num FROM users WHERE Email=? AND Id=? AND Password=?`;
+        const params = [Email,Id, cryptedPassword];
+        const [rows] = await conn.query(sql, params);
+        if (rows[0].num){
+            res.send('Already Exist');
+        }
+        else{
+            query = `INSERT INTO users(Email, Id, Password) VALUES (?,?,?)`;
+            conn.query(query,[Email, Id, cryptedPassword]);
+            res.send('New User');
+        }
+    }catch (error) {
+        console.log(error);
     } finally {
         conn.release();
     }
