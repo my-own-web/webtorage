@@ -24,8 +24,10 @@ const WebSubHeaderBlock = styled.div`
 
     h2{
         grid-row-start: 1;
-        grid-column: 1/5;
+        grid-column: 1/6;
         margin: 0;
+        overflow: clip;
+        text-overflow: ellipsis;
     }
 
      .add-button{
@@ -56,6 +58,8 @@ const WebSubHeaderBlock = styled.div`
     }
 
     .size-button{
+        // padding: 0px 6px;
+        white-space: nowrap;
     }
 
     .category-select-container{
