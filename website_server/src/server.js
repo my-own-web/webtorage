@@ -158,6 +158,18 @@ app.post('/api/tabinfo', async (req, res) => {
 
         const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [body.data_url, category, clientId]);
         if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+
+            // Check if category exists
+            if (category != "DEFAULT") {
+                query = 'SELECT id FROM category WHERE name=? AND clientId=?';
+                const [row] = await conn.query(query, [category, clientId]);
+                if (!row[0]) {
+                    // insert new category
+                    query = 'INSERT INTO category(name, size, clientId) VALUES(?,1,?)';
+                    conn.query(query, [category, clientId]);
+                }
+            }
+
             await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
             VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, body.data_url, body.image, body.description, body.date, body.memo, body.clientId]);
             // res.send(true);
@@ -224,12 +236,12 @@ app.post('/api/tabinfo/website', async (req, res, next) => {
                     break;
                 case 'EDITCATEGORY':
                     {
-                        query = 'SELECT id FROM category WHERE name=?';
-                        const [row] = await conn.query(query, [action.new_category]);
+                        query = 'SELECT id FROM category WHERE name=? AND clientId=?';
+                        const [row] = await conn.query(query, [action.new_category, clientId]);
                         if (!row[0]) {
                             // insert new category
-                            query = 'INSERT INTO category(name) VALUES(?)';
-                            conn.query(query, [action.new_category]);
+                            query = 'INSERT INTO category(name, size, clientId) VALUES(?,0,?)';
+                            conn.query(query, [action.new_category, clientId]);
                         }
                         // -1 to old category size
                         conn.query('UPDATE category SET size=size-1 WHERE name=?', [action.old_category]);
@@ -303,7 +315,7 @@ app.post('/api/user/login', async (req, res) => {
             }, jwt_key, {
                 expiresIn: '1h' ////////TODO 임시
             });
-            res.cookie('validuser', token, { path: '/', maxAge: 60 * 1000 }); ///////////////TODO 임시 기간 수정하기!
+            res.cookie('validuser', token, { path: '/', maxAge: 3600 * 1000 }); ///////////////TODO 임시 기간 수정하기!
             res.send('OK');
         }
         else {
