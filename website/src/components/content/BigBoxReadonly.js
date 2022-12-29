@@ -105,6 +105,8 @@ const BoxBlock = styled.div`
   .category{
     font-size: 13px;
     padding: 3px 0;
+    overflow: clip;
+    text-overflow: ellipsis;
   }
 
   .date{

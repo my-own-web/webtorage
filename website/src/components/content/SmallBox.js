@@ -111,8 +111,10 @@ const BoxBlock = styled.div`
 
   .category{
     font-size: 13px;
-    height: 25px;
     padding: 3px 0;
+    overflow: clip;
+    text-overflow: ellipsis;
+    text-decoration: underline;
   }
 
   .date{
@@ -128,7 +130,6 @@ const BoxBlock = styled.div`
   .category-select-container{
     width: 140px;
     height: 25px;
-    text-decoration: underline;
   }
 
   .category-choice{
