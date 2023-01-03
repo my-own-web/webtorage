@@ -203,6 +203,9 @@ app.post('/api/tabinfo', async (req, res) => {
     else{
         res.send("로그인 시간 만료");
     }
+    else{
+        res.send("로그인 시간 만료");
+    }
 });
 
 app.get('/api/tabinfo', async (req, res) => {

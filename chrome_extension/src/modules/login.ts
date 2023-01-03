@@ -27,11 +27,7 @@ function LoginState(state : loginState = initialState,
     action : loginAction) : loginState {
         switch(action.type){
             case LOGIN:
-<<<<<<< HEAD
                 return {...state, flag : !state.flag, profile : action.payload}
-=======
-                return {...state, flag : !state.flag, profile : action.payload }
->>>>>>> 88f8694 (chrome_Extension/회원가입/류그인/로그아웃)
             default:
                 return state;
         }
