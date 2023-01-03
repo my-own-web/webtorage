@@ -273,8 +273,9 @@ app.post('/api/tabinfo/website', async (req, res, next) => {
 });
 
 app.post('/api/category', async (req, res) => {
+    const action = req.body;
 
-    const clientId = req.body.clientId;
+    const clientId = action.clientId;
     //////////////////
     console.log(clientId);
     ;
@@ -283,6 +284,20 @@ app.post('/api/category', async (req, res) => {
 
     let query;
     try {
+        switch (action.type) {
+            case "FETCH": {
+                break;
+            }
+            case "DELETE": {
+                /* TODO size=0 확인.
+                현재 프런트에서 확인하고 있음. 백엔드에서 확인하는 것으로 수정?
+                */
+
+                query = "DELETE FROM category WHERE id=? AND clientId=?";
+                conn.query(query, [action.id, clientId]);
+                break;
+            }
+        }
         query = "SELECT * FROM category WHERE clientID=?";
         const [cats] = await conn.query(query, [clientId]);
 

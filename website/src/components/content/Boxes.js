@@ -46,8 +46,8 @@ function Boxes({ boxSize, select, checkedItemHandler, selectAll, setSelectAll })
 
   let datas = useContent().filter((e) => {
     // 카테고리 필터
-    if (currentCategory === 'ALL') return true;
-    return e.category === currentCategory;
+    if (currentCategory.name === 'ALL') return true;
+    return e.category === currentCategory.name;
   }).filter((e) => {
     // 날짜 필터
     // console.log('range', dateRange,'title',e.site_name, 'date', e.date); // dbg

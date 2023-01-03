@@ -96,13 +96,13 @@ const ContentDispatchContext = createContext(null);
 const DateRangeContext = createContext(null);
 const SetDateRangeContext = createContext(null);
 const UserLoginIdContext = createContext(null);
-const UpdateCategoryContext = createContext(null);/////////////////////////////////////////
+const CategoryActionContext = createContext(null);
 const BoxSearchManagerContext = createContext(null); // 검색 관련 통합 context
 
 export function InfoProvider({ children }) {
 
   const [content, setContent] = useState([]);
-  const [currentCategory, setCurrentCategory] = useState('ALL');
+  const [currentCategory, setCurrentCategory] = useState({ id: -1, name: 'ALL', size: 0 });
   const [userLoginId, setUserLoginId] = useState('');
 
   // 전체 카테고리 리스트
@@ -137,7 +137,7 @@ export function InfoProvider({ children }) {
   /** $end 검색 관련 */
 
 
-  async function postAction(action) {
+  async function postTabAction(action) {
     try {
       const { data } = await TodoApi.post('/tabinfo/website', action, { withCredentials: true });
 
@@ -152,7 +152,7 @@ export function InfoProvider({ children }) {
         setContent(data.bookmark);
         setUserLoginId(data.userID);
         ///////////////////////
-        getCategory(data.userID);
+        postCategoryAction({ type: "FETCH", clientId: data.userID });
       }
     } catch (error) {
       console.log(error);
@@ -164,29 +164,19 @@ export function InfoProvider({ children }) {
     }
   }
 
-  /*async function getCategory() {
+  /** action: 
+   * {type: "FETCH", clientId}
+   * {type: "DELETE", clientId, id} 
+   * */
+  async function postCategoryAction(action) {
     try {
-      const { data } = await TodoApi.get('/category');
+      const { data } = await TodoApi.post('/category', action);
       // data: {id, name, size} 객체 배열
       setAllCategoryList(data);
       setCategoryList(data);
-    } catch (error) {
-      console.log(error);
-
-      // dbg: 서버 안 켰을 때 디버그용
-      if (process.env.NODE_ENV === "development") {
-        setAllCategoryList(initialCategory);
-        setCategoryList(initialCategory);
+      if (action.type == "DELETE") {
+        setCurrentCategory({ id: -1, name: 'ALL', size: 0 });
       }
-    }
-  }*/
-
-  async function getCategory(Id) {
-    try {
-      const { data } = await TodoApi.post('/category', { clientId: Id }, { withCredentials: true });
-      // data: {id, name, size} 객체 배열
-      setAllCategoryList(data);
-      setCategoryList(data);
     } catch (error) {
       console.log(error);
 
@@ -200,7 +190,7 @@ export function InfoProvider({ children }) {
 
   // 첫 렌더링에서만 실행
   useEffect(() => {
-    postAction({ type: 'FETCH' });
+    postTabAction({ type: 'FETCH' });
     //getCategory();
   }, []);
 
@@ -220,14 +210,14 @@ export function InfoProvider({ children }) {
   }
 
   return (
-    <UpdateCategoryContext.Provider value={getCategory}>
+    <CategoryActionContext.Provider value={postCategoryAction}>
       <UserLoginIdContext.Provider value={userLoginId}>
         <CategoryListContext.Provider value={categoryList}>
           <SearchCategoryListContext.Provider value={searchCategoryList}>
             <CurrentCategoryContext.Provider value={currentCategory}>
               <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
                 <ContentListContext.Provider value={content}>
-                  <ContentDispatchContext.Provider value={postAction}>
+                  <ContentDispatchContext.Provider value={postTabAction}>
                     <DateRangeContext.Provider value={dateRange}>
                       <SetDateRangeContext.Provider value={setDateRange}>
                         <BoxSearchManagerContext.Provider value={BoxSearchManager}>
@@ -242,14 +232,16 @@ export function InfoProvider({ children }) {
           </SearchCategoryListContext.Provider>
         </CategoryListContext.Provider>
       </UserLoginIdContext.Provider>
-    </UpdateCategoryContext.Provider>
+    </CategoryActionContext.Provider>
   );
 }
 
-export function useLoginCategory() {
-  const loginCategory = useContext(UpdateCategoryContext);
-  ///////////////////////////////////
-  return loginCategory;
+export function useCategoryAction() {
+  const context = useContext(CategoryActionContext);
+  if (!context) {
+    throw new Error('CategoryActionContext Error');
+  }
+  return context;
 }
 
 export function useCategoryList() {

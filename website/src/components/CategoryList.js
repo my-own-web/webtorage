@@ -15,10 +15,11 @@ const ListBlock = styled.div`
     .category{
         width: 150px;
         overflow-x: clip;
+        text-overflow: ellipsis;
         cursor: pointer;
     }
 
-    .category[name]:hover::before{
+    .category:hover::before{
         color: #ff6b6b;
         font-weight: bold;
 
@@ -37,13 +38,11 @@ function CategoryItem({ id, name, size }) {
     const setCurrent = useSetCurrentCategory();
 
     const onClick = (e) => {
-        setCurrent(name);
+        setCurrent({id: id, name: name, size: size});
     }
 
     return (
-        <div className='category' name={name} onClick={onClick}>
-            {name.length > 15 ? name.substr(0, 15) + '...' : name}
-        </div>
+        <div className='category' name={name} onClick={onClick}>{name}</div>
     );
 }
 
@@ -57,7 +56,7 @@ function CategoryList() {
             {
                 categoryList.map((el) => {
                     return (
-                        <CategoryItem key={el.id} name={el.name} />
+                        <CategoryItem key={el.id} id={el.id} name={el.name} size={el.size}/>
                         // el: 객체 {id, name, size}
                     );
                 })

@@ -1,10 +1,10 @@
 import react, { useEffect, useState } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
-import { useCurrentCategory, useCategoryList, useUserLoginId } from "./InfoContext";
+import { useCurrentCategory, useCategoryList, useUserLoginId, useCategoryAction } from "./InfoContext";
 import DateButton from "./DateButton";
 import Button from "./design/Button";
-import { MdCheck } from "react-icons/md";
+import { MdCheck, MdDelete } from "react-icons/md";
 
 const WebSubHeaderBlock = styled.div`
     background: white;
@@ -22,12 +22,25 @@ const WebSubHeaderBlock = styled.div`
     gap: 5px;
     align-items: center;
 
-    h2{
+    .category-container{
         grid-row-start: 1;
         grid-column: 1/6;
+
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    h2{
         margin: 0;
         overflow: clip;
         text-overflow: ellipsis;
+    }
+
+    .category-delete-icon{
+        color: red;
+        font-size: 20px;
+        cursor: pointer;
     }
 
      .add-button{
@@ -121,6 +134,7 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
     const currentCategory = useCurrentCategory();
     const navigate = useNavigate();
     const userLoginId = useUserLoginId();
+    const categoryAction = useCategoryAction();
 
     // $begin category select dropbox
     const cglist = useCategoryList();
@@ -148,9 +162,25 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
         else navigate("/login");
     }
 
+    // TODO delete category
+    const onDeleteCategory = () =>{
+        if(currentCategory.size > 0){
+            alert("빈 카테고리만 삭제할 수 있습니다.");
+        }
+        else{
+            categoryAction({type: "DELETE", clientId: userLoginId, id: currentCategory.id});
+        }
+    }
+
     return (
         <WebSubHeaderBlock>
-            <h2>{currentCategory}</h2>
+            <div className="category-container">
+                <h2>{currentCategory.name}</h2>
+                {currentCategory.name == "ALL" || currentCategory.name == "DEFAULT"? "" :
+                <MdDelete className="category-delete-icon" onClick={onDeleteCategory}/>
+                }
+            </div>
+
             <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
             <Button className="add-button" onClick={onClickCreate}>추가하기</Button>
             {selected ?

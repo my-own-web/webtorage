@@ -81,7 +81,7 @@ export default function CreatePage() {
     const [inputs, setInputs] = useState({
         url: "",
         memo: "",
-        category: currentCategory
+        category: currentCategory.name
     });
     const [previewInfo, setPreviewInfo] = useState({
         data_url: "",
