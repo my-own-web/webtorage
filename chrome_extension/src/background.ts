@@ -127,7 +127,9 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
             category = message.category;
             memo = message.memo;
             console.log(category, message.category);
-            const tabmessage = { type: "REQ_TAB" };
+            console.log('step SINE_SAVE');
+            /////
+            const tabmessage = {type: "REQ_TAB"};
             //content로 쿼리를 날리는 함수. REQ_TAB으로
             chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
                 if (tabs[0].id) {
@@ -140,6 +142,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
         case "RES_TAB":
             //content에서 tab 정보를 받는 곳.
             console.log('step RES_TAB');
+            console.log(loginInfo);
             // const loginState = useSelector((state:RootState) => state.LoginState);
 
             // data_url = message.data_url;
@@ -167,6 +170,7 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
         case "LOGIN_SAVE":
             loginInfo.profile.id = message.Id;
             loginInfo.profile.password = message.Password;
+            console.log("login info: ", loginInfo);
             DBconn({type: 'LOGINFO', Id : loginInfo.profile.id , Password : loginInfo.profile.password})
             break;
         
