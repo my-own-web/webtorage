@@ -105,10 +105,10 @@ const MainPage = () => {
           alert('이미 존재하는 url입니다!');
         }
         else if (message.flag === "로그인 시간 만료"){
+          onLoginState({id : "", password : ""}); ////////////////////////////////////////
           alert('로그인 시간이 만료되었습니다! 다시 로그인을 해주세요.');
-          /*onLoginState({id : "", password : ""}); ////////////////////////////////////////
-          loginState.flag = false;
-          window.location.reload()*/
+          //loginState.flag = false;
+          //window.location.reload()
         }
       }
     });
