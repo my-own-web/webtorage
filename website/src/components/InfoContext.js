@@ -210,18 +210,18 @@ export function InfoProvider({ children }) {
   }
 
   return (
-    <CategoryActionContext.Provider value={postCategoryAction}>
+    <UpdateCategoryContext.Provider value={getCategory}>
       <UserLoginIdContext.Provider value={userLoginId}>
         <CategoryListContext.Provider value={categoryList}>
           <SearchCategoryListContext.Provider value={searchCategoryList}>
             <CurrentCategoryContext.Provider value={currentCategory}>
               <SetCurrentCategoryContext.Provider value={setCurrentCategory}>
                 <ContentListContext.Provider value={content}>
-                  <ContentDispatchContext.Provider value={postTabAction}>
+                  <ContentDispatchContext.Provider value={postAction}>
                     <DateRangeContext.Provider value={dateRange}>
                       <SetDateRangeContext.Provider value={setDateRange}>
                         <BoxSearchManagerContext.Provider value={BoxSearchManager}>
-                          {children}
+                        {children}
                         </BoxSearchManagerContext.Provider>
                       </SetDateRangeContext.Provider>
                     </DateRangeContext.Provider>
@@ -232,7 +232,7 @@ export function InfoProvider({ children }) {
           </SearchCategoryListContext.Provider>
         </CategoryListContext.Provider>
       </UserLoginIdContext.Provider>
-    </CategoryActionContext.Provider>
+    </UpdateCategoryContext.Provider>
   );
 }
 

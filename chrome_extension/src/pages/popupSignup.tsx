@@ -5,6 +5,7 @@ import {useSelector, useDispatch} from 'react-redux';
 import { RootState } from "../modules";
 import {login} from '../modules/login';
 import { signup } from "../modules/signup";
+import {MessageType} from '../types';
 
 const TotalWrap = styled.div`
   margin: auto;
@@ -15,11 +16,8 @@ const TotalWrap = styled.div`
   margin-left: 40%;
   margin-top: 100px; */
   background-color: #ffffff;
-
   display: flex;
   justify-content: center;
-
-
   & .btn{
       background-color: #e9f4fe;
       border: none;
@@ -31,7 +29,6 @@ const TotalWrap = styled.div`
         background-color: #d5e8f8;
       }
   }
-
 `;
 
 const TopBar = styled.div`
@@ -44,8 +41,8 @@ const TopBar = styled.div`
 `;
 
 const Middiv = styled.div`
-
 `;
+
 const Inputdiv = styled.div`
   margin: 10px;
   display: flex;
@@ -65,33 +62,52 @@ function LoginPage() {
   const [input, setInput] = React.useState({id : "", password : ""});
   const [sign, setSign] = React.useState({email : "", id : "", password : ""});
 
-
   const loginState = useSelector((state:RootState) => state.LoginState);
   const signupState = useSelector((state:RootState) => state.SignupState);
-
   const dispatch = useDispatch();
   const onLoginState = React.useCallback((profile : any) => dispatch(login(profile)), [dispatch]);
-  const onSignupState = React.useCallback((emailprofile : any) => dispatch(signup(emailprofile)), [dispatch])
+  const onSignupState = React.useCallback((emailprofile : any) => dispatch(signup(emailprofile)), [dispatch]);
 
   const onClick = () => {
-    if (loginState.flag == false){
+    if (loginState.flag === false){
       
-      onLoginState(input);
+      onLoginState(input); //로그인하면 LoginState의 flag 바꿔줌, login.ts의 loginstate도 update 해주는듯
+
+      chrome.runtime.sendMessage({type: "LOGIN_SAVE", Id: input.id, Password: input.password});
       setInput({id : "", password : ""});
 
-      // 회원가입 잘 저장되나 확인용
-      // console.log("eamil : ", signupState.emailprofile.email, "id : ", signupState.emailprofile.id, "password : ", signupState.emailprofile.password);
-
+      chrome.runtime.onMessage.addListener((message:MessageType) => {
+        if(message.type === "CHECKLOGIN"){
+          if(message.flag==="OK"){
+            alert('로그인 되었습니다!');
+          }
+          else{
+            alert('존재하지 않는 계정입니다.');
+          }
+        }
+      });
     }
   };
 
   const onSignup = () => {
     // if(서버에서 이미 존재하는 email인지 판별)
-    onSignupState(sign);
+    //onSignupState(sign);
+    chrome.runtime.sendMessage({type: "SIGNUP_SAVE", Email: sign.email, Id: sign.id, Password: sign.password});
     setSign({email : "", id: "", password : ""});
-    
-    // console.log("eamil : ", signupState.emailprofile.email, "id : ", signupState.emailprofile.id, "password : ", signupState.emailprofile.password);
-    
+
+    // 회원가입 잘 저장되나 확인용
+    // console.log("email : ", signupState.emailprofile.email, "id : ", signupState.emailprofile.id, "password : ", signupState.emailprofile.password);
+
+    chrome.runtime.onMessage.addListener((message:MessageType) => {
+      if(message.type === "CHECKSIGNUP"){
+        if(message.flag==="New User"){
+          alert('회원가입이 완료되었습니다!');
+        }
+        else{
+          alert('회원가입을 다시 시도해 주십시오!');
+        }
+      }
+    });
   }
 
   const onChange = (e : any) =>{
@@ -99,7 +115,7 @@ function LoginPage() {
     setInput({...input, [name]: value});
     // setId(e.target.value);
   }
-  
+
   const onSignupChange = (e : any) =>{
     const {value, name} = e.target;
     setSign({...sign, [name]: value});

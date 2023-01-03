@@ -84,7 +84,7 @@ const MainPage = () => {
   
   React.useEffect(()=>{//마운트
     fetchcategory();
-    
+
   },[]);
 
   const onClick = async() =>{//fetchvalid
@@ -98,24 +98,42 @@ const MainPage = () => {
     //CHECKURL이라는 message 받는 함수 만들고, true, false받는 함수 만들어서 아래 완료 창 띄우기
     chrome.runtime.onMessage.addListener((message:MessageType) => {
       if(message.type === "CHECKURL"){
-        if(message.flag){
+        if(message.flag==="newtab"){
           alert('저장이 완료되었습니다!');
         }
-        else{
+        else if (message.flag==="fail"){
           alert('이미 존재하는 url입니다!');
+        }
+        else if (message.flag === "로그인 시간 만료"){
+          onLoginState({id : "", password : ""}); ////////////////////////////////////////
+          alert('로그인 시간이 만료되었습니다! 다시 로그인을 해주세요.');
+          //loginState.flag = false;
+          //window.location.reload()
         }
       }
     });
-
   };
+
   const onLogout = () =>{
-    if(loginState.flag == true){
+    if(loginState.flag === true){
+      chrome.runtime.sendMessage({type: "LOGOUT_SAVE"});
       onLoginState({id : "", password : ""});
+
+      chrome.runtime.onMessage.addListener((message:MessageType) => {
+        if(message.type === "CHECKLOGOUT"){
+          if(message.flag==="Logout"){
+            alert('로그아웃되었습니다!');
+          }
+          else{
+            alert('로그아웃을 실패했습니다. 다시 시도해 주세요.');
+          }
+        }
+      });
     }
   };
 
   const onInput = (e : React.KeyboardEvent<HTMLInputElement>) =>{//엔터키로도 입력 가능하도록
-    if(e.key == 'Enter'){
+    if(e.key === 'Enter'){
         onClick();
     }
   };

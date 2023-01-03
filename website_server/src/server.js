@@ -125,64 +125,49 @@ app.post("/api/tabinfo/scrap", async (req, res) => {
  * })
  */
 app.post('/api/tabinfo', async (req, res) => {
-    // Verify user
-    const clientToken = req.cookies.validuser;
-    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
-
-    if (!decoded) {
-        console.log("Invalid client token");
-        res.send({ success: false, type: "client", message: "로그인이 필요합니다." })
-        return;
-    }
-    clientId = decoded.userId;
-
+    let body = req.body; // {title, data_url, image, description, date, memo, clientId}
     const pool = DB_Connection();
     const conn = await pool.getConnection();
 
-    let body = req.body; // {title, data_url, image, description, date, memo, clientId}
-    body = { ...body, title: "", image: "", description: "" }; // sql 오류 방지
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken)? jwt.verify(clientToken, jwt_key): '';
     let category = body.category;
     let url = body.data_url.trim(); // 앞뒤 빈칸 제거
     if (!category) { // 빈 문자열 DEFAULT로 변환
         category = "DEFAULT";
     }
 
-    try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
+    if (decoded){
+        clientId = decoded.userId;
+        console.log(clientId);////////////////////////////
 
-        // 탭 정보 스크래핑
-        let tabInfo = await scrapTabInfo(url);
-        if (tabInfo.title) body.title = tabInfo.title;
-        if (tabInfo.description) body.description = tabInfo.description;
-        if (tabInfo.image) body.image = tabInfo.image;
-        body.data_url = tabInfo.data_url;
+        try {//SELECT COUNT(*) AS num FROM tabinfo WHERE data_url='https://www.naver.com/' AND category ='test';
 
-        const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [body.data_url, category, clientId]);
-        if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
-
-            // Check if category exists
-            if (category != "DEFAULT") {
-                query = 'SELECT id FROM category WHERE name=? AND clientId=?';
-                const [row] = await conn.query(query, [category, clientId]);
-                if (!row[0]) {
-                    // insert new category
-                    query = 'INSERT INTO category(name, size, clientId) VALUES(?,1,?)';
-                    conn.query(query, [category, clientId]);
-                }
+            // 스크래핑 하지 않아서 페이지 정보 모르는 상태
+            if (!body.title) {
+                let tabInfo = await scrapTabInfo(url);
+                body.title = tabInfo.title;
+                body.description = tabInfo.description;
+                body.image = tabInfo.image;
             }
 
-            await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
-            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, body.data_url, body.image, body.description, body.date, body.memo, body.clientId]);
-            // res.send(true);
-            res.send({ success: true, type: "", message: "" })
+            const [exist] = await conn.query("SELECT COUNT(*) AS num FROM tabinfo WHERE data_url=? AND category=? AND clientId=?", [url, category, clientId]);
+            if (exist[0].num < 1) {//if(exist[0].num<1){ 이걸로 check
+                await conn.query(`INSERT INTO tabinfo(category, title, data_url, image, description, date, memo, clientId)
+            VALUES (?, ?, ?, ?, ?, ?, ?, ?)`, [category, body.title, url, body.image, body.description, body.date, body.memo, body.clientId]);
+                res.send("newtab");
+            }
+            else {
+                res.send("fail");
+            }
+        } catch (err) {
+            console.log(err);
+        } finally {
+            conn.release();
         }
-        else {
-            // res.send(false);
-            res.send({ success: false, type: "tab", message: "중복된 URL 입니다" })
-        }
-    } catch (err) {
-        console.log(err);
-    } finally {
-        conn.release();
+    }
+    else{
+        res.send("로그인 시간 만료");
     }
 });
 
@@ -306,6 +291,33 @@ app.post('/api/category', async (req, res) => {
         res.send(cats);
     } catch (error) {
         console.log('query:', error);
+    } finally {
+        conn.release();
+    }
+});
+
+app.post('/api/user/signup',async(req,res)=>{ ///
+    const pool = DB_Connection();
+    const conn = await pool.getConnection();
+    const Email = req.body.Email;
+    const Id = req.body.Id;
+    const Password = req.body.Password;
+    const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
+
+    try{
+        const sql = `SELECT COUNT(*) AS num FROM users WHERE Email=? AND Id=? AND Password=?`;
+        const params = [Email,Id, cryptedPassword];
+        const [rows] = await conn.query(sql, params);
+        if (rows[0].num){
+            res.send('Already Exist');
+        }
+        else{
+            query = `INSERT INTO users(Email, Id, Password) VALUES (?,?,?)`;
+            conn.query(query,[Email, Id, cryptedPassword]);
+            res.send('New User');
+        }
+    }catch (error) {
+        console.log(error);
     } finally {
         conn.release();
     }
