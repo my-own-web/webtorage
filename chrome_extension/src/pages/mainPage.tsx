@@ -69,14 +69,9 @@ const MainPage = () => {
   }
   const fetchcategory = async() =>{//DB에서 현재 저장되어 있는 카테고리 정보를 받는 초기화 함수
     try{
-      //setCglist([]);
-      const {data} = await TodoApi.get('/tabinfo');
-      
-      console.log(data);
-      //const templist = data.map(cg => cg.category);
+      const {data} = await TodoApi.post("/category", {type: "FETCH", clientId: loginState.profile.id});
       setCglist(data);
-      data.map((cg: any)=>(console.log(cg.category)));
-    }
+      }
     catch(e){
       console.error(e)
     }
@@ -145,7 +140,7 @@ const MainPage = () => {
           <input list = "cglist" name = "cgvalue" placeholder="your category" onChange={onChange} value = {category} onKeyPress={onInput} autoFocus/>
             <datalist id = "cglist">
               {cglist.map((cg:any) => (
-                <option value = {cg.category}></option>
+                <option value = {cg.name}></option>
               ))}
             </datalist>
           <p>memo</p>
