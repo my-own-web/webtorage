@@ -82,7 +82,9 @@ function LoginPage() {
             alert('로그인 되었습니다!');
           }
           else{
-            alert('존재하지 않는 계정입니다.');
+            alert('존재하지 않는 계정입니다. 다시 로그인 하십시오.');
+            onLoginState(input);
+            //console.log(loginState);///
           }
         }
       });
@@ -104,7 +106,7 @@ function LoginPage() {
           alert('회원가입이 완료되었습니다!');
         }
         else{
-          alert('회원가입을 다시 시도해 주십시오!');
+          alert('회원가입을 다시 시도해 주십시오.');
         }
       }
     });

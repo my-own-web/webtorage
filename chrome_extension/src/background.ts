@@ -43,15 +43,15 @@ const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하�
             const res = await TodoApi.post('/tabinfo', params);
             console.log('res : ', res);
 
-            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data});
+            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data.message});
 
-            if(res.data=== "newtab"){
+            if(res.data.message === ""){
                 console.log("DB 저장 성공!");//여기를 chrome.runtime.sendmessage(type을 하나 더 만들어서)로 팝업창에 메시지 띄우기
             }
-            else if (res.data === "fail"){
+            else if (res.data.message  === "중복된 URL 입니다"){
                 console.log("DB 저장 실패..");
             }
-            else if (res.data === "로그인 시간 만료"){
+            else if (res.data.message === "로그인이 필요합니다."){
                 console.log("로그인 시간이 만료되었습니다.");
             }
         }
@@ -170,7 +170,6 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
         case "LOGIN_SAVE":
             loginInfo.profile.id = message.Id;
             loginInfo.profile.password = message.Password;
-            console.log("login info: ", loginInfo);
             DBconn({type: 'LOGINFO', Id : loginInfo.profile.id , Password : loginInfo.profile.password})
             break;
         
