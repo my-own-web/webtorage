@@ -7,7 +7,7 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
     //메시지를 받을 때 REQ_TAB이라는 메시지를 받으면 tab 정보를 RES_TAB이라는 메시지와 함께
     //보내는 곳
     switch (message.type) {
-        case "REQ_TAB":
+        case "REQ_TAB": // TODO 미사용
             const body = document.getElementsByTagName("meta");
             const temp = document.getElementsByTagName("p");
             let title = "";
