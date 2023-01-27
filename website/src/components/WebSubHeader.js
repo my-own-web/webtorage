@@ -43,8 +43,7 @@ const WebSubHeaderBlock = styled.div`
         cursor: pointer;
     }
 
-     .add-button{
-        background: black;
+    .add-button{
         color: white;
         width: 62px;
         grid-row-start: 2;
@@ -182,7 +181,7 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
             </div>
 
             <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
-            <Button className="add-button" onClick={onClickCreate}>추가하기</Button>
+            <Button className="add-button" onClick={onClickCreate} background="black">추가하기</Button>
             {selected ?
                 <>
                     <div className="container category-select-container">

@@ -70,7 +70,6 @@ const CreateBox = styled.div`
         width: 180px;
         height: 100px;
         align-self: end;
-        background: black;
         color: white;
         font-size: 20px;
     }
@@ -252,7 +251,7 @@ export default function CreatePage() {
                             selectAll={false}
                             setSelectAll={false}
                         />
-                        <Button className="add-button" onClick={onSave}>저장</Button>
+                        <Button className="add-button" onClick={onSave} background="black">저장</Button>
                     </div>
                 </div>
             </CreateBox>

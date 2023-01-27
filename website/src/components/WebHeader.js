@@ -41,15 +41,25 @@ const WebHeadBlock = styled.div`
         font-size: 15px;
     }
 
+    .signup-button{
+        margin: 12px 5px;
+        color: white;
+        visibility: ${props => props.showSignup ? "visible" : "hidden"};
+    }
+
     .login-button{
         margin: 12px 5px;
+        // border: none;
     }
+
+    
 `
 
 function WebHeader() {
     const userLoginId = useUserLoginId();
     const navigate = useNavigate();
     let buttonName;
+    const [showSignup, setShowSignup] = useState(true);
 
     const onClick = () => {
         navigate('/');
@@ -71,11 +81,13 @@ function WebHeader() {
         }
     }
 
+
     return (
-        <WebHeadBlock>
+        <WebHeadBlock showSignup={showSignup}>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>Webtorage</h1>
             {userLoginId ? <div><h3>{userLoginId}{'님'}</h3></div> : ''}
+            <Button className="signup-button" background="black">회원가입</Button>
             <Button className="login-button" onClick={onClick2}>{userLoginId ? buttonName = "로그아웃" : buttonName = "로그인"}</Button>
         </WebHeadBlock >
     );
