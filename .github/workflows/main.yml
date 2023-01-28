@@ -1,0 +1,37 @@
+name: webtorage_cicd                  # Workflow 이름
+on:   
+  push:
+    branches: ["test_juk1329"]          # Event 감지
+
+
+jobs:                                 # Job 설정
+  build:                              # Job ID
+
+    runs-on: ubuntu-latest        # Job 가상환경 인스턴스
+    steps:  # Steps
+
+      - name: Access repository
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials    
+        uses: aws-actions/configure-aws-credentials@v1
+        with:
+          aws-access-key-id: ${{ secrets.JUK1329_AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.JUK1329_AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Build React App
+        run: |
+          cd website
+          npm install --save --legacy-peer-deps
+          CI=false npm run build
+        
+      # - name : Make zip file
+      #   run : zip -qq -r ./dist.zip .
+      #   shell : bash
+
+      - name: Deploy app build to S3 bucket
+        run: aws s3 sync website/build/ s3://webtorage-test --delete
+
+      #- name: code deploy
+        # run: aws deploy create-deployment --application-name webtorage --deployment-config-name CodeDeployDefault.OneAtATime --deployment-group-name GroupWebtorage --s3-location bucket=webtorage-test,bundleType=zip,key=$PROJECT_NAME/$GITHUB_SHA.zip

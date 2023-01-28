@@ -63,6 +63,9 @@ chrome.runtime.onMessage.addListener((message:MessageType, sender) => {
             }
             console.log("Responding...", title, data_url, description, image, sender.tab?.id);
 
+
+            //api post tab info api 
+
             // if(title === "" && data_url === "" && description === "" && image === "" && document.getElementsByTagName("h1")[0] != null &&  temp[0] != null){
             //     title = document.getElementsByTagName("h1")[0].innerText;
             //     description = temp[0].innerText;
