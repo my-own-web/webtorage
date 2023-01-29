@@ -69,14 +69,9 @@ const MainPage = () => {
   }
   const fetchcategory = async() =>{//DB에서 현재 저장되어 있는 카테고리 정보를 받는 초기화 함수
     try{
-      //setCglist([]);
-      const {data} = await TodoApi.get('/tabinfo');
-      
-      console.log(data);
-      //const templist = data.map(cg => cg.category);
+      const {data} = await TodoApi.post("/category", {type: "FETCH", clientId: loginState.profile.id});
       setCglist(data);
-      data.map((cg: any)=>(console.log(cg.category)));
-    }
+      }
     catch(e){
       console.error(e)
     }
@@ -98,17 +93,15 @@ const MainPage = () => {
     //CHECKURL이라는 message 받는 함수 만들고, true, false받는 함수 만들어서 아래 완료 창 띄우기
     chrome.runtime.onMessage.addListener((message:MessageType) => {
       if(message.type === "CHECKURL"){
-        if(message.flag==="newtab"){
+        if(message.flag===""){
           alert('저장이 완료되었습니다!');
         }
-        else if (message.flag==="fail"){
+        else if (message.flag==="중복된 URL 입니다"){
           alert('이미 존재하는 url입니다!');
         }
-        else if (message.flag === "로그인 시간 만료"){
-          onLoginState({id : "", password : ""}); ////////////////////////////////////////
+        else if (message.flag === "로그인이 필요합니다."){
           alert('로그인 시간이 만료되었습니다! 다시 로그인을 해주세요.');
-          //loginState.flag = false;
-          //window.location.reload()
+          onLoginState({id : "", password : ""});
         }
       }
     });
@@ -147,7 +140,7 @@ const MainPage = () => {
           <input list = "cglist" name = "cgvalue" placeholder="your category" onChange={onChange} value = {category} onKeyPress={onInput} autoFocus/>
             <datalist id = "cglist">
               {cglist.map((cg:any) => (
-                <option value = {cg.category}></option>
+                <option value = {cg.name}></option>
               ))}
             </datalist>
           <p>memo</p>

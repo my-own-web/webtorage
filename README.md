@@ -30,4 +30,12 @@
   - 로컬 리포 main branch에 중앙 리포 내용 저장, 다른 branch에 새로운 기능 저장
   - 로컬 리포에서 branch merge 시도해본 후 이상 없을 시 pull request
 
-  커밋/주석 : 한국어
+  커밋/주석 : 한국어  
+  (참고) https://udacity.github.io/git-styleguide/
+  > - **[Feat]** : 새로운 기능 추가
+  > - **[Fix]** : 버그 수정
+  > - **[Docs]** : 문서 수정
+  > - **[Style]** : 코드 포맷팅, 세미콜론 누락, 코드 변경이 없는 경우
+  > - **[Refactor]** : 코드 리펙토링
+  > - **[Test]** : 테스트 코드, 리펙토링 테스트 코드 추가
+  > - **[Chore]** : 빌드 업무 수정, 패키지 매니저 수정

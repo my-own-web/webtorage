@@ -43,15 +43,15 @@ const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하�
             const res = await TodoApi.post('/tabinfo', params);
             console.log('res : ', res);
 
-            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data});
+            chrome.runtime.sendMessage({type: "CHECKURL", flag : res.data.message});
 
-            if(res.data=== "newtab"){
+            if(res.data.message === ""){
                 console.log("DB 저장 성공!");//여기를 chrome.runtime.sendmessage(type을 하나 더 만들어서)로 팝업창에 메시지 띄우기
             }
-            else if (res.data === "fail"){
+            else if (res.data.message  === "중복된 URL 입니다"){
                 console.log("DB 저장 실패..");
             }
-            else if (res.data === "로그인 시간 만료"){
+            else if (res.data.message === "로그인이 필요합니다."){
                 console.log("로그인 시간이 만료되었습니다.");
             }
         }
@@ -120,57 +120,53 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
     //두 가지 응답을 받음. 처음엔 팝업창에서 버튼 눌리면 카테고리 저장,
     //두 번째는 content.js에서 탭 정보 불러오는것 -> 이 과정은 먼저 요청을 날리고 받는 것
     switch (message.type) {
+        // 현재 탭 url을 가져와서 시간과 함께 DBconn에 전달하는 경우
         case "SIGN_SAVE":
-            //category 정보를 저장하는 코드
-            //저장하고 다른 탭 정보가 필요하니 content에 쿼리를 날림.
-            loginInfo = message.loginInfo;
-            category = message.category;
-            memo = message.memo;
-            console.log(category, message.category);
-            console.log('step SINE_SAVE');
-            /////
-            const tabmessage = {type: "REQ_TAB"};
-            //content로 쿼리를 날리는 함수. REQ_TAB으로
-            chrome.tabs.query({ active: true, currentWindow: true }, function (tabs) {
-                if (tabs[0].id) {
-                    console.log("tab id : ", tabs[0].id);
-                    chrome.tabs.sendMessage(tabs[0].id, tabmessage);
-                }
-            });
+            
+            // 시간정보 가져오기
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = ('0' + (today.getMonth() + 1)).slice(-2);
+            let day = ('0' + today.getDate()).slice(-2);
+            let hours = ("0" + today.getHours()).slice(-2);
+            let minutes = ("0" + today.getMinutes()).slice(-2);
+            const dateString = year + month + day + hours + minutes;
+
+            // 탭 url 가져와서 DBconn에 전달
+            chrome.tabs.query({ currentWindow: true, active: true }, function ([tab]) {
+                let url: string = tab.url || "";
+                DBconn({ type: 'DBINFO', clientId: message.loginInfo.profile.id, category: message.category, data_url: url, title: "", description: "", image: "", date: dateString, memo: message.memo })
+            })
             break;
 
-        case "RES_TAB":
+        case "RES_TAB": // TODO 미사용
             //content에서 tab 정보를 받는 곳.
             console.log('step RES_TAB');
             console.log(loginInfo);
             // const loginState = useSelector((state:RootState) => state.LoginState);
 
             // data_url = message.data_url;
-            let title = message.title;
-            description = message.description;
-            image = message.image;
-            chrome.tabs.query({currentWindow: true, active : true}, function(tabs){
-                console.log(tabs[0].url);
-                if(tabs[0].url){
-                    data_url = tabs[0].url;
-                }
-            })
-            let today = new Date();
-            let year = today.getFullYear();
-            let month = ('0' + (today.getMonth() + 1)).slice(-2);
-            let day = ('0' + today.getDate()).slice(-2);
-            const dateString = year + month + day;
-            //console.log("check : ", message.title, message. description); 디버그용
-            console.log("completed?: ", loginInfo, category, data_url, title, description, image);
+            // let title = message.title;
+            // description = message.description;
+            // image = message.image;
+           
+            // let today = new Date();
+            // let year = today.getFullYear();
+            // let month = ('0' + (today.getMonth() + 1)).slice(-2);
+            // let day = ('0' + today.getDate()).slice(-2);
+            // const dateString = year + month + day;
 
-            //message.url, title, description 등 tab정보를 DB로 날리는 곳
-            DBconn({type: 'DBINFO', clientId : loginInfo.profile.id ,category: category, data_url:data_url ,title: title, description:description, image:image, date:dateString, memo:memo})
+            // chrome.tabs.query({ currentWindow: true, active: true }, function ([tab]) {
+            //     let url:string = tab.url || "";
+            //     console.log("current tab url: ", url);
+            //     console.log("RES_TAB: ", loginInfo, category, url, title, description, image);
+            //     DBconn({ type: 'DBINFO', clientId: loginInfo.profile.id, category: category, data_url: url, title: title, description: description, image: image, date: dateString, memo: memo })
+            // })
             break;
 
         case "LOGIN_SAVE":
             loginInfo.profile.id = message.Id;
             loginInfo.profile.password = message.Password;
-            console.log("login info: ", loginInfo);
             DBconn({type: 'LOGINFO', Id : loginInfo.profile.id , Password : loginInfo.profile.password})
             break;
         
