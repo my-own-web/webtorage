@@ -48,7 +48,7 @@ const WebSubHeaderBlock = styled.div`
         background: black;
         color: white;
         &:hover{
-            background: ${lighten(0.2, "black")};
+            background: ${lighten(0.3, "black")};
         }
         width: 62px;
         grid-row-start: 2;
