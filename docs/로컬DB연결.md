@@ -10,8 +10,6 @@ webtorage.sql를 사용한다.
     ``` bash
     JS>\connect --mysql root@localhost
     JS>\sql
-    SQL>create database webtorage;
-    SQL>use webtorage;
     SQL>source {webtorage.sql 파일 경로};
     ```
 

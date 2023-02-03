@@ -20,6 +20,8 @@ SET time_zone = "+00:00";
 --
 -- 데이터베이스: `webtorage`
 --
+create database webtorage;
+use webtorage;
 -- --------------------------------------------------------
 
 --
