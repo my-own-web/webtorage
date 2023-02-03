@@ -4,6 +4,7 @@ import { InfoProvider } from './components/InfoContext';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import Login from './components/Login';
 import CreatePage from './components/CreatePage';
+import SignupPage from './components/SignupPage';
 
 function App() {
   return (
@@ -12,6 +13,7 @@ function App() {
         <Routes>
           <Route path='/' element={<Webpage />} />
           <Route path='/login' element={<Login />} />
+          <Route path='/signup' element={<SignupPage />} />
           <Route path='/create' element={<CreatePage />} />
         </Routes>
       </BrowserRouter>
