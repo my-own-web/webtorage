@@ -9,6 +9,7 @@ import BigBoxReadonly from './content/BigBoxReadonly';
 import Button from './design/Button';
 import { TodoApi } from '../utils/axios';
 import { useCategoryList, useContentDispatch, useUserLoginId, useCurrentCategory } from "./InfoContext";
+import { lighten } from 'polished';
 
 
 const CreateBox = styled.div`
@@ -72,6 +73,9 @@ const CreateBox = styled.div`
         align-self: end;
         background: black;
         color: white;
+        &:hover{
+            background: ${lighten(0.2, "black")};
+        }
         font-size: 20px;
     }
 `
@@ -252,7 +256,7 @@ export default function CreatePage() {
                             selectAll={false}
                             setSelectAll={false}
                         />
-                        <Button className="add-button" onClick={onSave}>저장</Button>
+                        <Button className="add-button" onClick={onSave} background="black">저장</Button>
                     </div>
                 </div>
             </CreateBox>
