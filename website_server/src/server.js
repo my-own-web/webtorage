@@ -43,6 +43,15 @@ const options = {
     connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
 }
 
+// 디버그용 로컬 DB
+// const options = {
+//     host: process.env.MYSQL_DEBUG_HOST,
+//     user: process.env.MYSQL_DEBUG_USER,
+//     password: process.env.MYSQL_DEBUG_PASSWORD,
+//     database: process.env.MYSQL_DEBUG_DATABASE,
+//     connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
+// }
+
 let globalPool;
 function DB_Connection() {
     if (globalPool) return globalPool;
@@ -311,19 +320,23 @@ app.post('/api/category', async (req, res) => {
     }
 });
 
-app.post('/api/user/signup',async(req,res)=>{ ///
+app.post('/api/user/signup',async(req,res)=>{ 
     const pool = DB_Connection();
     const conn = await pool.getConnection();
-    const Email = req.body.Email;
-    const Id = req.body.Id;
-    const Password = req.body.Password;
+    const Email = req.body.email;
+    const Id = req.body.id;
+    const Password = req.body.password;
     const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
 
     try{
-        const sql = `SELECT COUNT(*) AS num FROM users WHERE Email=? AND Id=? AND Password=?`;
-        const params = [Email,Id, cryptedPassword];
-        const [rows] = await conn.query(sql, params);
-        if (rows[0].num){
+        let query = `SELECT COUNT(*) AS num FROM users WHERE Email=?`;
+        const [emails] = await conn.query(query, [Email]);
+        query = `SELECT COUNT(*) AS num FROM users WHERE Id=?`;
+        const [ids] = await conn.query(query, [Id]);
+
+        if(emails[0].num > 0){
+            res.send("Email Exist");
+        } else if(ids[0].num > 0){
             res.send('Already Exist');
         }
         else{

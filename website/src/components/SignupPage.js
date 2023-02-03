@@ -108,14 +108,20 @@ function SignupPage() {
         alert('회원가입이 완료되었습니다!');
         navigate("/login");
       }
-      else {
+      else if (res.data == "Email Exist"){
+        alert('이미 가입된 이메일 입니다.');
+      } 
+      else{
         alert('사용할 수 없는 ID입니다.');
       }
     } catch (err) {
       console.log(err);
       alert("오류가 발생했습니다. 다시 시도해 주세요.");
     } finally {
-      setInputs({ newId: '', newPassword: '' });
+      setInputs({
+        email: "",
+        id: "",
+        password: ""});
     }
   }
 
