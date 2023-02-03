@@ -9,6 +9,7 @@ import BigBoxReadonly from './content/BigBoxReadonly';
 import Button from './design/Button';
 import { TodoApi } from '../utils/axios';
 import { useCategoryList, useContentDispatch, useUserLoginId, useCurrentCategory } from "./InfoContext";
+import { lighten } from 'polished';
 
 
 const CreateBox = styled.div`
@@ -70,7 +71,11 @@ const CreateBox = styled.div`
         width: 180px;
         height: 100px;
         align-self: end;
+        background: black;
         color: white;
+        &:hover{
+            background: ${lighten(0.2, "black")};
+        }
         font-size: 20px;
     }
 `

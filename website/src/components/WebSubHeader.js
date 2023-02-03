@@ -5,6 +5,7 @@ import { useCurrentCategory, useCategoryList, useUserLoginId, useCategoryAction 
 import DateButton from "./DateButton";
 import Button from "./design/Button";
 import { MdCheck, MdDelete } from "react-icons/md";
+import { lighten } from "polished";
 
 const WebSubHeaderBlock = styled.div`
     background: white;
@@ -44,7 +45,11 @@ const WebSubHeaderBlock = styled.div`
     }
 
     .add-button{
+        background: black;
         color: white;
+        &:hover{
+            background: ${lighten(0.2, "black")};
+        }
         width: 62px;
         grid-row-start: 2;
         grid-column-start: 2;

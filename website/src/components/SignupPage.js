@@ -69,7 +69,7 @@ const SignupInput = styled.input`
   font-size: 15px;
   justify-content: center;
 //   margin: 10px 15px;
-  margin: 0px 0px 20px 0px;
+  margin: 5px 0px 20px 0px;
   padding-left: 10px;
 `;
 
@@ -107,37 +107,32 @@ function SignupPage() {
     const [users, setUsers] = useState([]);
     let fin = 0;
 
-    const [userInf, setUserInf] = useState({
-        Email: '',
-        Id: '',
-        Password: ''
-    });
-
-    const { Email, Id, Password } = userInf;
+    const [inputs, setInputs] = useState({
+      email: "",
+      id: "",
+      password: ""
+    })
 
     const dispatch = useContentDispatch();
 
-    const onChange = useCallback(
-        e => {
-            const { name, value } = e.target;
-            setUserInf({
-                ...userInf,
-                [name]: value
-            });
-        },
-        [userInf]
-    );
+    const onChange = (e) => {
+      setInputs({
+        ...inputs,
+        [e.target.name]: e.target.value
+      });
+    }
 
     const onSubmit = () => {
-        console.log(userInf);
-        UserLogin(userInf);
-        if (fin === 1) {
-            setUserInf({
-                Id: '',
-                Password: ''
-            });
-            fin = 0;
-        }
+        console.log(inputs);
+
+        // UserLogin(userInf);
+        // if (fin === 1) {
+        //     setUserInf({
+        //         Id: '',
+        //         Password: ''
+        //     });
+        //     fin = 0;
+        // }
     }
 
     const navigate = useNavigate();
@@ -148,33 +143,33 @@ function SignupPage() {
             onSubmit();
     }
 
-    async function UserLogin(userInf) {
-        if (Id === '' && Password === '')
-            alert("아이디와 비밀번호를 입력해주세요");
-        else if (Id === '')
-            alert("아이디를 입력해주세요");
-        else if (Password === '')
-            alert("비밀번호를 입력해주세요");
-        else {
-            fin = 1;
-            try {
-                const res = await TodoApi.post("/user/login", userInf, { withCredentials: true });
-                if (res.data === 'OK') {
-                    console.log(cookies.get('validuser')); //확인용
-                    dispatch({ type: "FETCH" }); // 로그인 정보로 미리보기 불러오기
-                    navigate('/');
-                }
-                else if (res.data === 'Invalid User') {
-                    alert("아이디 또는 비밀번호를 확인하세요.");
-                    cookies.remove('validuser');
-                }
-            } catch (err) {
-                console.log(err);
-                alert("오류가 발생했습니다. 다시 시도해 주세요.");
-                cookies.remove('validuser');
-            }
-        }
-    }
+    // async function UserLogin(userInf) {
+    //     if (Id === '' && Password === '')
+    //         alert("아이디와 비밀번호를 입력해주세요");
+    //     else if (Id === '')
+    //         alert("아이디를 입력해주세요");
+    //     else if (Password === '')
+    //         alert("비밀번호를 입력해주세요");
+    //     else {
+    //         fin = 1;
+    //         try {
+    //             const res = await TodoApi.post("/user/login", userInf, { withCredentials: true });
+    //             if (res.data === 'OK') {
+    //                 console.log(cookies.get('validuser')); //확인용
+    //                 dispatch({ type: "FETCH" }); // 로그인 정보로 미리보기 불러오기
+    //                 navigate('/');
+    //             }
+    //             else if (res.data === 'Invalid User') {
+    //                 alert("아이디 또는 비밀번호를 확인하세요.");
+    //                 cookies.remove('validuser');
+    //             }
+    //         } catch (err) {
+    //             console.log(err);
+    //             alert("오류가 발생했습니다. 다시 시도해 주세요.");
+    //             cookies.remove('validuser');
+    //         }
+    //     }
+    // }
 
     return (
         <div>
@@ -186,13 +181,13 @@ function SignupPage() {
                 </SignupHeader>
                 <SignupBody>
                     <h2>Email</h2>
-                    <SignupInput name="Email" onChange={onChange} value={Email} placeholder="Email을 입력해주세요" onKeyPress={onKeyPress} />
+                    <SignupInput name="Email" onChange={onChange} value={inputs.email} placeholder="이메일을 입력해주세요" onKeyPress={onKeyPress} />
                     <h2>ID</h2>
-                    <SignupInput name="Id" onChange={onChange} value={Id} placeholder="ID를 입력해주세요" onKeyPress={onKeyPress} />
+                    <SignupInput name="Id" onChange={onChange} value={inputs.id} placeholder="아이디를 입력해주세요" onKeyPress={onKeyPress} />
                     <h2>Password</h2>
-                    <SignupInput name="Password" onChange={onChange} value={Password} type="password" placeholder="Password를 입력해주세요" onKeyPress={onKeyPress} />
+                    <SignupInput name="Password" onChange={onChange} value={inputs.password} type="password" placeholder="비밀번호를 입력해주세요" onKeyPress={onKeyPress} />
                     <SignupButton onClick={onSubmit}>
-                        로그인
+                        회원가입
                     </SignupButton>
                 </SignupBody>
             </SignupBlock>
