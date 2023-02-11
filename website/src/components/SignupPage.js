@@ -100,6 +100,11 @@ function SignupPage() {
       alert("이메일, 아이디와 패스워드를 입력해주세요.");
       return;
     }
+    
+    if(inputs.id.length > 20){
+      alert("아이디는 20자 이하로 해주세요.");
+      return;
+    }
 
     //send data to server
     try {
