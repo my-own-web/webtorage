@@ -85,7 +85,7 @@ export default function CreatePage() {
     const [inputs, setInputs] = useState({
         url: "",
         memo: "",
-        category: currentCategory.name
+        category: currentCategory.name == "ALL"? "DEFAULT": currentCategory.name
     });
     const [previewInfo, setPreviewInfo] = useState({
         data_url: "",
