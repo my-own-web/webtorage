@@ -91,6 +91,29 @@ function LoginPage() {
     }
   };
 
+  const didLogin = () =>{
+    chrome.runtime.sendMessage({type: "DIDLOGIN_SAVE"});
+    
+    chrome.runtime.onMessage.addListener((message:MessageType) => {
+      if(message.type === "CHECKUSERINFO"){
+        if (message.flag === "Not Logined"){
+          console.log("로그인되지 않은 상태입니다.");
+      }
+      else if (message.flag ==="Error Exist"){
+          console.log("오류가 발생했습니다.");
+      }
+      else{
+          console.log("로그인되어 있는 상태입니다.");
+          onLoginState({id: message.Id, password:message.Password});
+      }
+      }
+    });
+  }
+
+  React.useEffect(() => {
+    didLogin();
+  }, []);
+
   const onSignup = () => {
     // if(서버에서 이미 존재하는 email인지 판별)
     //onSignupState(sign);

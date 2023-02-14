@@ -33,13 +33,22 @@ const randomSalt = process.env.SALT;
 const jwt = require('jsonwebtoken');
 const { nextTick } = require('process');
 const { CLIENT_RENEG_WINDOW } = require('tls');
+const { convertToObject } = require('typescript');
 const jwt_key = process.env.SECRET_KEY;
 
-const options = {
+/*const options = {
     host: process.env.MYSQL_HOST,
     user: process.env.MYSQL_USER,
     password: process.env.MYSQL_PASSWORD,
     database: process.env.MYSQL_DATABASE,
+    connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
+}*/
+
+const options = {
+    host: process.env.MYSQL_DEBUG_HOST,
+    user: process.env.MYSQL_DEBUG_USER,
+    password: process.env.MYSQL_DEBUG_PASSWORD,
+    database: process.env.MYSQL_DEBUG_DATABASE,
     connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
 }
 
@@ -320,11 +329,11 @@ app.post('/api/user/signup',async(req,res)=>{ ///
     const cryptedPassword = pbkdf2Sync(Password, randomSalt, 65536, 32, "sha512").toString("hex");
 
     try{
-        const sql = `SELECT COUNT(*) AS num FROM users WHERE Email=? AND Id=? AND Password=?`;
-        const params = [Email,Id, cryptedPassword];
+        const sql = `SELECT COUNT(*) AS num FROM users WHERE Id=?`;
+        const params = [Id];
         const [rows] = await conn.query(sql, params);
         if (rows[0].num){
-            res.send('Already Exist');
+            res.send('ID Already Exist');
         }
         else{
             query = `INSERT INTO users(Email, Id, Password) VALUES (?,?,?)`;
@@ -337,6 +346,36 @@ app.post('/api/user/signup',async(req,res)=>{ ///
         conn.release();
     }
 });
+
+
+app.get('/api/logininfo',async(req,res)=>{  /////////////////
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (decoded){
+        const pool = DB_Connection();
+        const conn = await pool.getConnection();
+        clientId = decoded.userId;
+        try{
+            const sql = "SELECT Password FROM users WHERE Id=?";
+            const params = [clientId];
+            const [rows] = await conn.query(sql,params);
+            if (rows[0]){
+                const password = rows[0];
+                res.send({Id: clientId, Password: password,flag:"Already Logined"});
+            }
+            else{
+                res.send({Id: '',Password:'', flag: "Error Exist"});
+            }
+        }catch(err){
+            console.log(err);
+        }finally{
+            conn.release();
+        }
+    }
+    else
+        res.send({Id: '',Password:'', flag: "Not Logined"});
+})
 
 app.post('/api/user/login', async (req, res) => {
 
