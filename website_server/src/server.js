@@ -375,7 +375,11 @@ app.get('/api/logininfo',async(req,res)=>{  /////////////////
             const [rows] = await conn.query(sql,params);
             if (rows[0]){
                 const password = rows[0];
+<<<<<<< HEAD
                 res.send({Id: clientId, Password: password, flag:"Already Logined"});
+=======
+                res.send({Id: clientId, Password: password,flag:"Already Logined"});
+>>>>>>> bf5a2ca443134c54a303f6252565aadcb5c3285b
             }
             else{
                 res.send({Id: '',Password:'', flag: "Error Exist"});
