@@ -60,6 +60,14 @@ interface LOGOUTinfo{
     type: "LOGOUTINFO";
 }
 
+interface UserLogin {
+    type:"DIDLOGIN_SAVE";
+}
+
+interface USERLOGINinfo{
+    type:"USERINFO";
+}
+
 interface SIGNUPinfo{
     type: "SIGNUPINFO";
     Email: string | undefined;
@@ -87,4 +95,11 @@ interface CheckUrl{//이미 존재하는 url인지 판별하고 그 결과를 �
     flag: string;
 }
 
-export type MessageType = SaveResponse | TabRequest | TabResponse | DBinfo | SaveUser | OutUser | NewUser | LOGinfo | LOGOUTinfo | SIGNUPinfo | CheckLogin | CheckLogout | CheckSignup | CheckUrl; ///
+interface CheckUserinfo{
+    type:"CHECKUSERINFO";
+    flag: string;
+    Id: string | undefined,
+    Password: string | undefined;
+}
+
+export type MessageType = SaveResponse | TabRequest | TabResponse | DBinfo | SaveUser | OutUser | NewUser | LOGinfo | USERLOGINinfo | LOGOUTinfo | UserLogin | SIGNUPinfo | CheckLogin | CheckLogout | CheckSignup | CheckUrl | CheckUserinfo; ///

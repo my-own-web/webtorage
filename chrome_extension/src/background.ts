@@ -69,8 +69,11 @@ const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하�
             if (res.data === "New User"){
                 console.log("회원가입되었습니다!");
             }
-            else if (res.data === "Aleady Exist"){
-                console.log("이미 존재하는 계정입니다.");
+            else if (res.data === "Already Exist"){
+                console.log("동일한 아이디가 이미 존재합니다.");
+            }
+            else{
+                console.log("동일한 이메일이 이미 존재합니다.")
             }
         }
         catch(err){
@@ -98,7 +101,7 @@ const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하�
 
     else if (params.type === "LOGOUTINFO"){
         try{
-            const res = await TodoApi.post('/user/logout', params, { withCredentials: true }); /////////////////////////////////
+            const res = await TodoApi.post('/user/logout', params, { withCredentials: true });
 
             chrome.runtime.sendMessage({type: "CHECKLOGOUT", flag : res.data});
 
@@ -106,7 +109,30 @@ const DBconn = async (params: MessageType) => {//tab 정보를 DB에 저장하�
                 console.log("로그아웃되었습니다!");
             }
             else{
-                console.log("로그아웃 과정에 오류가 발생했습니다. 다시 시도해 주세요.")
+                console.log("로그아웃 과정에 오류가 발생했습니다. 다시 시도해 주세요.");
+            }
+        }
+        catch(err){
+            console.log(err);
+        }
+    }
+
+    else if (params.type === "USERINFO"){
+        try{
+            const res = await TodoApi.get('/logininfo', { withCredentials: true });
+
+            chrome.runtime.sendMessage({type: "CHECKUSERINFO", flag: res.data.flag, Id: res.data.Id, Password: res.data.Password});
+
+            if (res.data.flag === "Not Logined"){
+                console.log("로그인되지 않은 상태입니다.");
+            }
+            else if (res.data.flag==="Error Exist"){
+                console.log("오류가 발생했습니다.");
+            }
+            else{
+                console.log("로그인된 상태입니다.");
+                console.log(res.data.Id); ////
+                console.log(res.data.Password); ////
             }
         }
         catch(err){
@@ -178,6 +204,9 @@ chrome.runtime.onMessage.addListener((message: MessageType) => {
 
         case "LOGOUT_SAVE":
             DBconn({type: 'LOGOUTINFO'});
+
+        case "DIDLOGIN_SAVE":
+            DBconn({type:'USERINFO'});
 
         default:
             break;
