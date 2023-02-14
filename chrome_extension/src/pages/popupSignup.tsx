@@ -91,6 +91,29 @@ function LoginPage() {
     }
   };
 
+  const didLogin = () =>{
+    chrome.runtime.sendMessage({type: "DIDLOGIN_SAVE"});
+    
+    chrome.runtime.onMessage.addListener((message:MessageType) => {
+      if(message.type === "CHECKUSERINFO"){
+        if (message.flag === "Not Logined"){
+          console.log("로그인되지 않은 상태입니다.");
+      }
+      else if (message.flag ==="Error Exist"){
+          console.log("오류가 발생했습니다.");
+      }
+      else{
+          console.log("로그인되어 있는 상태입니다.");
+          onLoginState({id: message.Id, password:message.Password});
+      }
+      }
+    });
+  }
+
+  React.useEffect(() => {
+    didLogin();
+  }, []);
+
   const onSignup = () => {
     // if(서버에서 이미 존재하는 email인지 판별)
     //onSignupState(sign);
@@ -105,8 +128,11 @@ function LoginPage() {
         if(message.flag==="New User"){
           alert('회원가입이 완료되었습니다!');
         }
+        else if (message.flag==="Email Exist"){
+          alert('이미 존재하는 이메일입니다.');
+        }
         else{
-          alert('회원가입을 다시 시도해 주십시오.');
+          alert('이미 존재하는 ID입니다.')
         }
       }
     });
