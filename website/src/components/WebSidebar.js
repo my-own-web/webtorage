@@ -1,10 +1,11 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
-
+import { useNavigate } from 'react-router-dom';
+import { lighten } from 'polished';
 import CategoryList from './CategoryList';
 import CategorySearch from './CategorySearch';
-import Input from './design/Input';
-import BoxSearch from './BoxSearch';
+import Button from './design/Button';
+import { useUserLoginId } from './InfoContext';
 
 const WebSideTemplate = styled.div`
     position: sticky; //위치 고정
@@ -20,6 +21,26 @@ const WebSideTemplate = styled.div`
     gap: 10px;
 
     z-index: 2; // fix: 사이드바 안 요소들이 body에 의해 가려짐
+
+    .button-container{
+        width: 190px;
+        height: 75px;
+        margin: 5px 0;
+        // border: 1px solid;
+    }
+    .add-button{
+        background: black;
+        color: white;
+        &:hover{
+            background: ${lighten(0.3, "black")};
+        }
+        width: 190px;
+        font-size: 20px;
+        height: 50px;
+        margin-top: 25px;
+
+        border-radius: 5px; // 모서리 둥굴게
+    }
 `
 
 const WebSideBlock = styled.div`
@@ -28,7 +49,7 @@ const WebSideBlock = styled.div`
 
     background: white;
     margin-top: 5px;
-    padding: 10px 0px 20px 20px;
+    padding: 10px 0px 10px 20px;
     border-radius: 5px; // 모서리 둥굴게
     box-shadow: 0 0 3px 0 rgba(0,0,0,100); // 박스 감싸는 그림자
 
@@ -47,12 +68,18 @@ const WebSideBlock = styled.div`
     }
 `
 function WebSidebar() {
+    const userLoginId = useUserLoginId();
+    const navigate = useNavigate();
+    function onClickCreate() {
+        if (userLoginId) navigate("/create");
+        else navigate("/login");
+    }
+
     return (
         <WebSideTemplate>
-            <WebSideBlock>
-                <h2>Search</h2>
-                <BoxSearch />
-            </WebSideBlock>
+            <div className='button-container'>
+                <Button className="add-button" onClick={onClickCreate} background="black">추가하기</Button>
+            </div>
             <WebSideBlock>
                 <h2>Category</h2>
                 <CategorySearch />

@@ -4,7 +4,6 @@ import { useNavigate } from 'react-router-dom';
 import { TodoApi } from '../utils/axios';
 import styled from 'styled-components';
 import Button from './design/Button';
-import Cookies from "universal-cookie";
 import Input from "./design/Input";
 import { lighten } from "polished";
 
@@ -17,42 +16,43 @@ const WebHeadBlock = styled.div`
     top: 0px;
     z-index:1;
     background: white;
-    padding: 5px 20px;
-    // border: solid black 1px; // dbg
+    padding: 5px 20px 5px 10px;
 
-    //display: flex;
-    // justify-content: space-between;
     display: flex;
 
     .logo{
         height: 30px;
-        margin: 10px 10px 10px 10px;
+        margin: 10px 0 10px 0px;
     }
     h1 {
         box-sizing: border-box;
-        margin: 3px 0 10px 0;
+        margin: 3px 15px 10px 2px;
         cursor: pointer;
-        margin: 0 auto;
-        // 제목 가운데 정렬
-        // flex-basis: 100%;
-        text-align: center;
-        // ---
+    }
+
+    // 창 크기 작아질 때 적용
+    @media (max-width: 700px){
+        h1 {
+            display: none;
+        }
     }
 
     .search-input{
-        width: 400px;
-        // flex-basis: 100%;
+        min-width: 140px;
+        width: 100%;
+        margin: 5px 10px;
     }
 
-    h3 {
-        // margin: 12px 10px 0px 0px;
-        // margin: 3px 0 10px 0;
-        font-size: 15px;
-        // text-align: center;
+    .user{
+        min-width: 200px; // 약 20자 크기
+        font-size: 13px;
+        text-align: end;
+        margin-left: auto;
     }
 
     .signup-button{
-        margin: 12px 5px;
+        min-width: 60px;
+        margin: 12px 5px 12px auto;
         background: black;
         color: white;
         &:hover{
@@ -61,15 +61,17 @@ const WebHeadBlock = styled.div`
     }
 
     .login-button{
+        min-width: 60px;
         margin: 12px 5px;
-        // border: none;
     }
 
     
 `
 
-function WebHeader() {
+function WebHeader({search = false}) {
     const userLoginId = useUserLoginId();
+    // const userLoginId = "test";
+    // const userLoginId = "A234567890B234567890" // 20자
     const navigate = useNavigate();
     let buttonName;
 
@@ -89,15 +91,6 @@ function WebHeader() {
                 navigate('/');
             } catch (err) {
                 console.log(err);
-
-                // debug: 서버 안 켰을 때 디버그용
-                if (process.env.NODE_ENV === "development") {
-                    const cookies = new Cookies();
-                    cookies.remove('validuser');
-                    window.location.replace("/"); //새로고침
-                    navigate('/');
-                    return;
-                }
             }
         }
     }
@@ -109,9 +102,11 @@ function WebHeader() {
     return (
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
-            <h1 onClick={onClick}>Webtorage</h1>
-            {/* <Input className="search-input" placeholder="Search Tabs" /> */}
-            {userLoginId ? <div><h3>{userLoginId}{'님'}</h3></div> : 
+            <h1 onClick={onClick}>WEBtorage</h1>
+            {search && userLoginId? 
+            <Input className="search-input" placeholder="Search Tabs" />:""
+            }
+            {userLoginId ? <div className="user"><h3>{userLoginId}{'님'}</h3></div> : 
             <Button className="signup-button" onClick={onClickSignup}>회원가입</Button>}
             <Button className="login-button" onClick={onClick2}>{userLoginId ? buttonName = "로그아웃" : buttonName = "로그인"}</Button>
         </WebHeadBlock >

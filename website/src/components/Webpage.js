@@ -81,7 +81,7 @@ function Webpage() {
 
     return (
         <>
-            <WebHeader />
+            <WebHeader search={true}/>
             <WebTemplateBlock>
                 <WebSidebar />
                 <WebBodyTemplate>
