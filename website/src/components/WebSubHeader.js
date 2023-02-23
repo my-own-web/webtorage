@@ -19,7 +19,7 @@ const WebSubHeaderBlock = styled.div`
 
     display: grid;
     grid-template-rows: 40px 30px;
-    grid-template-columns: 25px 60px 50px 150px 1fr;
+    grid-template-columns: 25px 150px 50px 1fr;
     gap: 5px;
     align-items: center;
 
@@ -90,7 +90,7 @@ const WebSubHeaderBlock = styled.div`
         background: white;
 
         grid-row-start: 2;
-        grid-column-start: 4;
+        grid-column-start: 2;
     }
 
   .category-choice{
@@ -114,10 +114,6 @@ const WebSubHeaderBlock = styled.div`
     }
 
     .delete-button{
-        background: white;
-         &:hover{
-            background: #bfbdbd;
-        }
         grid-row-start: 2;
         grid-column-start: 3;
     }
@@ -186,7 +182,6 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
             </div>
 
             <div className="container all-checkbox-container"><input className="all-checkbox" type='checkbox' onChange={(e) => setSelectAll(e.target.checked)} /></div>
-            <Button className="add-button" onClick={onClickCreate} background="black">추가하기</Button>
             {selected ?
                 <>
                     <div className="container category-select-container">
