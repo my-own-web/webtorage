@@ -8,6 +8,7 @@ import { RootState } from "../modules";
 import {login} from '../modules/login';
 import { signup } from "../modules/signup";
 import {MessageType} from '../types';
+
 const GlobalStyle = createGlobalStyle`
   body {
     // background: #DEF1F7;
