@@ -6,6 +6,7 @@ import styled from 'styled-components';
 import Button from './design/Button';
 import Input from "./design/Input";
 import { lighten } from "polished";
+import BoxSearch from "./BoxSearch";
 
 const WebHeadBlock = styled.div`
     width: 100%;
@@ -35,12 +36,6 @@ const WebHeadBlock = styled.div`
         h1 {
             display: none;
         }
-    }
-
-    .search-input{
-        min-width: 140px;
-        width: 100%;
-        margin: 5px 10px;
     }
 
     .user{
@@ -104,7 +99,8 @@ function WebHeader({search = false}) {
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>WEBtorage</h1>
             {search && userLoginId? 
-            <Input className="search-input" placeholder="Search Tabs" />:""
+            <BoxSearch className="search-input" />
+            :""
             }
             {userLoginId ? <div className="user"><h3>{userLoginId}{'님'}</h3></div> : 
             <Button className="signup-button" onClick={onClickSignup}>회원가입</Button>}

@@ -1,26 +1,38 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useBoxSearchManager, useSearchCategoryList } from "./InfoContext";
-import { MdClear } from 'react-icons/md';
+import { MdBrowserNotSupported, MdClear } from 'react-icons/md';
+import {AiOutlineCloseCircle, AiOutlineCloseSquare} from "react-icons/ai";
 const SearchBox = styled.div`
-    margin: 0 5px 0 0;
-    // background: grey; // dbg
+    min-width: 140px;
+    margin: 5px 10px;
+    width: 100%;
+    position: relative;
 
     display: flex;
     gap: 5px;
-
+    
     .clear-icon{
+        position: absolute;
+        right: 5px;
         visibility: ${props => props.show ? 'visible' : 'hidden'};
         text: center;
-        margin-top: 1px;
+        // margin-top: 1px;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 30px; //20px;
+        height: 100%;
     }
 `
 
 const SearchInput = styled.input`
-    width: 120px;
-    border: 1px solid ${props => props.isSearch ? "#ff6b6b" : "black"}
+    padding: 12px 35px 12px 12px;
+    border-radius: 4px;
+    width: 100%;
+    outline: none;
+    font-size: 18px;
+    box-sizing: border-box;
+
+    border: ${props => props.isSearch ? "3px solid #dee2e6;" : "1px solid #dee2e6;"} // #ff6b6b
 `
 
 function BoxSearch() {
@@ -65,7 +77,7 @@ function BoxSearch() {
             // 조건 없으면 버튼 먼저 사라져서 리셋 안 됨.
         }} show={show}>
             <SearchInput placeholder='Search Tabs' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
-            <MdClear className="clear-icon" onClick={onClick} />
+            <AiOutlineCloseSquare className="clear-icon" onClick={onClick} />
         </SearchBox>
     );
 }
