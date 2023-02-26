@@ -69,6 +69,10 @@ const WebHeadBlock = styled.div`
         margin: 12px 5px;
     }
     
+    .quit-button{
+        margin: 12px 5px;
+    }
+    
 `
 
 function WebHeader({search = false}) {
@@ -93,6 +97,25 @@ function WebHeader({search = false}) {
                 window.location.replace("/"); //새로고침
                 navigate('/');
             } catch (err) {
+                console.log(err);
+            }
+        }
+    }
+
+    async function quitClick(){
+        let quit = window.confirm("정말로 탈퇴하시겠습니까?");
+        if (quit){
+            try{
+                const res = await TodoApi.post('/user/quit', null, { withCredentials: true });
+                if (res.data === '해당 사용자의 계정 정보가 삭제되었습니다.'){
+                    alert('회원 탈퇴되었습니다.');
+                }
+                else if (res.data === '로그인 후 해당 기능을 이용해주시기 바랍니다.'){
+                    alert('회원 탈퇴에 실패했습니다. 로그인 후 다시 이용해 주시기 바랍니다.');
+                }
+                window.location.replace("/"); //새로고침
+                navigate('/');
+            }catch(err){
                 console.log(err);
             }
         }
