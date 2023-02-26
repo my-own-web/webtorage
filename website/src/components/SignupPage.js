@@ -93,6 +93,11 @@ function SignupPage() {
     });
   }
 
+  const onKeyPress = (e) => {
+    if (e.key == 'Enter')
+      onSubmit();
+  }
+
   const onSubmit = async () => {
     console.log(inputs);
 
@@ -135,11 +140,11 @@ function SignupPage() {
         </SignupHeader>
         <SignupBody>
           <h2>Email</h2>
-          <SignupInput name="email" onChange={onChange} value={inputs.email} placeholder="이메일을 입력해주세요" />
+          <SignupInput name="email" onChange={onChange} value={inputs.email} placeholder="이메일을 입력해주세요" onKeyPress={onKeyPress}/>
           <h2>ID</h2>
-          <SignupInput name="id" onChange={onChange} value={inputs.id} placeholder="아이디를 입력해주세요" />
+          <SignupInput name="id" onChange={onChange} value={inputs.id} placeholder="아이디를 입력해주세요" onKeyPress={onKeyPress}/>
           <h2>Password</h2>
-          <SignupInput name="password" onChange={onChange} value={inputs.password} type="password" placeholder="비밀번호를 입력해주세요" />
+          <SignupInput name="password" onChange={onChange} value={inputs.password} type="password" placeholder="비밀번호를 입력해주세요" onKeyPress={onKeyPress}/>
           <SignupButton onClick={onSubmit}>
             회원가입
           </SignupButton>

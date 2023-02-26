@@ -388,7 +388,7 @@ app.get('/api/logininfo',async(req,res)=>{  /////////////////
     }
     else
         res.send({Id: '',Password:'', flag: "Not Logined"});
-})
+});
 
 app.post('/api/user/login', async (req, res) => {
 
@@ -430,7 +430,36 @@ app.post('/api/user/logout', async (req, res) => {
     } catch (error) {
         console.log(error);
     }
-})
+});
+
+app.post('/api/user/quit', async (req, res) => {
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (decoded){
+        const pool = DB_Connection();
+        const conn = await pool.getConnection();
+        clientId = decoded.userId;
+        try{
+            res.clearCookie('validuser');
+            //clientId user정보 삭제,관련 db 정보들도 삭제
+            query = "DELETE FROM users WHERE Id=?";
+            conn.query(query, [clientId]);
+            query2 = "DELETE FROM tabinfo WHERE clientId=?";
+            conn.query(query2,[clientId]);
+            query3 = "DELETE FROM category WHERE clientId=?";
+            conn.query(query3,[clientId]);
+            res.send("해당 사용자의 계정 정보가 삭제되었습니다.");
+        }catch(error){
+            console.log("Quit Error");
+        }finally{
+            conn.release();
+        }
+    }
+    else{ //쿠키가 만료되어 회원탈퇴 버튼을 눌렀지만 로그인 정보가 없는 경우
+        res.send("로그인 후 해당 기능을 이용해주시기 바랍니다.");
+    }
+});
 
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
