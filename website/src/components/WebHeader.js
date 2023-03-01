@@ -32,7 +32,7 @@ const WebHeadBlock = styled.div`
     }
 
     // 창 크기 작아질 때 적용
-    @media (max-width: 700px){
+    @media (max-width: 751px){
         h1 {
             display: none;
         }
@@ -59,11 +59,15 @@ const WebHeadBlock = styled.div`
         min-width: 60px;
         margin: 12px 5px;
     }
-
+    
+    .quit-button{
+        min-width: 60px;
+        margin: 12px 5px;
+    }
     
 `
 
-function WebHeader({search = false}) {
+function WebHeader({ search = false }) {
     const userLoginId = useUserLoginId();
     // const userLoginId = "test";
     // const userLoginId = "A234567890B234567890" // 20자
@@ -90,7 +94,45 @@ function WebHeader({search = false}) {
         }
     }
 
-    const onClickSignup = () =>{
+    async function quitClick() {
+        let quit = window.confirm("정말로 탈퇴하시겠습니까?");
+        if (quit) {
+            try {
+                const res = await TodoApi.post('/user/quit', null, { withCredentials: true });
+                if (res.data === '해당 사용자의 계정 정보가 삭제되었습니다.') {
+                    alert('회원 탈퇴되었습니다.');
+                }
+                else if (res.data === '로그인 후 해당 기능을 이용해주시기 바랍니다.') {
+                    alert('회원 탈퇴에 실패했습니다. 로그인 후 다시 이용해 주시기 바랍니다.');
+                }
+                window.location.replace("/"); //새로고침
+                navigate('/');
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    }
+
+    async function quitClick() {
+        let quit = window.confirm("정말로 탈퇴하시겠습니까?");
+        if (quit) {
+            try {
+                const res = await TodoApi.post('/user/quit', null, { withCredentials: true });
+                if (res.data === '해당 사용자의 계정 정보가 삭제되었습니다.') {
+                    alert('회원 탈퇴되었습니다.');
+                }
+                else if (res.data === '로그인 후 해당 기능을 이용해주시기 바랍니다.') {
+                    alert('회원 탈퇴에 실패했습니다. 로그인 후 다시 이용해 주시기 바랍니다.');
+                }
+                window.location.replace("/"); //새로고침
+                navigate('/');
+            } catch (err) {
+                console.log(err);
+            }
+        }
+    }
+
+    const onClickSignup = () => {
         navigate("/signup");
     }
 
@@ -98,13 +140,24 @@ function WebHeader({search = false}) {
         <WebHeadBlock>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>WEBtorage</h1>
-            {search && userLoginId? 
-            <BoxSearch className="search-input" />
-            :""
+            {search && userLoginId ?
+                <BoxSearch className="search-input" />
+                : ""
             }
-            {userLoginId ? <div className="user"><h3>{userLoginId}{'님'}</h3></div> : 
-            <Button className="signup-button" onClick={onClickSignup}>회원가입</Button>}
-            <Button className="login-button" onClick={onClick2}>{userLoginId ? buttonName = "로그아웃" : buttonName = "로그인"}</Button>
+            {userLoginId ?
+                <>
+                    <div className="user">
+                        <h3>{userLoginId}{'님'}</h3>
+                    </div>
+                    <Button className="login-button" onClick={onClick2}>{buttonName = "로그아웃"}</Button>
+                    <Button className="quit-button" onClick={quitClick}>회원탈퇴</Button>
+                </> :
+                <>
+                    <Button className="signup-button" onClick={onClickSignup}>회원가입</Button>
+                    <Button className="login-button" onClick={onClick2}>{buttonName = "로그인"}</Button>
+                </>
+            }
+
         </WebHeadBlock >
     );
 }
