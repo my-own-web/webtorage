@@ -218,7 +218,7 @@ function BigBox({ id, category, title, data_url, image, description, date, memo,
       <BoxBlock editMemo={editMemo} bChecked={bChecked}>
         <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
         <h3 title={title}>{title}</h3>
-        <a href={data_url} title={data_url}>{data_url}</a>
+        <a href={data_url} target="_blank" rel="noopener noreferrer" title={data_url}>{data_url}</a>
         <div className='description' title={description}>{description}</div>
         <img src={image} width='280px' height='100px' />
 
