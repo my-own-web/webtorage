@@ -3,24 +3,40 @@ import styled from "styled-components";
 import { useBoxSearchManager, useSearchCategoryList } from "./InfoContext";
 import { MdClear } from 'react-icons/md';
 const SearchBox = styled.div`
-    margin: 0 5px 0 0;
-    // background: grey; // dbg
+    min-width: 140px;
+    margin: 5px 10px;
+    width: 100%;
+    position: relative;
 
     display: flex;
     gap: 5px;
-
+    
     .clear-icon{
+        position: absolute;
+        right: 5px;
         visibility: ${props => props.show ? 'visible' : 'hidden'};
         text: center;
-        margin-top: 1px;
+        // margin-top: 1px;
         cursor: pointer;
-        font-size: 20px;
+        font-size: 30px; //20px;
+        height: 100%;
+        color: ${props => props.isSearch? "black" : "#dee2e6"};
+
+        &:hover{
+            color: red;
+        }
     }
 `
 
 const SearchInput = styled.input`
-    width: 120px;
-    border: 1px solid ${props => props.isSearch ? "#ff6b6b" : "black"}
+    padding: 12px 35px 12px 12px;
+    border-radius: 4px;
+    width: 100%;
+    outline: none;
+    font-size: 18px;
+    box-sizing: border-box;
+
+    border: ${props => props.isSearch ? "2px solid black;" : "1px solid #dee2e6;"}
 `
 
 function BoxSearch() {
@@ -63,8 +79,8 @@ function BoxSearch() {
         <SearchBox onFocus={() => { setShow(true) }} onBlur={() => {
             if (!input) setShow(false);
             // 조건 없으면 버튼 먼저 사라져서 리셋 안 됨.
-        }} show={show}>
-            <SearchInput placeholder='Search Tabs' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
+        }} show={show} isSearch={isSearch}>
+            <SearchInput placeholder='Search Tab' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
             <MdClear className="clear-icon" onClick={onClick} />
         </SearchBox>
     );

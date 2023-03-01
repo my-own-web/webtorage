@@ -227,8 +227,7 @@ function SmallBox({ id, category, title, data_url, image, description, date, mem
     <div>
       <BoxBlock editMemo={editMemo} bChecked={bChecked}>
         <div className="cover"><input type='checkbox' checked={bChecked} onChange={checkHandler} /></div>
-        <a href={data_url} target='_black' title={data_url}>{title}</a>
-        {/* <a href={data_url} title={data_url}>{title}</a> */}
+        <a href={data_url} target="_blank" rel="noopener noreferrer" title={data_url}>{title}</a>
         <div className='description' title={description}>{description}</div>
         <img src={image} className='image' />
 
