@@ -85,9 +85,9 @@ async function scrapTabInfo(url_input) {
         const $ = cheerio.load(html);
 
         // <title> 태그 - 모든 HTML 문서에 필수
-        title = $("title").text();
+        title = $('head > title').text();
         // <meta name="description"
-        description = $("meta[name=description]").attr("content");
+        description = $("head > meta[name=description]").attr("content");
 
         // OpenGraph 태그
         image = $("meta[property=og:image]").attr("content");
