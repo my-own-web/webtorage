@@ -1,8 +1,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import { useBoxSearchManager, useSearchCategoryList } from "./InfoContext";
-import { MdBrowserNotSupported, MdClear } from 'react-icons/md';
-import {AiOutlineCloseCircle, AiOutlineCloseSquare} from "react-icons/ai";
+import { MdClear } from 'react-icons/md';
 const SearchBox = styled.div`
     min-width: 140px;
     margin: 5px 10px;
@@ -21,6 +20,11 @@ const SearchBox = styled.div`
         cursor: pointer;
         font-size: 30px; //20px;
         height: 100%;
+        color: ${props => props.isSearch? "black" : "#dee2e6"};
+
+        &:hover{
+            color: red;
+        }
     }
 `
 
@@ -32,7 +36,7 @@ const SearchInput = styled.input`
     font-size: 18px;
     box-sizing: border-box;
 
-    border: ${props => props.isSearch ? "3px solid #dee2e6;" : "1px solid #dee2e6;"} // #ff6b6b
+    border: ${props => props.isSearch ? "2px solid black;" : "1px solid #dee2e6;"}
 `
 
 function BoxSearch() {
@@ -75,9 +79,9 @@ function BoxSearch() {
         <SearchBox onFocus={() => { setShow(true) }} onBlur={() => {
             if (!input) setShow(false);
             // 조건 없으면 버튼 먼저 사라져서 리셋 안 됨.
-        }} show={show}>
+        }} show={show} isSearch={isSearch}>
             <SearchInput placeholder='Search Tabs' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
-            <AiOutlineCloseSquare className="clear-icon" onClick={onClick} />
+            <MdClear className="clear-icon" onClick={onClick} />
         </SearchBox>
     );
 }
