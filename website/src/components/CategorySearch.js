@@ -5,21 +5,30 @@ import { MdClear } from 'react-icons/md';
 const CategorySearchBox = styled.div`
     margin: 0 5px 0 0;
     // background: grey; // dbg
-
     display: flex;
     gap: 5px;
+    position: relative;
 
     .clear-icon{
         visibility: ${props => props.show? 'visible' : 'hidden'};
         text: center;
-        margin-top: 1px;
         cursor: pointer;
-        font-size: 20px;
+
+        font-size: 18px;
+        margin: 2px 1px;
+        position: absolute;
+        right: 15px;
+
+        &:hover{
+            color: red;
+        }
     }
 `
 
 const SearchInput = styled.input`
-    width: 120px;
+    width: 150px;
+    box-sizing: border-box;
+    padding-right: 17px;
 `
 
 function CategorySearch() {
