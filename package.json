@@ -7,11 +7,8 @@
     "crypto": "^1.0.1",
     "express": "^4.18.1",
     "mysql": "^2.18.1",
-<<<<<<< HEAD
     "package.json": "^2.0.1",
-=======
     "polished": "^4.2.2",
->>>>>>> cc56c13c1d4f642c6a2ca88dc0c430c8bf91413a
     "typescript": "^4.8.3",
     "universal-cookie": "^4.0.4"
   }
