@@ -14,14 +14,14 @@ jobs:
         run: node -v
 
       - name: Install Dependencies # 의존 파일 설치
-        run: yarn install --frozen-lockfile
-
-      - name: Build # React Build
-        #run: yarn build
+        #run: yarn install --frozen-lockfile
         run: |
           cd website
           npm install --save --legacy-peer-deps
-          CI=false npm run build
+         # CI=false npm run build
+
+      - name: Build # React Build
+        run: CI=false npm run build # yarn build
         env:
           CI: ""
 
