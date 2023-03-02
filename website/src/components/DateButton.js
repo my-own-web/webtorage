@@ -1,5 +1,6 @@
 import react, { useState, forwardRef } from "react";
 import styled from "styled-components";
+import { darken } from "polished";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { useDateRange, useSetDateRange } from "./InfoContext";
@@ -12,11 +13,11 @@ const DatePickerTemplate = styled.div`
       cursor: pointer;
       text-align: center;
       background: whitesmoke;
-      border: solid #bfbdbd 1px;
+      border: none; 
       border-radius: 7px;
       font-size: 12px;
       &:hover{
-        background: #bfbdbd;
+        background: ${darken(0.05, "whitesmoke")};
       }
     }
 
@@ -37,9 +38,11 @@ const DatePickerTemplate = styled.div`
 
     .react-datepicker {
         font-size: 0.8em;
+        border: 1px solid #DBDCF5;
       }
       .react-datepicker__header {
         padding-top: 0.7em;
+        background: whitesmoke;
       }
       .react-datepicker__month {
         margin: 0.4em 0.5em;
