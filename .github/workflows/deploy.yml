@@ -21,7 +21,7 @@ jobs:
          # CI=false npm run build
 
       - name: Build # React Build
-        run: CI=false npm run build # yarn build
+        run: CI=false yarn build # yarn build
         #env:
         #  CI: ""
 
