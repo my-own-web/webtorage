@@ -80,7 +80,7 @@ function BoxSearch() {
             if (!input) setShow(false);
             // 조건 없으면 버튼 먼저 사라져서 리셋 안 됨.
         }} show={show} isSearch={isSearch}>
-            <SearchInput placeholder='Search Tab' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
+            <SearchInput placeholder='Search Tabs' value={input} onChange={onChange} ref={inputRef} onKeyPress={onKeyPress} isSearch={isSearch} />
             <MdClear className="clear-icon" onClick={onClick} />
         </SearchBox>
     );

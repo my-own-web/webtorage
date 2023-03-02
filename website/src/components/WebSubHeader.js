@@ -69,6 +69,7 @@ const WebSubHeaderBlock = styled.div`
         display: flex;
         justify-content: center;
         align-items: center;
+        border: none;
     }
     .all-checkbox{
         cursor: pointer;
@@ -95,22 +96,18 @@ const WebSubHeaderBlock = styled.div`
 
   .category-choice{
         height: 20px;
-        width: 110px;
+        width: 120px;
         border: none;
+        border-radius: 5px;
     }
 
   .change-category-button{
-        background: white;
+        cursor: pointer;
         &:hover{
-            background: #bfbdbd;
+            color: red;
         }
         box-sizing: border-box;
-      width: 20px;
-      height: 20px;
-      border-radius: 0px;
-      border: none;
-        padding: 1px;
-
+        font-size: 18px;
     }
 
     .delete-button{
@@ -163,12 +160,12 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
     }
 
     // TODO delete category
-    const onDeleteCategory = () =>{
-        if(currentCategory.size > 0){
+    const onDeleteCategory = () => {
+        if (currentCategory.size > 0) {
             alert("빈 카테고리만 삭제할 수 있습니다.");
         }
-        else{
-            categoryAction({type: "DELETE", clientId: userLoginId, id: currentCategory.id});
+        else {
+            categoryAction({ type: "DELETE", clientId: userLoginId, id: currentCategory.id });
         }
     }
 
@@ -176,8 +173,8 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
         <WebSubHeaderBlock>
             <div className="category-container">
                 <h2>{currentCategory.name}</h2>
-                {currentCategory.name == "ALL" || currentCategory.name == "DEFAULT"? "" :
-                <MdDelete className="category-delete-icon" onClick={onDeleteCategory}/>
+                {currentCategory.name == "ALL" || currentCategory.name == "DEFAULT" ? "" :
+                    <MdDelete className="category-delete-icon" onClick={onDeleteCategory} />
                 }
             </div>
 
@@ -193,7 +190,7 @@ export default function WebSubHeader({ boxSize, onChangeSize, onClickDelete, onC
                             ))}
                         </datalist>
 
-                        <Button className="change-category-button" onClick={onSaveCategory}><MdCheck /></Button>
+                        <MdCheck className="change-category-button" onClick={onSaveCategory} />
                     </div>
                     <Button className="delete-button" onClick={onClickDelete}>삭제</Button>
                 </> : ""}
