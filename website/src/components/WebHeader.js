@@ -1,12 +1,12 @@
 import { useUserLoginId } from "./InfoContext";
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { TodoApi } from '../utils/axios';
 import styled from 'styled-components';
 import Button from './design/Button';
-import Input from "./design/Input";
-import { lighten } from "polished";
 import BoxSearch from "./BoxSearch";
+import UserMenu from "./UserMenu";
+import { darken, lighten } from "polished";
+import { GoTriangleDown } from "react-icons/go";
 
 const WebHeadBlock = styled.div`
     width: 100%;
@@ -15,7 +15,7 @@ const WebHeadBlock = styled.div`
 
     position: sticky; 
     top: 0px;
-    z-index:1;
+    z-index:2;
     background: white;
     padding: 5px 20px 5px 10px;
 
@@ -39,10 +39,28 @@ const WebHeadBlock = styled.div`
     }
 
     .user{
-        min-width: 200px; // 약 20자 크기
-        font-size: 13px;
+        min-width: 210px; // 약 20자+아이콘 크기
         text-align: end;
-        margin-left: auto;
+        position: relative;
+
+        /* button 디자인 제거 */
+        padding: 0;
+        border: none;
+        background: none;
+    }
+    .user-name{
+        display: inline-block;
+        font-size: 15px;
+        cursor: pointer;
+    }
+    .user-menu-icon{
+        cursor: pointer;
+        position: relative;
+        top: 3px;
+        color: ${props=>props.showUserMenu? "red":"black"};
+    }
+    .user-name:hover+ .user-menu-icon{
+        color: red;
     }
 
     .signup-button{
@@ -74,70 +92,26 @@ function WebHeader({ search = false }) {
     const navigate = useNavigate();
     let buttonName;
 
+    const [showUserMenu, setShowUserMenu] = useState(false);
+
     const onClick = () => {
         navigate('/');
     }
 
-    async function onClick2() {
-        if (userLoginId === '') {
-            navigate('/login');
-        }
-        else {
-            try {
-                await TodoApi.post('/user/logout', null, { withCredentials: true });
-                //window.location.reload(); //새로고침
-                window.location.replace("/"); //새로고침
-                navigate('/');
-            } catch (err) {
-                console.log(err);
-            }
-        }
-    }
-
-    async function quitClick() {
-        let quit = window.confirm("정말로 탈퇴하시겠습니까?");
-        if (quit) {
-            try {
-                const res = await TodoApi.post('/user/quit', null, { withCredentials: true });
-                if (res.data === '해당 사용자의 계정 정보가 삭제되었습니다.') {
-                    alert('회원 탈퇴되었습니다.');
-                }
-                else if (res.data === '로그인 후 해당 기능을 이용해주시기 바랍니다.') {
-                    alert('회원 탈퇴에 실패했습니다. 로그인 후 다시 이용해 주시기 바랍니다.');
-                }
-                window.location.replace("/"); //새로고침
-                navigate('/');
-            } catch (err) {
-                console.log(err);
-            }
-        }
-    }
-
-    async function quitClick() {
-        let quit = window.confirm("정말로 탈퇴하시겠습니까?");
-        if (quit) {
-            try {
-                const res = await TodoApi.post('/user/quit', null, { withCredentials: true });
-                if (res.data === '해당 사용자의 계정 정보가 삭제되었습니다.') {
-                    alert('회원 탈퇴되었습니다.');
-                }
-                else if (res.data === '로그인 후 해당 기능을 이용해주시기 바랍니다.') {
-                    alert('회원 탈퇴에 실패했습니다. 로그인 후 다시 이용해 주시기 바랍니다.');
-                }
-                window.location.replace("/"); //새로고침
-                navigate('/');
-            } catch (err) {
-                console.log(err);
-            }
-        }
+    async function onClickLogin() {
+        navigate('/login');
     }
 
     const onClickSignup = () => {
         navigate("/signup");
     }
 
+    const onClickUser = () =>{
+        setShowUserMenu(!showUserMenu);
+    }
+
     return (
-        <WebHeadBlock>
+        <WebHeadBlock showUserMenu={showUserMenu}>
             <img className="logo" src="img/smiley.jpg" />
             <h1 onClick={onClick}>WEBtorage</h1>
             {search && userLoginId ?
@@ -145,19 +119,17 @@ function WebHeader({ search = false }) {
                 : ""
             }
             {userLoginId ?
-                <>
-                    <div className="user">
-                        <h3>{userLoginId}{'님'}</h3>
-                    </div>
-                    <Button className="login-button" onClick={onClick2}>{buttonName = "로그아웃"}</Button>
-                    <Button className="quit-button" onClick={quitClick}>회원탈퇴</Button>
-                </> :
+                <button className="user" onBlur={()=>{setShowUserMenu(false)}}>
+                    <h3 className="user-name" onClick={onClickUser}>{userLoginId}{'님'}</h3>
+                    <GoTriangleDown className="user-menu-icon" size="16"/>
+                    {showUserMenu?
+                        <UserMenu  />: ""}
+                </button> :
                 <>
                     <Button className="signup-button" onClick={onClickSignup}>회원가입</Button>
-                    <Button className="login-button" onClick={onClick2}>{buttonName = "로그인"}</Button>
+                    <Button className="login-button" onClick={onClickLogin}>{buttonName = "로그인"}</Button>
                 </>
             }
-
         </WebHeadBlock >
     );
 }
