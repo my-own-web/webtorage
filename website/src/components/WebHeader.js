@@ -37,7 +37,6 @@ const WebHeadBlock = styled.div`
         min-width: 210px; // 약 20자+아이콘 크기
         text-align: end;
         position: relative;
-
         /* button 디자인 제거 */
         padding: 0;
         border: none;
@@ -65,12 +64,6 @@ const WebHeadBlock = styled.div`
         &:hover{
             background: ${lighten(0.3, "black")};
         }
-    }
-    	
-    h3 {
-        font-size: 15px;
-        margin-left: auto;
-        margin-right: 5px;
     }
     .login-button{
         min-width: 60px;
