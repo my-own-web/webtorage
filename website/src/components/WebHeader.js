@@ -12,15 +12,12 @@ const WebHeadBlock = styled.div`
     width: 100%;
     height: 60px;
     box-sizing: border-box;
-
     position: sticky; 
     top: 0px;
     z-index:2;
     background: white;
     padding: 5px 20px 5px 10px;
-
     display: flex;
-
     .logo{
         height: 30px;
         margin: 10px 0 10px 0px;
@@ -30,19 +27,16 @@ const WebHeadBlock = styled.div`
         margin: 3px 15px 10px 2px;
         cursor: pointer;
     }
-
     // 창 크기 작아질 때 적용
     @media (max-width: 751px){
         h1 {
             display: none;
         }
     }
-
     .user{
         min-width: 210px; // 약 20자+아이콘 크기
         text-align: end;
         position: relative;
-
         /* button 디자인 제거 */
         padding: 0;
         border: none;
@@ -62,7 +56,6 @@ const WebHeadBlock = styled.div`
     .user-name:hover+ .user-menu-icon{
         color: red;
     }
-
     .signup-button{
         min-width: 60px;
         margin: 12px 5px 12px auto;
@@ -72,7 +65,6 @@ const WebHeadBlock = styled.div`
             background: ${lighten(0.3, "black")};
         }
     }
-
     .login-button{
         min-width: 60px;
         margin: 12px 5px;

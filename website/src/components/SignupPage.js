@@ -100,13 +100,19 @@ function SignupPage() {
 
   const onSubmit = async () => {
     console.log(inputs);
+    let emailReg = /^[_a-zA-Z0-9-\.]*@{1}[\.a-zA-Z0-9-]*[.]{1}[a-zA-Z]{2,3}$/;
 
     if (inputs.email == '' || inputs.id == '' || inputs.password == '') {
-      alert("이메일, 아이디와 패스워드를 입력해주세요.");
+      alert("이메일, 아이디와 패스워드를 모두 입력해주세요.");
+      return;
+    }
+
+    if (!emailReg.test(inputs.email)){
+      alert("이메일 형식이 올바르지 않습니다.")
       return;
     }
     
-    if(inputs.id.length > 20){
+    else if(inputs.id.length > 20){
       alert("아이디는 20자 이하로 해주세요.");
       return;
     }
