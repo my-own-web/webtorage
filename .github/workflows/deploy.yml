@@ -18,10 +18,10 @@ jobs:
         run: |
           cd website
           npm install --save --legacy-peer-deps
-         # CI=false npm run build
+          CI=false npm run build
 
-      - name: Build # React Build
-        run: CI=false yarn build # yarn build
+      #- name: Build # React Build
+        #run: CI=false yarn build # yarn build
         #env:
         #  CI: ""
 
