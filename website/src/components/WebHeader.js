@@ -21,6 +21,7 @@ const WebHeadBlock = styled.div`
     .logo{
         height: 30px;
         margin: 10px 0 10px 0px;
+        cursor: pointer;
     }
     h1 {
         box-sizing: border-box;
@@ -28,9 +29,9 @@ const WebHeadBlock = styled.div`
         cursor: pointer;
     }
     // 창 크기 작아질 때 적용
-    @media (max-width: 751px){
+    @media (max-width: 600px){
         h1 {
-            display: none;
+            ${props=>props.hideLogo? "display: none;": ""}
         }
     }
     .user{
@@ -41,6 +42,7 @@ const WebHeadBlock = styled.div`
         padding: 0;
         border: none;
         background: none;
+        margin-left: auto;
     }
     .user-name{
         display: inline-block;
@@ -103,8 +105,8 @@ function WebHeader({ search = false }) {
     }
 
     return (
-        <WebHeadBlock showUserMenu={showUserMenu}>
-            <img className="logo" src="img/smiley.jpg" />
+        <WebHeadBlock showUserMenu={showUserMenu} hideLogo = {search && userLoginId}>
+            <img className="logo" src="img/smiley.jpg" onClick={onClick}/>
             <h1 onClick={onClick}>WEBtorage</h1>
             {search && userLoginId ?
                 <BoxSearch className="search-input" />

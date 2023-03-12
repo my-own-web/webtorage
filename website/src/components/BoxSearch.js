@@ -3,7 +3,7 @@ import styled from "styled-components";
 import { useBoxSearchManager, useSearchCategoryList } from "./InfoContext";
 import { MdClear } from 'react-icons/md';
 const SearchBox = styled.div`
-    min-width: 140px;
+    min-width: 158px;
     margin: 5px 10px;
     width: 100%;
     position: relative;

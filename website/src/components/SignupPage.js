@@ -7,9 +7,11 @@ import WebHeader from './WebHeader';
 
 const SignupBlock = styled.div`
   width: 500px;
+  box-sizing: border-box;
+  // height: 500px;
   background: white;
   border-radius: 12px; /*둥그란 정도*/
-  margin: 60px auto; /* 페이지 중앙에 나타나도록 설정 */
+  margin: 20px auto; /* 페이지 중앙에 나타나도록 설정 */
   justify-content: center;
   display: flex; /*요소들을 자유자제로 위치시키는 속성, block처럼 container 수직 쌓임*/
   flex-direction: column; //Item의 주 축이 수직

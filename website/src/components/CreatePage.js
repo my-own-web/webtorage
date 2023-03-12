@@ -13,18 +13,15 @@ import { lighten } from 'polished';
 
 
 const CreateBox = styled.div`
-    width: 500px;
-
-    // position: fixed; 
-    // top: 0;
+    width: 540px;
+    height: 570px;
+    box-sizing: border-box;
     background: white;
-    box-shadow: 0 0 8px 0 black; //rgba(0,0,0,100); // 박스 감싸는 그림자
+    border-radius: 12px; /*둥그란 정도*/
+    box-shadow: 0 0 7px ${lighten(0.5, '#000')};
 
-    margin: 0 auto; // 페이지 중앙
-
+    margin: 5px auto; // 페이지 중앙
     padding: 20px;
-    margin-top: 10px;
-    // margin-bottom: 32px;
 
     display: grid;
     gap: 10px;
@@ -40,7 +37,7 @@ const CreateBox = styled.div`
 
     .textarea{
         // width: 280px;
-        height: 100px;
+        height: 80px;
         resize:none;
         padding-left: 3px;
         font-size: 13px;
