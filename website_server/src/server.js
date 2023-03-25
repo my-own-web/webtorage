@@ -461,6 +461,33 @@ app.post('/api/user/quit', async (req, res) => {
     }
 });
 
+app.post('/api/user/changePassword', async(req,res)=>{
+    const clientToken = req.cookies.validuser;
+    const decoded = (clientToken) ? jwt.verify(clientToken, jwt_key) : '';
+
+    if (decoded){
+        //console.log(req.body);
+        const newPassword = req.body.newpassword;
+        const cryptedPassword = pbkdf2Sync(newPassword, randomSalt, 65536, 32, "sha512").toString("hex");
+        const pool = DB_Connection();
+        const conn = await pool.getConnection();
+        clientId = decoded.userId;
+
+        try{
+            let query = `UPDATE users SET Password=? WHERE Id=?`;
+            conn.query(query,[cryptedPassword, clientId]);
+            res.send("Password Changed");
+        }catch(error){
+            console.log("Quit Error");
+        }finally{
+            conn.release();
+        }
+    }
+    else{ //쿠키가 만료되어 비밀번호 변경 페이지에서 확인 버튼을 눌렀지만 로그인 정보가 없는 경우
+        res.send("로그인 후 해당 기능을 이용해주시기 바랍니다.");
+    }
+});
+
 app.listen(port, () => {
     console.log(`Example app listening at http://localhost:${port}`)
 });

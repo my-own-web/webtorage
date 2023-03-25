@@ -107,7 +107,7 @@ function SignupPage() {
       return;
     }
 
-    if (!emailReg.test(inputs.email)){
+    else if (!emailReg.test(inputs.email)){
       alert("이메일 형식이 올바르지 않습니다.")
       return;
     }
