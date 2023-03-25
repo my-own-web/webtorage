@@ -73,6 +73,10 @@ function UserMenu({show = true}){
         }
     }
 
+    async function changePassword() {
+        navigate('/changePassword');
+    }
+
 
     if(!show){
         return("");
@@ -87,6 +91,11 @@ function UserMenu({show = true}){
             <UserMenuItemContainer>
                 <UserMenuItem onClick={deleteAccount}>
                     회원탈퇴
+                </UserMenuItem>
+            </UserMenuItemContainer>
+            <UserMenuItemContainer>
+                <UserMenuItem onClick={changePassword}>
+                    비밀번호 변경
                 </UserMenuItem>
             </UserMenuItemContainer>
         </UserMenuTemplate>
