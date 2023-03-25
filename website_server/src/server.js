@@ -36,23 +36,15 @@ const { CLIENT_RENEG_WINDOW } = require('tls');
 const { convertToObject } = require('typescript');
 const jwt_key = process.env.SECRET_KEY;
 
-// const options = {
-//     host: process.env.MYSQL_HOST2,
-//     user: process.env.MYSQL_USER2,
-//     password: process.env.MYSQL_PASSWORD2,
-//     database: process.env.MYSQL_DATABASE2,
-//     connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
-// }
-
 const options = {
-    host: process.env.MYSQL_DEBUG_HOST,
-    user: process.env.MYSQL_DEBUG_USER,
-    password: process.env.MYSQL_DEBUG_PASSWORD,
-    database: process.env.MYSQL_DEBUG_DATABASE,
+    host: process.env.MYSQL_HOST2,
+    user: process.env.MYSQL_USER2,
+    password: process.env.MYSQL_PASSWORD2,
+    database: process.env.MYSQL_DATABASE2,
     connectionLimit: 10// 동시에 처리되는 createPool 최대 개수
 }
 
-// 디버그용 로컬 DB
+/* 디버그용 로컬 DB 연결 */
 // const options = {
 //     host: process.env.MYSQL_DEBUG_HOST,
 //     user: process.env.MYSQL_DEBUG_USER,
